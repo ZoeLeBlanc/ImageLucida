@@ -1,0 +1,22 @@
+{
+  "name": "image_lucida_app",
+  "description": "image analysis app",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "https://github.com/ZoeLeBlanc/imagelucida#readme",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-route": "^1.5.9",
+    "angular-materialize": "^0.2.1",
+    "ng-file-model": "*"
+  },
+  "resolutions": {
+    "angular": "1.5.9"
+  }
+}
