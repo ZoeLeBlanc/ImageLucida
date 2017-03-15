@@ -17,7 +17,7 @@ class Text_Annotation(models.Model):
     article_title = models.CharField(max_length=200, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     text_annotation_coordinates = models.OneToOneField(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
-    order = models.IntegerField(null=True, default=1)
+    order = models.IntegerField(null=True)
     cover = models.BooleanField(default=False)
     cover_story = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
@@ -41,3 +41,4 @@ class Text_Annotation_Tag(models.Model):
 
     def __str__(self):
         return '%s' % (self.id)
+

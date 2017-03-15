@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Issue(models.Model):
     ''' The Issue class is a model that defines which data is available in the Issue table so a database can be created from it.
 

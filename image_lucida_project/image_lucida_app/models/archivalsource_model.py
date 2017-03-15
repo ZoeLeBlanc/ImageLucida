@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+
+
 class Archival_Source(models.Model):
     ''' The Archival Source class is a model that defines which data is available in the Archival Source table so a database can be created from it.
 

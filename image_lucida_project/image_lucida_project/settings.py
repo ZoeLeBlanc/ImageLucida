@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'image_lucida_app',
+<<<<<<< HEAD
     'storages',
+=======
+>>>>>>> 515496d71e7fa94779975581c0a40fb3960ea9c8
 ]
 
 MIDDLEWARE = [
@@ -83,6 +86,7 @@ DATABASES = {
 }
 
 
+<<<<<<< HEAD
 
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
@@ -108,6 +112,8 @@ MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
+=======
+>>>>>>> 515496d71e7fa94779975581c0a40fb3960ea9c8
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
