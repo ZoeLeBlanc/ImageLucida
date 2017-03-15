@@ -15,6 +15,7 @@ class Transform_File(models.Model):
     '''
     upload_file = models.OneToOneField(uploadfile_model.Upload_File, null=True, on_delete=models.CASCADE, blank=True)
     transform_file_name = models.CharField(max_length=200, blank=True)
+    transform_file = models.FileField(upload_to='transform-files/')
     date_created = models.DateTimeField(auto_now_add=True)
     transform_file_coordinates = models.OneToOneField(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     page_number = models.IntegerField(null=True)

@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Issue(models.Model):
     ''' The Issue class is a model that defines which data is available in the Issue table so a database can be created from it.
@@ -11,6 +13,7 @@ class Issue(models.Model):
 
     Author: Zoe LeBlanc
     '''
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
     issue_name = models.CharField(max_length=500, blank=True)
     date_published = models.CharField(max_length=500, blank=True)
     publication_location = models.CharField(max_length=500, blank=True)
