@@ -13,7 +13,7 @@ class Upload_File(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     upload_file_name = models.CharField(max_length=200, blank=True)
     upload_file = models.FileField(upload_to='upload-files/')
     date_created = models.DateTimeField(auto_now_add=True)

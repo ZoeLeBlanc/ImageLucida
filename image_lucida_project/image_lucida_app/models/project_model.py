@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import transformfile_model
+from . import transformfile_model, status_model, tag_model
 
 class Project(models.Model):
     ''' The Project class is a model that defines which data is available in the Project table so a database can be created from it.
@@ -13,15 +13,18 @@ class Project(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
-    name = models.CharField(max_length=200, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=500, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     files = models.ManyToManyField('Transform_File', through='Project_Transform_File')
+    tags = models.ManyToManyField('Tag', through='Project_Tag')
+    status = models.ForeignKey(status_model.Status, null=True, on_delete=models.CASCADE, blank=True)
+    private = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s' % (self.title)
 
 class Project_Transform_File(models.Model):
     ''' 
@@ -34,6 +37,21 @@ class Project_Transform_File(models.Model):
     '''
     transform_file = models.ForeignKey(transformfile_model.Transform_File, null=True, related_name='project_files')
     project = models.ForeignKey(Project, null=True, related_name='project_files')
+
+    def __str__(self):
+        return '%s' % (self.id)
+
+class Project_Tag(models.Model):
+    ''' 
+    The Project Tag class is a model that defines a join table for Project & Tag.
+
+    Argument List:
+        -models.Model: This argument allows the class to access field types.
+
+    Author: Zoe LeBlanc
+    '''
+    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='project_tag')
+    project = models.ForeignKey(Project, null=True, related_name='project_tag')
 
     def __str__(self):
         return '%s' % (self.id)

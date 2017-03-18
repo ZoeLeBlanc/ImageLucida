@@ -9,28 +9,28 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     jshint: {
-      files: ['/image_lucida_app/static/javascripts/**/*.js'],
+      files: ['../javascripts/**/*.js'],
       options: {
-        predef: [ "document", "console", "$", "app", "angular"],
+        predef: [ "document", "console", "$", "myApp", "angular"],
         esnext: true,
         globalstrict: true,
-        globals: {}
+        globals: {"myApp":true}
       }
     },
      sass: {
       dist: {
         files: {
-          '/image_lucida_app/static/css/main.css': '/image_lucida_app/static/sass/styles.scss'
+          '../css/main.css': '/../sass/styles.scss'
         }
       }
     },
     watch: {
       javascripts: {
-        files: ['image_lucida_app/static/javascripts/**/*.js'],
+        files: ['../javascripts/**/*.js'],
         tasks: ['jshint']
       },
       sassy: {
-        files: ['image_lucida_app/static/sass/**/*.scss'],
+        files: ['../sass/**/*.scss'],
         tasks: ['sass']        
       }
     }

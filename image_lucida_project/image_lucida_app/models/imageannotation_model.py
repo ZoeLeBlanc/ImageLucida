@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import coordinates_model, transformfile_model
+from . import coordinates_model, transformfile_model, tag_model
 
 class Image_Annotation(models.Model):
     ''' The Text Annotation class is a model that defines which data is available in the Text Annotation table so a database can be created from it.
@@ -19,6 +19,7 @@ class Image_Annotation(models.Model):
     cover = models.BooleanField(default=False)
     cover_image = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
+    tags = models.ManyToManyField('Tag', through='Image_Annotation_Tag')
 
     def __str__(self):
         return '%s' % (self.id)

@@ -1,3 +1,4 @@
+{% csrf_token %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -7,21 +8,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
-    <link href="/lib/bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'image_lucida_app/main.css' %}" />
+    <link href="{% static 'lib/bower_components/angular-xeditable/dist/css/xeditable.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
   </head>
   <body ng-app='ImageLucidaApp'>
 
-      <div ng-include="'./partials/nav.html'"
+      <div ng-include="'static/partials/nav.html'"></div>
       <div ng-view></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" src="/lib/bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="{% static 'lib/bower_components/angular/angular.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/lib/bower_components/angular-materialize/src/angular-materialize.js"></script>
-    <script type="text/javascript" src="/lib/bower_components/angular-route/angular-route.min.js"></script>
-    <script src="/lib/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-    <script src="/lib/bower_components/ng-file-model/ng-file-model.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script type="text/javascript" src="/javascripts/app.js"></script>
+    <script type="text/javascript" src="{% static 'lib/bower_components/angular-materialize/src/angular-materialize.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/bower_components/angular-route/angular-route.min.js' %}"></script>
+    <script src="{% static 'lib/bower_components/angular-xeditable/dist/js/xeditable.js' %}"></script>
+    <script src="{% static 'lib/bower_components/angular-sanitize/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'lib/bower_components/ng-csv/build/ng-csv.min.js' %}"></script>
+    <script src="{% static 'lib/bower_components/ng-file-model/ng-file-model.js' %}" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="{% static 'lib/bower_components/angular-filter/dist/angular-filter.min.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'javascripts/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/appconfig.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/factories/userfactory.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/factories/projectsfactory.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/factories/statusfactory.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/homectrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/navctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/authctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/projectsctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/newprojectctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/viewprojectctrl.js' %}"></script>
   </body>
 </html>

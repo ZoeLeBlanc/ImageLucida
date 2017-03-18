@@ -1,6 +1,10 @@
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
+from django.shortcuts import get_object_or_404, render
 
-class IndexView(TemplateView): 
-    """Template for Login"""
-    template_name = "image_lucida_app/index.html"
+def index(request):
+    """
+    The index view maps the url index.html to the data that it needs.
+
+    """
+    
+    return render(request, 'image_lucida_app/index.html')
+

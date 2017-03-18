@@ -6,18 +6,21 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from django.core.urlresolvers import reverse
+from django.core import serializers
+import json
 
-class LoginView(TemplateView): 
-    """Template for Login"""
-    template_name = "image_lucida_app/login.html"
-
-class RegisterView(TemplateView):
-    """Template for Register"""
-    template_name = "image_lucida_app/register.html" 
+def auth_user(request):
+    print(request)
+    if request.user.is_authenticated:
+        response = json.dumps({"user":True, "username":request.user.username})
+        print(response)
+    else:
+        response = json.dumps({"user":False})
+    return HttpResponse(response, content_type='application/json')
 
 def register_user(request): 
     """Method view to register new user"""
-    data = request.POST
+    data = json.loads(request.body.decode())
     user = User.objects.create_user(
         username = data['username'], 
         password = data['password'], 
@@ -29,7 +32,7 @@ def register_user(request):
 
 def login_user(request): 
     """Method view to login user"""
-    data = request.POST
+    data = json.loads(request.body.decode())
     username = data['username']
     password = data['password']
     user = authenticate(
@@ -38,12 +41,15 @@ def login_user(request):
         ) 
     if user is not None: 
         login(request = request, user = user)
-    else: 
-        return HttpResponseRedirect(redirect_to='/')
-    return HttpResponseRedirect(redirect_to='/projects/')
+        user_json = serializers.serialize("json", [user, ])
+        return HttpResponse(user_json, content_type='application/json')
+    else:
+        user_json = json.dumps({'user':False})
+        return HttpResponse(user_json, content_type='application/json')
 
  
 def logout_user(request): 
     """Method view to logout user"""
     logout(request) 
-    return HttpResponseRedirect(redirect_to='/')
+    response = json.dumps({'logout': True})
+    return HttpResponse(response, content_type='application/json')
