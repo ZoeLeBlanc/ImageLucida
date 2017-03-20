@@ -56,6 +56,11 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/view-project.html',
                 resolve: {user_auth}
             })
+            .when('/projects/upload/:id', {
+                controller: 'UploadFileCtrl',
+                templateUrl: '/static/partials/upload-file.html',
+                resolve: {user_auth}
+            })
             .otherwise('/');
     }
 ]);

@@ -1,15 +1,53 @@
 <div class="row">
-    <div class="card col s10 offset-s1">
-        <div class="row">
-            <h4>((project.title))</h4>
+    <div class="row">
+        <div class="card col s10 offset-s1">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col s12">
+                        <span class="card-title">
+                        <h4>((project.title))</h4>
+                        </span>
+                        ((project.description))
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row col s10 offset-s1">
+                    <div class="row"> <!-- Begging of Tabs -->
+                        <ul class="tabs" tabs>
+                            <li class="tab col s6">
+                                <a ng-href="#untransformed">Untransformed Files</a>
+                            </li>
+                            <li class="tab col s6">
+                                <a ng-href="#transformed">Transformed Files</a>
+                            </li>
+                        </ul>
+                    </div> <!-- End of Tabs -->     
+                </div>
+            </div>
         </div>
-        <div class="divider"></div>
-        <div class="row col s10 offset-s1">
-            <div class="col s12">
-                <input type="file" ng-file-model="project.files" multiple/>
+    </div>
+    <div class="row">
+        <div class="row" id="untransformed">
+            <div class="row col s10 offset-s1">
+                <ul class="tabs" tabs>
+                    <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
+                        <a ng-href="#((index))">((index))</a>
+                    </li>
+                </ul>
             </div>
             <div class="row">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="uploadFiles()">Upload Files</a></h5>
+                <div ng-repeat="(index, file) in untransformed_files" class="col s10 offset-s1">
+                    <div id="((index))">
+                        <p>((file.fields['upload_file_name']))</p>
+                        <img src="((file.fields.upload_file.url))" class="responsive-img"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="transformed">
+            <div ng-repeat="file in transformed_files">
+                <p>((file.fields['upload_file_name']))</p>
+
             </div>
         </div>
     </div>

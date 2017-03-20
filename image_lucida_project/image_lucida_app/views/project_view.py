@@ -24,7 +24,14 @@ def get_single_project(request, project_id):
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
     print(project)
-    project_json = serializers.serialize("json", [project, ])
+    untransformed_files = project.untransformed_files.all().order_by('id')
+    transformed_files = project.transformed_files.all().order_by('id')
+    print(untransformed_files)
+    print(transformed_files)
+    project_serialize = serializers.serialize("json", [project,])
+    untransformed_files_serialize = serializers.serialize("json", untransformed_files, fields=("upload_file_name", "upload_file.url", "url"))
+    transformed_files_serialize = serializers.serialize("json", transformed_files, fields=("transform_file_name", "transform_file"))
+    project_json = json.dumps({'project': project_serialize, 'untransformed_files': untransformed_files_serialize, "transformed_files": transformed_files_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
     
@@ -57,24 +64,9 @@ def create_project(request):
 
 def update_project(request): 
     """Method view to login user"""
-    data = json.loads(request.body.decode())
-    username = data['username']
-    password = data['password']
-    user = authenticate(
-        username = username, 
-        password = password
-        ) 
-    if user is not None: 
-        login(request = request, user = user)
-        user_json = serializers.serialize("json", [user, ])
-        return HttpResponse(user_json, content_type='application/json')
-    else:
-        user_json = json.dumps({'user':False})
-        return HttpResponse(user_json, content_type='application/json')
+    pass
 
  
 def delete_project(request): 
     """Method view to logout user"""
-    logout(request) 
-    response = json.dumps({'logout': True})
-    return HttpResponse(response, content_type='application/json')
+    pass

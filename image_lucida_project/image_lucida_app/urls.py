@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^create_project/', project_view.create_project, name= 'create_project'),
     url(r'^get_statuses/', status_view.get_statuses, name= 'get_statuses'),
     url(r'^upload_file/', uploadfile_view.upload_file, name= 'upload_file'),
+    url(r'^get_untransformed_files/', uploadfile_view.get_untransformed_files, name= 'get_untransformed_files'),
 ]

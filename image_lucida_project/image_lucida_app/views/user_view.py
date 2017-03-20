@@ -39,6 +39,7 @@ def login_user(request):
         username = username, 
         password = password
         ) 
+    print(user)
     if user is not None: 
         login(request = request, user = user)
         user_json = serializers.serialize("json", [user, ])
