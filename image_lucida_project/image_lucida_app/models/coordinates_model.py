@@ -11,10 +11,10 @@ class Coordinates(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    right_top= models.CharField(max_length=500, blank=True)
-    left_top= models.CharField(max_length=500, blank=True)
-    left_bottom= models.CharField(max_length=500, blank=True)
-    right_bottom= models.CharField(max_length=500, blank=True)
+    top_left= models.CharField(max_length=500, blank=True)
+    top_right= models.CharField(max_length=500, blank=True)
+    bottom_left= models.CharField(max_length=500, blank=True)
+    bottom_right= models.CharField(max_length=500, blank=True)
 
 
     def __str__(self):

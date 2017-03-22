@@ -12,7 +12,6 @@ class Tag(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
     tag_name = models.CharField(max_length=500, blank=True, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
