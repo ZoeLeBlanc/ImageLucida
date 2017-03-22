@@ -22,3 +22,8 @@ class Upload_File(models.Model):
 
     def __str__(self):
         return '%s' % (self.upload_file_name)
+
+    @property
+    def file_url(self):
+        if self.upload_file and hasattr(self.upload_file, 'url'):
+            return self.upload_file.url

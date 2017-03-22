@@ -29,25 +29,52 @@
     <div class="row">
         <div class="row" id="untransformed">
             <div class="row col s10 offset-s1">
-                <ul class="tabs" tabs>
+                <ul class="tabs" tabs id="untransformed_list">
                     <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
                         <a ng-href="#((index))">((index))</a>
                     </li>
                 </ul>
             </div>
-            <div class="row">
-                <div ng-repeat="(index, file) in untransformed_files" class="col s10 offset-s1">
-                    <div id="((index))">
-                        <p>((file.fields['upload_file_name']))</p>
-                        <img src="((file.fields.upload_file.url))" class="responsive-img"/>
+            <div id="images">
+                <div ng-value="((file))" id="((index))" class="col s8" ng-repeat="(index, file) in untransformed_files" >
+                    <img jqyoui-droppable data-drop='true' src="((file.fields.url))" class="responsive-img"/>
+                </div>
+            </div>
+            <div class="card col s4">
+                <div class="card-content">
+                    <div class="row">
+                        <span class="card-title">
+                        <h4>Transform File</h4>
+                        </span>
+                        <div class="col s10 offset-s1">
+                            <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
+                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="clearTransformation()">Clear Transformation</a>
+                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
+                        </div>
+                        <div class="col s10 offset-s1" ng-show="transforming">
+                            <div class="col s2" ng-repeat="marker in markers">
+                                <img src="((marker.url))" class="responsive-img" jqyoui-draggable="{animate:true}" data-drag="true" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row" id="transformed">
-            <div ng-repeat="file in transformed_files">
-                <p>((file.fields['upload_file_name']))</p>
-
+            <div class="row col s10 offset-s1">
+                <ul class="tabs" tabs>
+                    <li class="tab col s1" ng-repeat="(index,file) in transformed_files">
+                        <a ng-href="#((index))">((index))</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="((index))" class="row" ng-repeat="(index, file) in transformed_files" >
+                <div class="col s10 offset-s1">
+                    <div >
+                        <p>((file.fields['upload_file_name']))</p>
+                        <img src="((file.fields.url))" class="responsive-img"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
