@@ -1,5 +1,5 @@
 "use strict";
-angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
+angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
         getUntransformedFiles: () => {
@@ -40,24 +40,6 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                     return res.status;
                 }
             });
-        },
-        getUploadedFile: (userData) =>{
-            return $http({
-                url:`${rootUrl}/login/`,
-                method: 'POST',
-                data: {
-                    'username': userData.username,
-                    'password': userData.password,
-                }
-            }).then((res)=>{
-                return res.data;
-            });
-        },
-        deleteProject: (projectId) => {
-            return $http.delete(`${rootUrl}/projects/${projectId}`)
-            .then( (res)=>{
-                return res.data;
-            });
-        } 
+        }
     };
 });

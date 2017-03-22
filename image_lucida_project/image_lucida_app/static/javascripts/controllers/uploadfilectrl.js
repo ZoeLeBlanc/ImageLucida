@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory, FileFactory){
+myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory, UploadFileFactory){
     let project_id = $routeParams.id;
     $scope.project = {};
     $scope.project.files = [];
@@ -33,7 +33,7 @@ myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, Use
         console.log($scope.project);
         angular.forEach($scope.project.files, (file, index)=>{
             console.log(file);
-            FileFactory.uploadFile(file.file, $scope.project.id).then( (response)=>{
+            UploadFileFactory.uploadFile(file.file, $scope.project.id).then( (response)=>{
                 console.log(response);
                 if (response.form != 'not saved'){
 
