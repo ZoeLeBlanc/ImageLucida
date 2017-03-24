@@ -13,10 +13,10 @@ class Archival_Source(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
-    archive_name = models.CharField(max_length=200, blank=True)
-    collection_name = models.CharField(max_length=200, blank=True)
-    folder_name = models.CharField(max_length=200, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    archive_name = models.TextField(blank=True)
+    collection_name = models.TextField(blank=True)
+    folder_name = models.TextField(blank=True)
     
 
     def __str__(self):

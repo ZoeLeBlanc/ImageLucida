@@ -15,12 +15,6 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
             });
         },
         setTransformation: (upload_file_name, four_points, project_id) =>{
-            // let fd = new FormData();
-            // console.log(fd);
-            // fd.append('upload_file_name', upload_file);
-            // fd.append('project_id', project_id);
-            // fd.append('four_points', four_points);
-            // console.log(fd);
             return $http({
                 url:`${rootUrl}/transform_upload_file/`,
                 method: 'POST',
@@ -30,7 +24,41 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                     'project_id':project_id
                 }
             }).then((res)=>{
-                console.log(res);
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        addArchivalSource: (transform_file_name, archival_source_id)=>{
+            return $http({
+                url:`${rootUrl}/add_archival_source/`,
+                method: 'POST',
+                data: {
+                    'transform_file_name': transform_file_name,
+                    'archival_source_id':archival_source_id
+                }
+            }).then((res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        addIssue: (transform_file_name, issue_id)=>{
+            return $http({
+                url:`${rootUrl}/add_issue/`,
+                method: 'POST',
+                data: {
+                    'transform_file_name': transform_file_name,
+                    'issue_id':issue_id
+                }
+            }).then((res)=>{
+                console.log(JSON.parse(res));
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){

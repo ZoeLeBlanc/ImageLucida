@@ -18,4 +18,13 @@ urlpatterns = [
     url(r'^upload_file/', uploadfile_view.upload_file, name= 'upload_file'),
     url(r'^get_untransformed_files/', uploadfile_view.get_untransformed_files, name= 'get_untransformed_files'),
     url(r'^transform_upload_file/', transformfile_view.transform_upload_file, name= 'transform_upload_file'),
+    url(r'^get_archival_sources/', archivalsource_view.get_archival_sources, name= 'get_archival_sources'),
+    url(r'^create_archival_source/', archivalsource_view.create_archival_source, name= 'create_archival_source'),
+    url(r'^get_issues/', issue_view.get_issues, name= 'get_issues'),
+    url(r'^create_issue/', issue_view.create_issue, name= 'create_issue'),
+    url(r'^add_archival_source/', transformfile_view.add_archival_source, name= 'add_archival_source'),
+    url(r'^add_issue/', transformfile_view.add_issue, name= 'add_issue'),
+    url(r'^process_text/', textannotation_view.process_text, name= 'process_text'),
+    url(r'^get_text_anno_and_file/(?P<text_anno_id>\d+)/$', textannotation_view.get_text_anno_and_file, name= 'get_text_anno_and_file'),
+    url(r'^update_text_annotation/', textannotation_view.update_text_annotation, name= 'update_text_annotation'),
 ]

@@ -15,10 +15,9 @@ class Image_Annotation(models.Model):
     '''
     transform_file = models.ForeignKey(transformfile_model.Transform_File, null=True, on_delete=models.CASCADE, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    image_annotation_coordinates = models.OneToOneField(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
+    image_annotation_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     cover = models.BooleanField(default=False)
     cover_image = models.BooleanField(default=False)
-    processed = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', through='Image_Annotation_Tag')
 
     def __str__(self):

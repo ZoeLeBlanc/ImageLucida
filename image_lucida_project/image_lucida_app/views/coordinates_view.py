@@ -9,19 +9,21 @@ from django.core import serializers
 import json
 import cv2
 import numpy as np
+from skimage import io
 
-def caculate_coordinates(img_rows, img_cols):
+def calculate_coordinates(img_rows, img_cols):
     top_left = [0,0]
     top_right = [0,img_cols-1]
     bottom_left = [img_rows-1,0]
     bottom_right = [img_rows-1, img_cols-1]
-    coor_obj = coordinates_model.Coordinates.objects.create(
+    coor_obj = coordinates_model.Coordinates.objects.get_or_create(
         top_left=json.dumps(top_left),
         top_right=json.dumps(top_right),
         bottom_left=json.dumps(bottom_left),
         bottom_right=json.dumps(bottom_right)
         )
-    return coor_obj
+    print(coor_obj)
+    return coor_obj[0]
 
 def set_coordinates(pts):
     pass
@@ -31,6 +33,7 @@ def order_points(pts):
     # such that the first entry in the list is the top-left,
     # the second entry is the top-right, the third is the
     # bottom-right, and the fourth is the bottom-left
+    print(pts)
     rect = np.zeros((4, 2), dtype = "float32")
  
     # the top-left point will have the smallest sum, whereas
@@ -50,12 +53,20 @@ def order_points(pts):
     print(rect)
     return rect
 
-def four_point_transform(image, points):
+def four_point_transform(img, points):
     # obtain a consistent order of the points and unpack them
     # individually
-    
-    image = cv2.imread(image)
-    print(image)
+    # download the image, convert it to a NumPy array, and then read
+    # it into OpenCV format
+    image = io.imread(img)
+    # image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    # image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+ 
+    # # return the image
+    # return image
+    # file_bytes = np.asarray(bytearray(img.read()), dtype=np.uint8)
+    # image = cv2.imdecode(file_bytes, cv2.IMREAD_UNCHANGED)
+    print(image.shape)
     pts = np.array(points, dtype = "float32")
     rect = order_points(pts)
     (tl, tr, br, bl) = rect
@@ -66,14 +77,14 @@ def four_point_transform(image, points):
     widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
     widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
     maxWidth = max(int(widthA), int(widthB))
- 
+    print(maxWidth);
     # compute the height of the new image, which will be the
     # maximum distance between the top-right and bottom-right
     # y-coordinates or the top-left and bottom-left y-coordinates
     heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
     heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
     maxHeight = max(int(heightA), int(heightB))
- 
+    print(maxHeight); 
     # now that we have the dimensions of the new image, construct
     # the set of destination points to obtain a "birds eye view",
     # (i.e. top-down view) of the image, again specifying points
@@ -89,6 +100,6 @@ def four_point_transform(image, points):
     M = cv2.getPerspectiveTransform(rect, dst)
     print(M)
     warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-    
+    print(warped.shape)
     return warped
 

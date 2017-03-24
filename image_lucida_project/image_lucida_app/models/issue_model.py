@@ -13,8 +13,8 @@ class Issue(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
-    issue_name = models.CharField(max_length=500, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    issue_name = models.TextField(blank=True)
     date_published = models.CharField(max_length=500, blank=True)
     publication_location = models.CharField(max_length=500, blank=True)
     issue_number = models.CharField(max_length=200, blank=True)
