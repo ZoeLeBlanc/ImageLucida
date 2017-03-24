@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $routeParams, $window, UserFactory, TextAnnotationFactory, TransformFileFactory){
+myApp.controller("ProcessImageCtrl", function($scope, $rootScope, $location, $routeParams, $window, UserFactory, TextAnnotationFactory, TransformFileFactory){
     let transform_file_id = $routeParams.id;
     let text_anno = {};
     let transform_file = {};

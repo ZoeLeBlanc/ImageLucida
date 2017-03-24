@@ -61,3 +61,16 @@ def update_text_annotation(request):
     text_annotation.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def tag_text_annotation(request):
+    data = json.loads(request.body.decode())
+    text_anno_id = data['text_anno_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
+    tag_text_annotation = textannotation_model.Text_Annotation_Tag.objects.get_or_create(
+        tag =tag,
+        text_annotation = text_anno
+        )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')

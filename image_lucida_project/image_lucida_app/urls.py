@@ -27,4 +27,9 @@ urlpatterns = [
     url(r'^process_text/', textannotation_view.process_text, name= 'process_text'),
     url(r'^get_text_anno_and_file/(?P<text_anno_id>\d+)/$', textannotation_view.get_text_anno_and_file, name= 'get_text_anno_and_file'),
     url(r'^update_text_annotation/', textannotation_view.update_text_annotation, name= 'update_text_annotation'),
+    url(r'^tag_text_annotation/', textannotation_view.tag_text_annotation, name= 'tag_text_annotation'),
+    url(r'^transform_image_annotations/', imageannotation_view.transform_image_annotations, name= 'transform_image_annotations'),
+    url(r'^process_image_annotations/', imageannotation_view.process_image_annotations, name= 'process_image_annotations'),
+    # url(r'^get_image_anno_and_file/(?P<image_anno_id>\d+)/$', imageannotation_view.get_image_anno_and_file, name= 'get_image_anno_and_file'),
+    url(r'^tag_image_annotation/', imageannotation_view.tag_image_annotation, name= 'tag_image_annotation'),
 ]

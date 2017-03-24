@@ -10,6 +10,7 @@ import json
 import cv2
 import numpy as np
 from skimage import io
+from sklearn.cluster import KMeans
 
 def calculate_coordinates(img_rows, img_cols):
     top_left = [0,0]
@@ -24,9 +25,6 @@ def calculate_coordinates(img_rows, img_cols):
         )
     print(coor_obj)
     return coor_obj[0]
-
-def set_coordinates(pts):
-    pass
 
 def order_points(pts):
     # initialzie a list of coordinates that will be ordered
@@ -59,13 +57,6 @@ def four_point_transform(img, points):
     # download the image, convert it to a NumPy array, and then read
     # it into OpenCV format
     image = io.imread(img)
-    # image = np.asarray(bytearray(resp.read()), dtype="uint8")
-    # image = cv2.imdecode(image, cv2.IMREAD_COLOR)
- 
-    # # return the image
-    # return image
-    # file_bytes = np.asarray(bytearray(img.read()), dtype=np.uint8)
-    # image = cv2.imdecode(file_bytes, cv2.IMREAD_UNCHANGED)
     print(image.shape)
     pts = np.array(points, dtype = "float32")
     rect = order_points(pts)
@@ -103,3 +94,33 @@ def four_point_transform(img, points):
     print(warped.shape)
     return warped
 
+def centroid_histogram(clt):
+    # grab the number of different clusters and create a histogram
+    # based on the number of pixels assigned to each cluster
+    numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
+    (hist, _) = np.histogram(clt.labels_, bins = numLabels)
+ 
+    # normalize the histogram, such that it sums to one
+    hist = hist.astype("float")
+    hist /= hist.sum()
+ 
+    # return the histogram
+    return hist
+
+def plot_colors(hist, centroids):
+    # initialize the bar chart representing the relative frequency
+    # of each of the colors
+    bar = np.zeros((50, 300, 3), dtype = "uint8")
+    startX = 0
+ 
+    # loop over the percentage of each cluster and the color of
+    # each cluster
+    for (percent, color) in zip(hist, centroids):
+        # plot the relative percentage of each cluster
+        endX = startX + (percent * 300)
+        cv2.rectangle(bar, (int(startX), 0), (int(endX), 50),
+            color.astype("uint8").tolist(), -1)
+        startX = endX
+    
+    # return the bar chart
+    return bar

@@ -47,7 +47,10 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         });
     });
     // TRANSFORM SECTION
-    
+    let a_b = [];
+    let b_c = [];
+    let c_d = [];
+    let d_a = [];
     $scope.startTransformation = ()=>{
         let active_img_id = $('#untransformed_list').find('.active')[0].text;
         $scope.transforming = true;
@@ -61,10 +64,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         let aspect_ratio_h = parseInt(o_h) / parseInt(n_h);
         console.log(aspect_ratio_w);
         let click_counter = 0;
-        let a_b = [];
-        let b_c = [];
-        let c_d = [];
-        let d_a = [];
+        
         active_img.on("click", function (evt) {
             click_counter++;
             let parentOffset = 0;
@@ -79,14 +79,14 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             console.log(x_point);
             if (click_counter === 1){
                 four_points.top_left = [y_point, x_point];
-                $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
+                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 a_b.push({'x1':evt.pageX, 'y1': evt.pageY});
                 d_a.push({'x1':evt.pageX, 'y1': evt.pageY});
                 
             }
             if (click_counter === 2){
                 four_points.top_right = [y_point, x_point];
-                $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
+                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 a_b.push({'x2':evt.pageX, 'y2': evt.pageY});
                 b_c.push({'x1':evt.pageX, 'y1': evt.pageY});
                 console.log(a_b[0]);
@@ -96,7 +96,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             }
             if (click_counter === 3){
                 four_points.bottom_right = [y_point, x_point];
-                $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
+                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 b_c.push({'x2':evt.pageX, 'y2': evt.pageY});
                 c_d.push({'x1':evt.pageX, 'y1': evt.pageY});
                 console.log(b_c);
@@ -105,7 +105,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             }
             if (click_counter === 4){
                 four_points.bottom_left = [y_point, x_point];
-                $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
+                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 c_d.push({'x2':evt.pageX, 'y2': evt.pageY});
                 let third_line = createLine(c_d);
                 $(this).parent().append(third_line);
@@ -121,7 +121,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         var angle  = Math.atan2(array[1].y2 - array[0].y1, array[1].x2 - array[0].x1) * 180 / Math.PI;
         var transform = 'rotate('+angle+'deg)';
 
-        var line = $('<div>')
+        var line = $('<div id="line">')
             .addClass('line')
             .css({
               'position': 'absolute',
@@ -134,8 +134,12 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
     }
     $scope.clearTransformation = ()=>{
         four_points = {};
+        a_b = [];
+        b_c = [];
+        c_d = [];
+        d_a = [];
         $scope.transforming = false;
-        $("div[id^='marker']").remove();
+        $("div[id^='line']").remove();
     };
     $scope.saveTransformation = ()=>{
         let active_img_id = $('#untransformed_list').find('.active')[0].text;
@@ -229,11 +233,12 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         let active_file_id = $('#transformed_list').find('.active')[0].text;
         let active_file = $('#transformed-image'+active_file_id+'').find('img');
         let active_id = active_file[0].id;
-        TextAnnotationFactory.processText(active_id).then( (response)=>{
-            Materialize.toast('Text Processed', 1000);
-            console.log(response[0].pk);
-            let id = response[0].pk;
-            $location.path('#!/processtext/' + id);
-        });
+        $location.path('#!/projects/processtext/' + active_id);   
+    };
+    $scope.processImage = ()=>{
+        let active_file_id = $('#transformed_list').find('.active')[0].text;
+        let active_file = $('#transformed-image'+active_file_id+'').find('img');
+        let active_id = active_file[0].id;
+        $location.path('#!/projects/processimage/' + active_id);   
     };
 });
