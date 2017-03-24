@@ -1,0 +1,63 @@
+from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.views.generic.base import TemplateView
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect
+from image_lucida_app.models import *
+from image_lucida_app.forms import *
+from . import coordinates_view
+from django.core.urlresolvers import reverse
+from django.core import serializers
+from django.core.files import File
+import json
+import cv2
+import numpy as np
+from skimage import io
+import uuid
+from tesserocr import PyTessBaseAPI
+
+def process_text(request):
+    data = json.loads(request.body.decode())
+    transform_file_id = data['transform_file_id']
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+    file_name = transform_file.transform_file_name
+    
+    text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
+            transform_file=transform_file,
+        )
+    text_anno =text_annotation[0]
+    if text_anno.processed == False:
+        with PyTessBaseAPI() as api:
+            api.SetImageFile(file_name)
+            text_annotation_text = api.GetUTF8Text()
+            text_anno.text_annotation = text_annotation_text
+            text_anno.processed = True
+            text_anno.save()    
+    response = serializers.serialize("json", [text_anno, ])
+    return HttpResponse(response, content_type='application/json')
+
+def get_text_anno_and_file(request, text_anno_id):
+    print(text_anno_id)
+    text_annotation = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
+    print(text_annotation)
+    transform_file = text_annotation.transform_file
+    print(transform_file)
+    transform_file_url = transform_file.file_url
+    text_annotation_serialize = serializers.serialize("json", [text_annotation, ])
+    transform_file_serialize = serializers.serialize("json", [transform_file, ])
+    text_anno_json = json.dumps({
+        'text_anno':text_annotation_serialize,
+        'transform_file':transform_file_serialize,
+        'transform_file_url':transform_file_url
+        })
+    return HttpResponse(text_anno_json, content_type='application/json')
+
+def update_text_annotation(request):
+    data = json.loads(request.body.decode())
+    text_anno_id = data['text_anno_id']
+    new_text = data['new_text']
+    text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
+    text_annotation = text_anno
+    text_annotation.text_annotation = new_text
+    text_annotation.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')

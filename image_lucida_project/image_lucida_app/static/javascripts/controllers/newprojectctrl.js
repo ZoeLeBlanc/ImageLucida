@@ -19,7 +19,7 @@ myApp.controller("NewProjectCtrl", function($scope, $location, UserFactory, Proj
         $scope.createProject.tags = $scope.tags;
         console.log($scope.createProject);
         ProjectsFactory.newProject($scope.createProject).then( (response)=>{
-             $location.path('#!/projects/');
+            $location.path('#!/projects/');
         });
     };
 

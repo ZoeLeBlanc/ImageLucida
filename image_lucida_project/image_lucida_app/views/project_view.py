@@ -27,14 +27,18 @@ def get_single_project(request, project_id):
     untransformed_list = []
     for file in untransformed_files:
         file_list = []
-        file_list.extend({file.upload_file_name, file.file_url})       
+        file_list.extend({file.upload_file_name, file.file_url})     
         untransformed_list.append(file_list)
     transformed_files = project.transformed_files.all().order_by('id')
+    transformed_list = []
+    for file in transformed_files:
+        file_list = []
+        file_list.extend({file.transform_file_name, file.file_url})         
+        transformed_list.append(file_list)
     project_serialize = serializers.serialize("json", [project,])
     untransformed_files_serialize = serializers.serialize("json", untransformed_files)
-    untransformed_list_serialize = json.dumps(untransformed_list)
-    transformed_files_serialize = serializers.serialize("json", transformed_files, fields=("transform_file_name", "transform_file"))
-    project_json = json.dumps({'project': project_serialize, 'untransformed_list': untransformed_list, 'untransformed_files':untransformed_files_serialize, "transformed_files": transformed_files_serialize})
+    transformed_files_serialize = serializers.serialize("json", transformed_files)
+    project_json = json.dumps({'project': project_serialize, 'untransformed_list': untransformed_list, 'untransformed_files':untransformed_files_serialize, "transformed_files": transformed_files_serialize, "transformed_list":transformed_list})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
     

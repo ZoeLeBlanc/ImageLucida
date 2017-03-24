@@ -11,6 +11,7 @@ import json
 
 def upload_file(request):
     project_id = request.POST.get('project_id', False)
+    print(project_id)
     file_name = request.POST.get('upload_file_name', False)
     file_height = request.POST.get('upload_file_height', False)
     print(file_height)
@@ -21,10 +22,12 @@ def upload_file(request):
         print(form)
         if form.is_valid():
             form.save()
-            coor_obj = coordinates_view.caculate_coordinates(int(file_width), int(file_height))
+            coor_obj = coordinates_view.calculate_coordinates(int(file_width), int(file_height))
             file = uploadfile_model.Upload_File.objects.get(upload_file_name=file_name)
             file.upload_file_coordinates=coor_obj
+            file.save()
             project = project_model.Project.objects.get(pk=project_id)
+            print(project)
             project_model.Project_Upload_File.objects.create(upload_file=file, project=project)
             response = json.dumps({'form':request.POST.get('upload_file_name', False)})
         else:

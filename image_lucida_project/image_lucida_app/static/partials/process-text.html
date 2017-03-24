@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="row">
+    <h6>
+        <a href="javascript:void(0);" ng-click="go_back()">Go Back To Project</a>
+    </h6>
+    </div>
+    <div class="row">
+        <div class="col s8">
+            <img class="responsive-img" src="((transform_file.url))" />
+        </div>
+        <div class="col s4">
+            <div class="card sticky-action">
+                <div class="card-content">
+                    <div class="row">
+                        <span class="card-title">((transform_file.transform_file_name))</span>
+                    </div>
+                    <div class="divider"></div>
+
+                    <div class="row" style="overflow:scroll; height:90vh;">
+                        <div class="flow-text"  ng-show="!editing">
+                            <p id="unedited" class="edit-textarea">((text_anno.text_annotation))</p>
+                        </div>
+                        <div class="flow-text"  ng-show="editing">
+                            <p id="edited" editable-textarea="text_anno.text_annotation">((text_anno.text_annotation))</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editText()">Edit Text</button>
+                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveEdits()">Save Edits</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
