@@ -64,13 +64,11 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         let aspect_ratio_h = parseInt(o_h) / parseInt(n_h);
         console.log(aspect_ratio_w);
         let click_counter = 0;
-        
         active_img.on("click", function (evt) {
             click_counter++;
             let parentOffset = 0;
             let y_point = [];
             let x_point = [];
-            
             parentOffset = $(this).offset(); 
             console.log(parentOffset);
             y_point = (evt.pageX - parentOffset.left) * aspect_ratio_h;
@@ -79,14 +77,12 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             console.log(x_point);
             if (click_counter === 1){
                 four_points.top_left = [y_point, x_point];
-                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 a_b.push({'x1':evt.pageX, 'y1': evt.pageY});
                 d_a.push({'x1':evt.pageX, 'y1': evt.pageY});
                 
             }
             if (click_counter === 2){
                 four_points.top_right = [y_point, x_point];
-                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/top_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 a_b.push({'x2':evt.pageX, 'y2': evt.pageY});
                 b_c.push({'x1':evt.pageX, 'y1': evt.pageY});
                 console.log(a_b[0]);
@@ -96,7 +92,6 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             }
             if (click_counter === 3){
                 four_points.bottom_right = [y_point, x_point];
-                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_right_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 b_c.push({'x2':evt.pageX, 'y2': evt.pageY});
                 c_d.push({'x1':evt.pageX, 'y1': evt.pageY});
                 console.log(b_c);
@@ -105,7 +100,6 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             }
             if (click_counter === 4){
                 four_points.bottom_left = [y_point, x_point];
-                // $(this).parent().append(`<div class="col s2" id="marker"><img src="/static/bottom_left_marker.png" class="responsive-img" style="width:1em;height:auto;position:absolute; left:${evt.pageX};top:${evt.pageY}" /></div>`);
                 c_d.push({'x2':evt.pageX, 'y2': evt.pageY});
                 let third_line = createLine(c_d);
                 $(this).parent().append(third_line);
@@ -120,7 +114,6 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         var length = Math.sqrt((array[0].x1-array[1].x2)*(array[0].x1-array[1].x2) + (array[0].y1-array[1].y2)*(array[0].y1-array[1].y2));
         var angle  = Math.atan2(array[1].y2 - array[0].y1, array[1].x2 - array[0].x1) * 180 / Math.PI;
         var transform = 'rotate('+angle+'deg)';
-
         var line = $('<div id="line">')
             .addClass('line')
             .css({
@@ -129,7 +122,6 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             })
             .width(length)
             .offset({left: array[0].x1, top: array[0].y1});
-
         return line;
     }
     $scope.clearTransformation = ()=>{
@@ -229,12 +221,19 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         });
     };
     //TEXT PROCESS
-    $scope.processText = ()=>{
+    $scope.processTextTesseract = ()=>{
         let active_file_id = $('#transformed_list').find('.active')[0].text;
         let active_file = $('#transformed-image'+active_file_id+'').find('img');
         let active_id = active_file[0].id;
         console.log("active_id", active_id);
-        $location.path('/projects/processtext/' + active_id);   
+        $location.path('/projects/processtext/tesseract/' + active_id);   
+    };
+    $scope.processTextGoogleVision = ()=>{
+        let active_file_id = $('#transformed_list').find('.active')[0].text;
+        let active_file = $('#transformed-image'+active_file_id+'').find('img');
+        let active_id = active_file[0].id;
+        console.log("active_id", active_id);
+        $location.path('/projects/processtext/googlevision/' + active_id);   
     };
     $scope.processImage = ()=>{
         let active_file_id = $('#transformed_list').find('.active')[0].text;

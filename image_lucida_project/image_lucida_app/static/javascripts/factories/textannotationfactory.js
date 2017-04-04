@@ -16,12 +16,13 @@ angular.module('ImageLucidaApp').factory("TextAnnotationFactory", ($http)=>{
                 return res.data;
             });
         },
-        processText: (transform_file_id) =>{
+        processText: (transform_file_id, process_type) =>{
             return $http({
                 url:`${rootUrl}/process_text/`,
                 method: 'POST',
                 data: {
-                    'transform_file_id': transform_file_id
+                    'transform_file_id': transform_file_id,
+                    'process_type':process_type
                 }
             }).then((res)=>{
                 console.log(res);

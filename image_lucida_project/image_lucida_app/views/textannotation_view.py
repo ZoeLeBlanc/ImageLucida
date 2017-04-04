@@ -20,26 +20,7 @@ import google.auth
 def process_text(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
-    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
-    file_name = transform_file.transform_file_name
-    
-    text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
-            transform_file=transform_file,
-        )
-    text_anno =text_annotation[0]
-    if text_anno.tesseract_processed == False:
-        with PyTessBaseAPI() as api:
-            api.SetImageFile(file_name)
-            text_annotation_text = api.GetUTF8Text()
-            text_anno.tesseract_text_annotation = text_annotation_text
-            text_anno.tesseract_processed = True
-            text_anno.save()    
-    response = serializers.serialize("json", [text_anno, ])
-    return HttpResponse(response, content_type='application/json')
-
-def google_process_text(request):
-    data = json.loads(request.body.decode())
-    transform_file_id = data['transform_file_id']
+    process_type = data['process_type']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     file_name = transform_file.transform_file_name
     uri = transform_file.file_url
@@ -47,22 +28,33 @@ def google_process_text(request):
             transform_file=transform_file,
         )
     text_anno =text_annotation[0]
-    if text_anno.google_vision_processed == False:
-        credentials, project = google.auth.default() 
-        vision_client = vision.Client()
-        image = vision_client.image(source_uri=uri)
+    if process_type == 'tesseract':
+        if text_anno.tesseract_processed == False:
+            with PyTessBaseAPI() as api:
+                api.SetImageFile(file_name)
+                text_annotation_text = api.GetUTF8Text()
+                text_anno.tesseract_text_annotation = text_annotation_text
+                text_anno.tesseract_processed = True
+                text_anno.save()    
+        response = serializers.serialize("json", [text_anno, ])
+        return HttpResponse(response, content_type='application/json')
+    if process_type = 'googlevision':
+        if text_anno.google_vision_processed == False:
+            credentials, project = google.auth.default() 
+            vision_client = vision.Client()
+            image = vision_client.image(source_uri=uri)
 
-        texts = image.detect_text()
-        text_list = " "
-        for text in texts:
-            word = text.description + " "
-            text_list += word
-        print(text_list)
-        text_anno.google_vision_text_annotation = text_list
-        text_anno.google_vision_processed = True
-        text_anno.save()    
-    response = serializers.serialize("json", [text_anno, ])
-    return HttpResponse(response, content_type='application/json')
+            texts = image.detect_text()
+            text_list = " "
+            for text in texts:
+                word = text.description + " "
+                text_list += word
+            print(text_list)
+            text_anno.google_vision_text_annotation = text_list
+            text_anno.google_vision_processed = True
+            text_anno.save()    
+        response = serializers.serialize("json", [text_anno, ])
+        return HttpResponse(response, content_type='application/json')
  
 
 def get_text_anno_and_file(request, text_anno_id):
