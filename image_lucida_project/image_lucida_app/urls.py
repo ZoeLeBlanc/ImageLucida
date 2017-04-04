@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^upload_file/', uploadfile_view.upload_file, name= 'upload_file'),
     url(r'^get_untransformed_files/', uploadfile_view.get_untransformed_files, name= 'get_untransformed_files'),
     url(r'^transform_upload_file/', transformfile_view.transform_upload_file, name= 'transform_upload_file'),
+    url(r'^get_single_transform_file/(?P<transform_file_id>\d+)/$', transformfile_view.get_single_transform_file, name= 'get_single_transform_file'),
     url(r'^get_archival_sources/', archivalsource_view.get_archival_sources, name= 'get_archival_sources'),
     url(r'^create_archival_source/', archivalsource_view.create_archival_source, name= 'create_archival_source'),
     url(r'^get_issues/', issue_view.get_issues, name= 'get_issues'),
@@ -32,4 +33,5 @@ urlpatterns = [
     url(r'^process_image_annotations/', imageannotation_view.process_image_annotations, name= 'process_image_annotations'),
     # url(r'^get_image_anno_and_file/(?P<image_anno_id>\d+)/$', imageannotation_view.get_image_anno_and_file, name= 'get_image_anno_and_file'),
     url(r'^tag_image_annotation/', imageannotation_view.tag_image_annotation, name= 'tag_image_annotation'),
+    url(r'^get_image_annotations/(?P<transform_file_id>\d+)/$', imageannotation_view.get_image_annotations, name= 'get_image_annotations'),
 ]

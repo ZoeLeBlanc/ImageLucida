@@ -71,6 +71,11 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/process-image.html',
                 resolve: {user_auth}
             })
+            .when('/explore/', {
+                controller: 'ExploreCtrl',
+                templateUrl: '/static/partials/explore.html',
+                resolve: {user_auth}
+            })
             .otherwise('/');
     }
 ]);

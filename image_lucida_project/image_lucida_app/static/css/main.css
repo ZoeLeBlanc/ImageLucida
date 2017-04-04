@@ -5,5 +5,5 @@ textarea {
 .line{
   transform-origin: 0 100%;
   height: 2px; /* Line width of 3 */
-  background: white; /* Black fill */
+  background: #6e6cb0; /* Black fill */
 }

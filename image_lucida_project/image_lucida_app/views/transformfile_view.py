@@ -70,3 +70,13 @@ def add_issue(request):
     transform_file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def get_single_transform_file(request, transform_file_id):
+    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    transform_file_url = transform_file.file_url
+    transform_file_serialize = serializers.serialize("json", [transform_file,])
+    transform_file_json = json.dumps({
+        'transform_file_serialize':transform_file_serialize,
+        'transform_file_url':transform_file_url
+        })
+    return HttpResponse(transform_file_json, content_type="application/json")

@@ -8,8 +8,8 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 return res.data;
             });
         },
-        getSingleUploadedFile: (project_id) => {
-            return $http.get(`${rootUrl}/get_single_project/${project_id}/`)
+        getSingleTransformFile: (transform_file_id) => {
+            return $http.get(`${rootUrl}/get_single_transform_file/${transform_file_id}/`)
             .then( (res)=>{
                 return res.data;
             });

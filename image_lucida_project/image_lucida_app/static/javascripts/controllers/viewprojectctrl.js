@@ -233,12 +233,13 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
         let active_file_id = $('#transformed_list').find('.active')[0].text;
         let active_file = $('#transformed-image'+active_file_id+'').find('img');
         let active_id = active_file[0].id;
-        $location.path('#!/projects/processtext/' + active_id);   
+        console.log("active_id", active_id);
+        $location.path('/projects/processtext/' + active_id);   
     };
     $scope.processImage = ()=>{
         let active_file_id = $('#transformed_list').find('.active')[0].text;
         let active_file = $('#transformed-image'+active_file_id+'').find('img');
         let active_id = active_file[0].id;
-        $location.path('#!/projects/processimage/' + active_id);   
+        $location.path('/projects/processimage/' + active_id);   
     };
 });

@@ -18,6 +18,8 @@ class Image_Annotation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     image_annotation_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     image_annotation_file = models.ImageField(upload_to=UniqueFileName('image-annotations/'), null=True)
+    image_palette_file = models.ImageField(upload_to=UniqueFileName('image-pallettes/'), null=True)
+    image_palette_file_name = models.CharField(max_length=200, blank=True)
     image_annotation_file_name =models.CharField(max_length=200, blank=True)
     cover = models.BooleanField(default=False)
     cover_image = models.BooleanField(default=False)
@@ -26,6 +28,16 @@ class Image_Annotation(models.Model):
 
     def __str__(self):
         return '%s' % (self.id)
+
+    @property
+    def file_url(self):
+        if self.image_annotation_file and hasattr(self.image_annotation_file, 'url'):
+            return self.image_annotation_file.url
+
+    @property
+    def palette_url(self):
+        if self.image_palette_file and hasattr(self.image_palette_file, 'url'):
+            return self.image_palette_file.url
 
 class Image_Annotation_Tag(models.Model):
     ''' The Image Annotation Tag class is a model that defines which data is available in the Image Tag Annotation table so a database can be created from it.

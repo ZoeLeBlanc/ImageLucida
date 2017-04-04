@@ -2,26 +2,35 @@
 angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getUntransformedFiles: () => {
-            return $http.get(`${rootUrl}/get_untransformed_files/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
-        getSingleTextAndFile: (text_anno_id) => {
-            console.log(text_anno_id);
-            return $http.get(`${rootUrl}/get_text_anno_and_file/${text_anno_id}/`)
-            .then( (res)=>{
-                console.log(res);
-                return res.data;
-            });
-        },
-        processText: (transform_file_id) =>{
+        setImageTransformation: (transform_file_name, four_points) =>{
             return $http({
-                url:`${rootUrl}/process_text/`,
+                url:`${rootUrl}/transform_image_annotations/`,
                 method: 'POST',
                 data: {
-                    'transform_file_id': transform_file_id
+                    'transform_file_name': transform_file_name,
+                    'four_points':four_points
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        getImageAnnotations: (transform_file_id) => {
+            return $http.get(`${rootUrl}/get_image_annotations/${transform_file_id}/`)
+            .then( (res)=>{
+                return res.data;
+            });
+        },
+        processImage: (image_annotation_id) =>{
+            console.log(image_annotation_id);
+            return $http({
+                url:`${rootUrl}/process_image_annotations/`,
+                method: 'POST',
+                data: {
+                    'image_annotation_id': image_annotation_id
                 }
             }).then((res)=>{
                 console.log(res);
