@@ -14,26 +14,49 @@ import numpy as np
 from skimage import io
 import uuid
 from tesserocr import PyTessBaseAPI
+from google.cloud import vision
+import google.auth
 
 def process_text(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
+    process_type = data['process_type']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     file_name = transform_file.transform_file_name
-    
+    uri = transform_file.file_url
     text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
             transform_file=transform_file,
         )
     text_anno =text_annotation[0]
-    if text_anno.processed == False:
-        with PyTessBaseAPI() as api:
-            api.SetImageFile(file_name)
-            text_annotation_text = api.GetUTF8Text()
-            text_anno.text_annotation = text_annotation_text
-            text_anno.processed = True
+    if process_type == 'tesseract':
+        if text_anno.tesseract_processed == False:
+            with PyTessBaseAPI() as api:
+                api.SetImageFile(file_name)
+                text_annotation_text = api.GetUTF8Text()
+                text_anno.tesseract_text_annotation = text_annotation_text
+                text_anno.tesseract_processed = True
+                text_anno.save()    
+        response = serializers.serialize("json", [text_anno, ])
+        return HttpResponse(response, content_type='application/json')
+    if process_type == 'googlevision':
+        if text_anno.google_vision_processed == False:
+            credentials, project = google.auth.default() 
+            vision_client = vision.Client()
+            image = vision_client.image(source_uri=uri)
+
+            texts = image.detect_text()
+            text_list = " "
+            for text in texts:
+                word = text.description + " "
+                text_list += word
+            print(text_list)
+            text_anno.google_vision_text_annotation = text_list
+            print(text_anno)
+            text_anno.google_vision_processed = True
             text_anno.save()    
-    response = serializers.serialize("json", [text_anno, ])
-    return HttpResponse(response, content_type='application/json')
+        response = serializers.serialize("json", [text_anno, ])
+        return HttpResponse(response, content_type='application/json')
+ 
 
 def get_text_anno_and_file(request, text_anno_id):
     print(text_anno_id)
@@ -55,9 +78,27 @@ def update_text_annotation(request):
     data = json.loads(request.body.decode())
     text_anno_id = data['text_anno_id']
     new_text = data['new_text']
+    process_type = data['process_type']
     text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
     text_annotation = text_anno
-    text_annotation.text_annotation = new_text
-    text_annotation.save()
+    if process_type == 'googlevision':
+        text_annotation.google_vision_text_annotation = new_text
+        text_annotation.save()
+    if process_type == 'tesseract':
+        text_annotation.tesseract_text_annotation = new_text
+        text_annotation.save()
+    response = serializers.serialize("json", [text_annotation, ])
+    return HttpResponse(response, content_type='application/json')
+
+def tag_text_annotation(request):
+    data = json.loads(request.body.decode())
+    text_anno_id = data['text_anno_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
+    tag_text_annotation = textannotation_model.Text_Annotation_Tag.objects.get_or_create(
+        tag =tag,
+        text_annotation = text_anno
+        )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')

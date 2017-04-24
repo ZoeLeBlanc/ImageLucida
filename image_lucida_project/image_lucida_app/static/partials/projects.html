@@ -10,7 +10,7 @@
                 <div class="row">
                   <div class="col s12">
                     <span class="card-title">
-                      <h4>((user.username))'s Projects Dashboard</h4>
+                      <h4>Projects Dashboard</h4>
                     </span>
                     <div class="divider"></div>
                     <p>Total number of projects: ((projects.length))</p>
@@ -63,6 +63,7 @@
                             </p>
                         </div>
                         <div class="card-action">
+                             <a ng-href="#!/projects/upload/((project.id))">Upload</a>
                             <a ng-href="#!/projects/edit/((project.id))">Edit</a>
                             <a href="" ng-click="duplicateProject($index)">Duplicate</a>
                             <a href="" ng-click="deleteProject(project.id)">Delete</a>
@@ -82,6 +83,7 @@
                             </p>
                         </div>
                         <div class="card-action">
+                             <a ng-href="#!/projects/upload/((project.id))">Upload</a>
                             <a ng-href="#!/projects/edit/((project.id))">Edit</a>
                             <a href="" ng-click="duplicateProject($index)">Duplicate</a>
                             <a href="" ng-click="deleteProject(project.id)">Delete</a>

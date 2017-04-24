@@ -61,9 +61,24 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/upload-file.html',
                 resolve: {user_auth}
             })
-            .when('/processtext/:id', {
+            .when('/projects/processtext/tesseract/:active_id', {
                 controller: 'ProcessTextCtrl',
                 templateUrl: '/static/partials/process-text.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/processtext/googlevision/:active_id', {
+                controller: 'ProcessTextCtrl',
+                templateUrl: '/static/partials/process-text.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/processimage/:active_id', {
+                controller: 'ProcessImageCtrl',
+                templateUrl: '/static/partials/process-image.html',
+                resolve: {user_auth}
+            })
+            .when('/explore/', {
+                controller: 'ExploreCtrl',
+                templateUrl: '/static/partials/explore.html',
                 resolve: {user_auth}
             })
             .otherwise('/');

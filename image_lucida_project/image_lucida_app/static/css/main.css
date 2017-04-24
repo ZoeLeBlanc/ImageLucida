@@ -4,6 +4,6 @@ textarea {
 
 .line{
   transform-origin: 0 100%;
-  height: 3px; /* Line width of 3 */
-  background: #000; /* Black fill */
+  height: 2px; /* Line width of 3 */
+  background: #6e6cb0; /* Black fill */
 }

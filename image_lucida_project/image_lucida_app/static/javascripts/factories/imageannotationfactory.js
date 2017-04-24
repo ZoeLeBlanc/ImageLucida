@@ -1,30 +1,16 @@
 "use strict";
-angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
+angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getUntransformedFiles: () => {
-            return $http.get(`${rootUrl}/get_untransformed_files/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
-        getSingleTransformFile: (transform_file_id) => {
-            return $http.get(`${rootUrl}/get_single_transform_file/${transform_file_id}/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
-        setTransformation: (upload_file_name, four_points, project_id) =>{
+        setImageTransformation: (transform_file_name, four_points) =>{
             return $http({
-                url:`${rootUrl}/transform_upload_file/`,
+                url:`${rootUrl}/transform_image_annotations/`,
                 method: 'POST',
                 data: {
-                    'upload_file_name': upload_file_name,
-                    'four_points':four_points,
-                    'project_id':project_id
+                    'transform_file_name': transform_file_name,
+                    'four_points':four_points
                 }
             }).then((res)=>{
-                console.log(JSON.parse(res));
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){
@@ -32,16 +18,39 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 }
             });
         },
-        addArchivalSource: (transform_file_name, archival_source_id)=>{
+        getImageAnnotations: (transform_file_id) => {
+            return $http.get(`${rootUrl}/get_image_annotations/${transform_file_id}/`)
+            .then( (res)=>{
+                return res.data;
+            });
+        },
+        processImage: (image_annotation_id) =>{
+            console.log(image_annotation_id);
             return $http({
-                url:`${rootUrl}/add_archival_source/`,
+                url:`${rootUrl}/process_image_annotations/`,
                 method: 'POST',
                 data: {
-                    'transform_file_name': transform_file_name,
-                    'archival_source_id':archival_source_id
+                    'image_annotation_id': image_annotation_id
                 }
             }).then((res)=>{
-                console.log(JSON.parse(res));
+                console.log(res);
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        updateTextAnnotation: (text_anno_id, new_text)=>{
+            console.log(new_text);
+            return $http({
+                url:`${rootUrl}/update_text_annotation/`,
+                method: 'POST',
+                data: {
+                    'text_anno_id': text_anno_id,
+                    'new_text':new_text
+                }
+            }).then((res)=>{
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){
