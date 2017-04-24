@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     jshint: {
       files: ['../javascripts/**/*.js'],
       options: {
-        predef: [ "document", "console", "$", "myApp", "angular", "FileReader", "FormData", "URL", "Materialize"],
+        predef: [ "document", "console", "$", "myApp", "angular", "FileReader", "FormData", "URL", "Materialize", "Image"],
         esnext: true,
         globalstrict: true,
         globals: {"myApp":true}

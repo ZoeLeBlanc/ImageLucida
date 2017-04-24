@@ -31,7 +31,7 @@
             <div class="row col s10 offset-s1">
                 <ul class="tabs" tabs id="untransformed_list">
                     <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
-                        <a ng-href="#untransformed-image((index))">((index))</a>
+                        <a id="((index))" ng-href="#untransformed-image((index))">((index))</a>
                     </li>
                 </ul>
             </div>
@@ -60,13 +60,13 @@
             <div class="row col s10 offset-s1">
                 <ul class="tabs" tabs id="transformed_list">
                     <li class="tab col s1" ng-repeat="(index,file) in transformed_files">
-                        <a ng-href="#transformed-image((index))">((index))</a>
+                        <a id="((index))" ng-href="#transformed-image((index))">((index))</a>
                     </li>
                 </ul>
             </div>
             <div>
                 <div id="transformed-image((index))" class="col s8" ng-repeat="(index, file) in transformed_files" >
-                    <img id="((file.fields.id))" value="((file.fields.transform_file_name))"  src="((file.fields.url))" class="responsive-img"/>
+                    <img id="((file.fields.id))" value="((file.fields.transform_file_name))" src="((file.fields.url))" class="responsive-img"/>
                 </div>
             </div>
             <div class="card col s4">
@@ -81,15 +81,16 @@
                             <h5>Process Transformed File</h5>
                             </div>
                             <div class="row">
-                            <button class="waves-effect waves-light btn" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
+                            <button class="waves-effect waves-light btn col s12" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
                             </div>
-                            <button class="waves-effect waves-light btn" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn col s12" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
                             </div>
                             <div class="row">
                             <button class="waves-effect waves-light btn" ng-click="processText()">Edit Text</button>
                             </div>
                             <div class="row">
-                            <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
+                                <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
                             </div>
                         </div>
                         <div class="divider"></div>

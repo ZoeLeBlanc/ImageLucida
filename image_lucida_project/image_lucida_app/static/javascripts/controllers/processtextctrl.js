@@ -41,16 +41,30 @@ myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $rou
         });
     }
     
-    $scope.editText = ()=>{
+    $scope.editTesseractText = ()=>{
         $scope.editing = true;
     };
-    $scope.saveEdits = ()=>{
-        let new_text = $('#edited')[0].textContent;
-        console.log(new_text);
-        TextAnnotationFactory.updateTextAnnotation(text_anno_id, new_text).then( (response)=>{
+    $scope.saveTesseractEdits = ()=>{
+        console.log($scope.tesseract);
+        let new_text = $('#edited-tesseract')[0].textContent;
+        TextAnnotationFactory.updateTextAnnotation(text_anno_id, new_text, 'tesseract').then( (response)=>{
             console.log(response);
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false; 
+            $window.location.reload();
+        });
+    };
+     $scope.editGoogleVisionText = ()=>{
+        $scope.editing = true;
+    };
+    $scope.saveGoogleVisionEdits = ()=>{
+        console.log($scope.tesseract);
+        let new_text = $('#edited-googlevision')[0].textContent;
+        TextAnnotationFactory.updateTextAnnotation(text_anno_id, new_text, 'googlevision').then( (response)=>{
+            console.log(response);
+            Materialize.toast('Edits Saved', 1000);
+            $scope.editing = false;
+            $window.location.reload(); 
         });
     };
     $scope.go_back = function() { 

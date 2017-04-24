@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory){
+myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory){
     // PROJECT SECTION
     let project_id = $routeParams.id;
     $scope.project = {};
@@ -143,6 +143,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, Us
             console.log(response);
             Materialize.toast('Transformation Saved', 1000);
             $scope.transforming = false;
+            $window.location.reload();
         });
     };
     function valuesToArray(obj) {

@@ -33,14 +33,15 @@ angular.module('ImageLucidaApp').factory("TextAnnotationFactory", ($http)=>{
                 }
             });
         },
-        updateTextAnnotation: (text_anno_id, new_text)=>{
+        updateTextAnnotation: (text_anno_id, new_text, process_type)=>{
             console.log(new_text);
             return $http({
                 url:`${rootUrl}/update_text_annotation/`,
                 method: 'POST',
                 data: {
                     'text_anno_id': text_anno_id,
-                    'new_text':new_text
+                    'new_text':new_text,
+                    'process_type':process_type
                 }
             }).then((res)=>{
                 return res.data;

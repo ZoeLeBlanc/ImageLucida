@@ -15,19 +15,42 @@
                         <span class="card-title">((transform_file.transform_file_name))</span>
                     </div>
                     <div class="divider"></div>
-
-                    <div class="row" style="overflow:scroll; height:90vh;">
-                        <div class="flow-text"  ng-show="!editing">
-                            <p id="unedited" class="edit-textarea">((text_anno.text_annotation))</p>
-                        </div>
-                        <div class="flow-text"  ng-show="editing">
-                            <p id="edited" editable-textarea="text_anno.text_annotation">((text_anno.text_annotation))</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editText()">Edit Text</button>
-                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveEdits()">Save Edits</button>
-                    </div>
+                    <ul class="collapsible" data-collapsible="accordion">
+                        <li>
+                            <div class="collapsible-header">Tesseract OCR Text</div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
+                                        <p id="unedited" >((text_anno.tesseract_text_annotation))</p>
+                                    </div>
+                                    <div class="flow-text" style="overflow:scroll; height:70vh;" ng-show="editing">
+                                        <p id="edited-tesseract" contenteditable="true">((text_anno.tesseract_text_annotation))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editTesseractText()">Edit Text</button>
+                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveTesseractEdits()">Save Edits</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header">Google Vision API Text</div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
+                                        <p id="unedited" class="edit-textarea">((text_anno.google_vision_text_annotation))</p>
+                                    </div>
+                                    <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:70vh;">
+                                        <p id="edited-googlevision" contenteditable="true">((text_anno.google_vision_text_annotation))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editGoogleVisionText()">Edit Text</button>
+                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveGoogleVisionEdits()">Save Edits</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

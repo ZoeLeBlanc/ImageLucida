@@ -17,7 +17,7 @@ class Text_Annotation(models.Model):
     article_title = models.CharField(max_length=200, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     tesseract_text_annotation = models.TextField(blank=True)
-    google_vision_text_annotionat = models.TextField(blank=True)
+    google_vision_text_annotation = models.TextField(blank=True)
     cover = models.BooleanField(default=False)
     cover_story = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', through='Text_Annotation_Tag')

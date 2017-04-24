@@ -38,7 +38,7 @@ def process_text(request):
                 text_anno.save()    
         response = serializers.serialize("json", [text_anno, ])
         return HttpResponse(response, content_type='application/json')
-    if process_type = 'googlevision':
+    if process_type == 'googlevision':
         if text_anno.google_vision_processed == False:
             credentials, project = google.auth.default() 
             vision_client = vision.Client()
@@ -51,6 +51,7 @@ def process_text(request):
                 text_list += word
             print(text_list)
             text_anno.google_vision_text_annotation = text_list
+            print(text_anno)
             text_anno.google_vision_processed = True
             text_anno.save()    
         response = serializers.serialize("json", [text_anno, ])
@@ -77,13 +78,13 @@ def update_text_annotation(request):
     data = json.loads(request.body.decode())
     text_anno_id = data['text_anno_id']
     new_text = data['new_text']
-    text_type = data['text_type']
+    process_type = data['process_type']
     text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
     text_annotation = text_anno
-    if text_type == 'google_vision':
+    if process_type == 'googlevision':
         text_annotation.google_vision_text_annotation = new_text
         text_annotation.save()
-    if text_type == 'tesseract':
+    if process_type == 'tesseract':
         text_annotation.tesseract_text_annotation = new_text
         text_annotation.save()
     response = serializers.serialize("json", [text_annotation, ])
