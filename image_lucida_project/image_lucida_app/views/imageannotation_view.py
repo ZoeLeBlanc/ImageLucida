@@ -103,3 +103,11 @@ def tag_image_annotation(request):
         )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def image_polygons(request):
+    data = json.loads(request.body.decode())
+    file_name = data['transform_file_name']
+    file = transformfile_model.Transform_File.objects.get(transform_file_name=file_name)
+    coords = data['four_points']
+    print(coords)
+    data = file.file_url
