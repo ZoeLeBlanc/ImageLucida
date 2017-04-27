@@ -21,27 +21,15 @@ def get_projects(request):
         return HttpResponse(response, content_type="application/json")
 
 def get_single_project(request, project_id):
+    """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
-    untransformed_files = project.untransformed_files.all().order_by('id')
-    untransformed_list = []
-    for file in untransformed_files:
-        file_list = []
-        file_list.extend({file.upload_file_name, file.file_url})     
-        untransformed_list.append(file_list)
-    transformed_files = project.transformed_files.all().order_by('id')
-    transformed_list = []
-    for file in transformed_files:
-        file_list = []
-        file_list.extend({file.transform_file_name, file.file_url})         
-        transformed_list.append(file_list)
+    folders = project.folder_set.all()
     project_serialize = serializers.serialize("json", [project,])
-    untransformed_files_serialize = serializers.serialize("json", untransformed_files)
-    transformed_files_serialize = serializers.serialize("json", transformed_files)
-    project_json = json.dumps({'project': project_serialize, 'untransformed_list': untransformed_list, 'untransformed_files':untransformed_files_serialize, "transformed_files": transformed_files_serialize, "transformed_list":transformed_list})
+    folders_serialize = serializers.serialize("json", folders)
+    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
-    
     
 
 def create_project(request): 

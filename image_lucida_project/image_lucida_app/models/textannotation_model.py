@@ -14,6 +14,7 @@ class Text_Annotation(models.Model):
     Author: Zoe LeBlanc
     '''
     transform_file = models.ForeignKey(transformfile_model.Transform_File, null=True, on_delete=models.CASCADE, blank=True)
+    text_annotation_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     article_title = models.CharField(max_length=200, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     tesseract_text_annotation = models.TextField(blank=True)

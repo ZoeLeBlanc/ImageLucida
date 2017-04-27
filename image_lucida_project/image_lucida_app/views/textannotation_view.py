@@ -17,6 +17,13 @@ from tesserocr import PyTessBaseAPI
 from google.cloud import vision
 import google.auth
 
+
+def full_page_process_text(request):
+    pass
+
+def segment_text_annotation(request):
+    pass
+    
 def process_text(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
