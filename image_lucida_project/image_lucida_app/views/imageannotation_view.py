@@ -16,6 +16,37 @@ import uuid
 from sklearn.cluster import KMeans
 from PIL import Image
 
+
+def segment_image_annotation(request):
+    data = json.loads(request.body.decode())
+    file_name = data['transform_file_name']
+    file = transformfile_model.Transform_File.objects.get(transform_file_name=file_name)
+    data = file.file_url
+    new_image_annotations = coordinates_view.segment_images(data)
+    list_1 =new_image_annotations[0] 
+    list_2 = new_image_annotations[1]
+    for key, coords in list_1.items():
+        for value, image in list_2.items():
+            if key == value:
+                pts = np.array(list(coords), dtype = "float32")
+                coor_obj = coordinates_model.Coordinates.objects.get_or_create(
+                multi_coords=json.dumps(pts)
+                )
+                rando_numb = uuid.uuid4()
+                new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
+                new_image_annotation = io.imsave(new_image_annotation_name,image),
+                open_image = open(new_image_annotation_name, 'rb')
+                newest_image_annotation_file = File(open_image)
+                image_annotation = imageannotation_model.Image_Annotation.objects.create(
+                    transform_file=file,
+                    image_annotation_file_name=new_image_annotation_name,
+                    )
+                image_annotation.image_annotation_file.save(new_image_annotation_name, newest_image_annotation_file, save=True)
+                image_annotation.image_annotation_coordinates=coords_obj
+                image_annotation.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+    
 def transform_image_annotations(request):
     data = json.loads(request.body.decode())
     file_name = data['transform_file_name']
@@ -103,11 +134,3 @@ def tag_image_annotation(request):
         )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
-
-def image_polygons(request):
-    data = json.loads(request.body.decode())
-    file_name = data['transform_file_name']
-    file = transformfile_model.Transform_File.objects.get(transform_file_name=file_name)
-    coords = data['four_points']
-    print(coords)
-    data = file.file_url

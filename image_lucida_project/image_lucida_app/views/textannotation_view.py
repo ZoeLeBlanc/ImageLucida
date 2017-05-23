@@ -17,24 +17,45 @@ from tesserocr import PyTessBaseAPI
 from google.cloud import vision
 import google.auth
 
-
-def full_page_process_text(request):
-    pass
-
-def segment_text_annotation(request):
-    pass
-    
-def process_text(request):
+def segment_text(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
     process_type = data['process_type']
+    segment_type = dat
+    a['segment_type']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     file_name = transform_file.transform_file_name
     uri = transform_file.file_url
-    text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
+    text_anno =text_annotation[0]
+    if segment_type == 'full_page':
+        text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
             transform_file=transform_file,
         )
-    text_anno =text_annotation[0]
+        process_text(text_annotation.pk, process_type)
+    else:
+        """Need to segment image, potentially in multiples, and record coordinates."""
+        coords = data['multi_cords']
+        new_text_annotation = coordinates_view.crop_shapes(uri, coords)
+        coor_obj = coordinates_model.Coordinates.objects.get_or_create(
+                multi_coords=json.dumps(coords)
+                )
+        rando_numb = uuid.uuid4()
+        new_text_annotation_name = 'image_lucida_app/media/transformed_text_annotation' + str(rando_numb)+ '.jpg'
+        new_text_annotation = io.imsave(new_text_annotation_name,new_text_annotation),
+        open_text = open(new_text_annotation_name, 'rb')
+        newest_text_annotation_file = File(open_text)
+        text_annotation = textannotation_model.Text_Annotation.objects.create(
+        transform_file=file,
+        text_annotation_file_name=new_text_annotation_name,
+        )
+        text_annotation.text_annotation_file.save(new_text_annotation_name, newest_text_annotation_file, save=True)
+        text_annotation.text_annotation_coordinates=coords_obj
+        text_annotation.save()
+        response = process_text(text_annotation.pk, process_type)
+        return HttpResponse(response, content_type='application/json')
+
+def process_text(file_id, process_type)
+    text_anno = textannotation_model.Text_Annotation.objects.get(pk=file_id)
     if process_type == 'tesseract':
         if text_anno.tesseract_processed == False:
             with PyTessBaseAPI() as api:
@@ -43,8 +64,7 @@ def process_text(request):
                 text_anno.tesseract_text_annotation = text_annotation_text
                 text_anno.tesseract_processed = True
                 text_anno.save()    
-        response = serializers.serialize("json", [text_anno, ])
-        return HttpResponse(response, content_type='application/json')
+        return serializers.serialize("json", [text_anno, ])
     if process_type == 'googlevision':
         if text_anno.google_vision_processed == False:
             credentials, project = google.auth.default() 
@@ -61,9 +81,7 @@ def process_text(request):
             print(text_anno)
             text_anno.google_vision_processed = True
             text_anno.save()    
-        response = serializers.serialize("json", [text_anno, ])
-        return HttpResponse(response, content_type='application/json')
- 
+        return serializers.serialize("json", [text_anno, ])
 
 def get_text_anno_and_file(request, text_anno_id):
     print(text_anno_id)

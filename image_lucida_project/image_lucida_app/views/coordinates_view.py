@@ -9,8 +9,11 @@ from django.core import serializers
 import json
 import cv2
 import numpy as np
-from skimage import io
+from skimage import filters, segmentation, io
 from sklearn.cluster import KMeans
+from skimage.measure import label, regionprops
+from skimage.color import label2rgb, rgb2gray
+
 
 def calculate_coordinates(img_rows, img_cols):
     top_left = [0,0]
@@ -144,3 +147,25 @@ def crop_shapes(img, points):
     return masked_image
     # save the result
     # cv2.imwrite('image_masked.png', masked_image)
+
+def segment_images(img):
+
+    im = io.imread(img)
+    image = rgb2gray(im)
+    val = filters.threshold_otsu(image)
+    mask = image < val
+    clean_border = segmentation.clear_border(mask)
+    labeled = label(clean_border)
+    cropped_images = []
+    cropped_coords = []
+    pad = 20
+    for region_index, region in enumerate(regionprops(labeled)):
+      if region.area < 2000:
+        continue
+        minr, minc, maxr, maxc = region.bbox
+        cropped_coords[str(region_index) + 'image'] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
+        cropped_images[str(region_index) + 'image'] = img[minr-pad:maxr+pad, minc-pad:maxc+pad]
+    return cropped_coords, cropped_images
+
+
+
