@@ -48,7 +48,7 @@ def get_single_folder(request, folder_id):
 def create_folder(request): 
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username=request.user)
-    project = project_model.Project.objects.get_or_create(project_pk=data['project_id'])
+    project = project_model.Project.objects.get_or_create(pk=data['project_id'])
     folder = folder_model.Folder.objects.get_or_create(
         project = project[0],
         title = data['title'],
@@ -67,10 +67,43 @@ def create_folder(request):
     return HttpResponse(response, content_type='application/json')
 
 def update_folder(request): 
-    """Method view to login user"""
-    pass
+    """Method to update a folder"""
+    data = json.loads(request.body.decode())
+    user = User.objects.get_or_create(username=request.user)
+    project = project_model.Project.objects.get_or_create(project_pk=data['project_id'])
+    folder = folder_model.Folder.objects.update_or_create(
+        project = project[0],
+        title = data['title'],
+        description = data['description']
+        )
+    for item in data['tags']:
+        print(item)
+        tag = tag_model.Tag.objects.get_or_create(
+            tag_name=item['tag'],
+            )
+        folder_model.Folder_Tag.objects.update_or_create(
+            folder=folder[0],
+            tag=tag[0]
+            )
+    response = serializers.serialize("json", [folder[0], ])
+    return HttpResponse(response, content_type='application/json')
 
  
 def delete_folder(request): 
-    """Method view to logout user"""
-    pass
+    """Method to delete a folder"""
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        folder_id = data['folder_id']
+        folder = get_object_or_404(folder_model.Folder, pk=folder_id)
+        print(folder)
+        folder.delete()
+        response = {'success':True}
+        return HttpResponse(response, content_type="application/json")
+
+def duplicate_folder(request, folder_id):
+    """Method to duplicate folder"""
+    folder = get_object_or_404(folder_model.Folder, pk=folder_id)
+    folder.pk = None
+    folder.save()
+    response = {'success':True}
+    return HttpResponse(response, content_type="application/json")

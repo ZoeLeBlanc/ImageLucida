@@ -58,10 +58,39 @@ def create_project(request):
     return HttpResponse(response, content_type='application/json')
 
 def update_project(request): 
-    """Method view to login user"""
-    pass
-
+    """Method to update a project"""
+    data = json.loads(request.body.decode())
+    user = User.objects.get_or_create(username=request.user)
+    status = status_model.Status.objects.get_or_create(status=data['status'])
+    print(status)
+    project = project_model.Project.objects.update_or_create(
+        user = user[0],
+        title = data['title'], 
+        description = data['description'], 
+        status = status[0], 
+        private = data['private'],
+        )
+    for item in data['tags']:
+        print(item)
+        tag = tag_model.Tag.objects.get_or_create(
+            tag_name=item['tag'],
+            )
+        project_model.Project_Tag.objects.update_or_create(
+            project=project[0],
+            tag=tag[0]
+            )
+    response = serializers.serialize("json", [project[0], ])
+    return HttpResponse(response, content_type='application/json')
  
-def delete_project(request): 
+def delete_project(request, project_id): 
     """Method view to logout user"""
     pass
+
+def duplicate_project(request, project_id):
+    """Method to duplicate project"""
+    project = get_object_or_404(project_model.Project, pk=project_id)
+    folders = project.folder_set.all()
+    project.pk = None
+    project.save()
+    response = {'success':True}
+    return HttpResponse(response, content_type="application/json")

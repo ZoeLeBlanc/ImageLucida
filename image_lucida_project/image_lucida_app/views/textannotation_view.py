@@ -54,7 +54,7 @@ def segment_text(request):
         response = process_text(text_annotation.pk, process_type)
         return HttpResponse(response, content_type='application/json')
 
-def process_text(file_id, process_type)
+def process_text(file_id, process_type):
     text_anno = textannotation_model.Text_Annotation.objects.get(pk=file_id)
     if process_type == 'tesseract':
         if text_anno.tesseract_processed == False:

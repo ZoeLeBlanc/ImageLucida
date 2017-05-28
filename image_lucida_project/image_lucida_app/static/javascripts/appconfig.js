@@ -61,6 +61,21 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/upload-file.html',
                 resolve: {user_auth}
             })
+            .when('/projects/:id/new-folder', {
+                controller: 'NewFolderCtrl',
+                templateUrl: '/static/partials/new-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/:id/edit-folder/:folder_id', {
+                controller: 'NewFolderCtrl',
+                templateUrl: '/static/partials/new-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/:id/view-folder/:folder_id', {
+                controller: 'ViewFolderCtrl',
+                templateUrl: '/static/partials/view-folder.html',
+                resolve: {user_auth}
+            })
             .when('/projects/processtext/tesseract/:active_id', {
                 controller: 'ProcessTextCtrl',
                 templateUrl: '/static/partials/process-text.html',

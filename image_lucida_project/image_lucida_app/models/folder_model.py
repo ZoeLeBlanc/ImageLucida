@@ -13,7 +13,7 @@ class Folder(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, default=1)
+    project = models.ForeignKey(project_model.Project, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=500, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -82,7 +82,7 @@ class Folder_Image_Annotation(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    image_annotation = models.ForeignKey(imageannoation_model.Image_Annotation, null=True, related_name='folder_image_annotations')
+    image_annotation = models.ForeignKey(imageannotation_model.Image_Annotation, null=True, related_name='folder_image_annotations')
     folder = models.ForeignKey(Folder, null=True, related_name='folder_image_annotations')
 
     def __str__(self):
