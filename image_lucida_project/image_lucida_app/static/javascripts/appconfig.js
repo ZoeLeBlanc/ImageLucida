@@ -56,9 +56,14 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/view-project.html',
                 resolve: {user_auth}
             })
-            .when('/projects/upload/:id', {
+            .when('/projects/upload/', {
                 controller: 'UploadFileCtrl',
                 templateUrl: '/static/partials/upload-file.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/transform/', {
+                controller: 'TransformFileCtrl',
+                templateUrl: '/static/partials/transform-file.html',
                 resolve: {user_auth}
             })
             .when('/projects/:id/new-folder', {

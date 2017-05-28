@@ -7,3 +7,6 @@ textarea {
   height: 2px; /* Line width of 3 */
   background: #6e6cb0; /* Black fill */
 }
+.tabs {
+    display: flex;
+}

@@ -1,0 +1,205 @@
+<div class="row">
+    <div class="row">
+        <div class="col s10 offset-s1"><!-- Begging of Tabs -->
+            <ul class="tabs" tabs>
+                <li class="tab col s6">
+                    <a ng-href="#untransformed">Untransformed Files</a>
+                </li>
+                <li class="tab col s6">
+                    <a ng-href="#transformed">Transformed Files</a>
+                </li>
+            </ul>
+        </div> <!-- End of Tabs -->     
+    </div>
+    <div class="row">
+        <div class="row" id="untransformed">
+            <div class="row">
+                <ul class="tabs" tabs id="untransformed_list">
+                    <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
+                        <a id="((index))" ng-href="#untransformed-image((index))">((index))</a>
+                    </li>
+                </ul>
+            </div>
+            <div >
+                <div id="untransformed-image((index))" class="col s8" ng-repeat="(index, file) in untransformed_files" >
+                    <img value="((file.fields.upload_file_name))"  src="((file.fields.url))" class="responsive-img"/>
+                </div>
+            </div>
+            <div class="card col s4">
+                <div class="card-content">
+                    <div class="row">
+                        <span class="card-title">
+                        <h4>Transform File</h4>
+                        </span>
+                        <div class="col s10 offset-s1">
+                            <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
+                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="clearTransformation()">Clear Transformation</a>
+                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
+                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveImageAsTransformation()">Save Image As Is</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="transformed">
+            <div class="row">
+                <ul class="tabs" tabs id="transformed_list">
+                    <li class="tab col s1" ng-repeat="(index,file) in transformed_files">
+                        <a id="((index))" ng-href="#transformed-image((index))">((index))</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div id="transformed-image((index))" class="col s8" ng-repeat="(index, file) in transformed_files" >
+                    <img id="((file.fields.id))" value="((file.fields.transform_file_name))" src="((file.fields.url))" class="responsive-img"/>
+                </div>
+            </div>
+            <div class="card col s4">
+                <div class="card-content">
+                    <div class="row">
+                        <span class="card-title">
+                        <h4>Transform File Properties</h4>
+                        </span>
+                        <div class="divider"></div>
+                        <div class="col s10 offset-s1">
+                            <div class="row">
+                            <h5>Process Transformed File</h5>
+                            </div>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn col s12" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
+                            </div>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn col s12" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
+                            </div>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn" ng-click="processText()">Edit Text</button>
+                            </div>
+                            <div class="row">
+                                <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="col s10 offset-s1">
+                            <div class="row">
+                            <h5>Add Meta Data</h5>
+                            </div>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn" data-target='archivalSourceModal' modal ready="readyCallback()" complete="completeCallback()" >Add Archival Source</button>
+                            </div>
+                            <div class="row">
+                            <button class="waves-effect waves-light btn" data-target='issueModal' modal ready="readyCallback()" complete="completeCallback()" >Add Issue</button>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="col s10 offset-s1">
+                            <div class="row">
+                                <h5>Current Meta Data</h5>
+                            </div>
+                            <div class="row">
+                                <div ng-repeat="(index,file) in transformed_files">
+                                    <div ng-repeat="archive in archivalSources" ng-show="archivalSources.length">
+                                        <div ng-if="file.fields.archival_source == archive.id">
+                                            <p>((archive.fields.archive_name))</p>
+                                        </div>
+                                    </div>
+                                    <div ng-show="!archivalSources.length">
+                                        <p>No Archival Sources</p>
+                                    </div>
+                                    <div ng-repeat="issue in issues" ng-show="issues.length">
+                                        <div ng-if="file.fields.issue == issue.id">
+                                            <p>((issue.fields.issue_name))</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ARCHIVAL SOURCE Modal Structure -->
+<div id="archivalSourceModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <div class="row" ng-show="selectArchive">
+            <div class="row">
+                <h4>Select archival Source</h4>
+            </div>
+            <div class="row">
+            <label>Select Archival Source</label>
+                <select ng-model="selectedOption" material-select>
+                    <option value="">---Please select---</option> 
+                    <option ng-repeat="archive in archivalSources" ng-selected="archive==selectedOption" value="((archive.id))">((archive.archive_name))</option> 
+                </select>
+            </div>
+            <div>
+                <button class="waves-effect waves-light btn col s8" ng-click="addNewArchive()">Add New Archive</button>
+            </div>        
+        </div>
+        <div class="row" ng-show="!selectArchive">
+            <div class="row">
+                <h4>Add new archival Source</h4>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter the archival source name" ng-model="archival_source.archive_name" required autofocus>
+                </div>
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter collection name" ng-model="archival_source.collection_name">
+                </div>
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter folder name" ng-model="archival_source.folder_name">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button ng-show="!selectArchive" class="modal-action modal-close waves-effect waves-light btn col s8" ng-click="saveNewArchive()">Save Archive<i class="small material-icons">content-save</i></button>
+        <button ng-show="selectArchive" class="modal-action modal-close waves-effect waves-light btn col s8" ng-click="saveArchive(selectedOption)">Save Archive<i class="small material-icons">content-save</i></button>
+    </div>
+</div>
+<!-- ISSUE Modal Structure -->
+<div id="issueModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <div class="row" ng-show="selectIssue">
+            <div class="row">
+                <h4>Select an issue</h4>
+            </div>
+            <div class="row">
+            <label>Select Issue</label>
+                <select ng-model="selectedOption" material-select>
+                    <option value="">---Please select---</option> 
+                    <option ng-repeat="issue in issues" ng-selected="issue==selectedOption" value="((issue.id))">((issue.issue_name))</option> 
+                </select>
+            </div>
+            <div>
+                <button class="waves-effect waves-light btn col s8" ng-click="addNewIssue()">Add New Issue</button>
+            </div>        
+        </div>
+        <div class="row" ng-show="!selectIssue">
+            <div class="row">
+                <h4>Add new issue</h4>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter issue name" ng-model="issue.issue_name" required autofocus>
+                </div>
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter date published" ng-model="issue.date_published">
+                </div>
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter the location of the publication" ng-model="issue.publication_location">
+                </div>
+                <div class="row">
+                    <input type="text" class="input-field col s10 offset-s1" placeholder="Enter issue number" ng-model="issue.issue_number">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button ng-show="!selectIssue" class="modal-action modal-close waves-effect waves-light btn col s8" ng-click="saveNewIssue()">Save Issue<i class="small material-icons">content-save</i></button>
+        <button ng-show="selectIssue" class="modal-action modal-close waves-effect waves-light btn col s8" ng-click="saveIssue(selectedOption)">Save Issue<i class="small material-icons">content-save</i></button>
+    </div>
+</div>

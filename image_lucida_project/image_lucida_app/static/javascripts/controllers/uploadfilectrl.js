@@ -1,14 +1,6 @@
 "use strict";
 myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory, UploadFileFactory){
-    let project_id = $routeParams.id;
-    $scope.project = {};
-    $scope.project.files = [];
-    ProjectsFactory.getSingleProject(project_id).then( (response)=>{
-        let returned_values = JSON.parse(response.project);
-        $scope.project = returned_values[0].fields;
-        $scope.project.id = returned_values[0].pk;
-        console.log($scope.project);
-    });
+    $scope.files = [];
     document.getElementById("file-upload").onchange = function (event) {
         console.log(event);
         
@@ -29,14 +21,13 @@ myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, Use
         
     };
     $scope.uploadFiles = ()=>{
-        console.log($scope.project.id);
-        angular.forEach($scope.project.files, (file, index)=>{
+        angular.forEach($scope.files, (file, index)=>{
             console.log(file);
-            UploadFileFactory.uploadFile(file.file, $scope.project.id).then( (response)=>{
+            UploadFileFactory.uploadFile(file.file).then( (response)=>{
                 console.log(response);
                 if (response.form != 'not saved'){
-
-                    $location.path('#!/projects/view/{$scope.project.id}/');
+                    Materialize.toast('Images Uploaded', 1000);
+                    $location.path('#!/projects/');
                 } else {
                     $scope.error_message = "File did not upload.";
                 }
