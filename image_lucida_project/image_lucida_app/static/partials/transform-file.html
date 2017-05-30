@@ -20,22 +20,22 @@
                     </li>
                 </ul>
             </div>
-            <div >
-                <div id="untransformed-image((index))" class="col s8" ng-repeat="(index, file) in untransformed_files" >
+            <div id="untransformed-image((index))" class="row" ng-repeat="(index, file) in untransformed_files">
+                <div class="col s8">
                     <img value="((file.fields.upload_file_name))"  src="((file.fields.url))" class="responsive-img"/>
                 </div>
-            </div>
-            <div class="card col s4">
-                <div class="card-content">
-                    <div class="row">
-                        <span class="card-title">
-                        <h4>Transform File</h4>
-                        </span>
-                        <div class="col s10 offset-s1">
-                            <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="clearTransformation()">Clear Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveImageAsTransformation()">Save Image As Is</a>
+                <div class="card col s4">
+                    <div class="card-content">
+                        <div class="row">
+                            <span class="card-title">
+                            <h4>Transform File</h4>
+                            </span>
+                            <div class="col s10 offset-s1">
+                                <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
+                                <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="clearTransformation()">Clear Transformation</a>
+                                <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
+                                <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveImageAsTransformation()">Save Image As Is</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,65 +49,65 @@
                     </li>
                 </ul>
             </div>
-            <div>
-                <div id="transformed-image((index))" class="col s8" ng-repeat="(index, file) in transformed_files" >
+            <div id="transformed-image((index))" class="row" ng-repeat="(index, file) in transformed_files">
+                <div  class="col s8">
                     <img id="((file.fields.id))" value="((file.fields.transform_file_name))" src="((file.fields.url))" class="responsive-img"/>
                 </div>
-            </div>
-            <div class="card col s4">
-                <div class="card-content">
-                    <div class="row">
-                        <span class="card-title">
-                        <h4>Transform File Properties</h4>
-                        </span>
-                        <div class="divider"></div>
-                        <div class="col s10 offset-s1">
-                            <div class="row">
-                            <h5>Process Transformed File</h5>
+                <div class="card col s4">
+                    <div class="card-content">
+                        <div class="row">
+                            <span class="card-title">
+                            <h4>Transform File Properties</h4>
+                            </span>
+                            <div class="divider"></div>
+                            <div class="col s10 offset-s1">
+                                <div class="row">
+                                <h5>Process Transformed File</h5>
+                                </div>
+                                <div class="row">
+                                <button class="waves-effect waves-light btn col s12" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
+                                </div>
+                                <div class="row">
+                                <button class="waves-effect waves-light btn col s12" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
+                                </div>
+                                <div class="row">
+                                <button class="waves-effect waves-light btn" ng-click="processText()">Edit Text</button>
+                                </div>
+                                <div class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
+                                </div>
                             </div>
-                            <div class="row">
-                            <button class="waves-effect waves-light btn col s12" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
+                            <div class="divider"></div>
+                            <div class="col s10 offset-s1">
+                                <div class="row">
+                                <h5>Add Meta Data</h5>
+                                </div>
+                                <div class="row">
+                                <button class="waves-effect waves-light btn" data-target='archivalSourceModal' modal ready="readyCallback()" complete="completeCallback()" >Add Archival Source</button>
+                                </div>
+                                <div class="row">
+                                <button class="waves-effect waves-light btn" data-target='issueModal' modal ready="readyCallback()" complete="completeCallback()" >Add Issue</button>
+                                </div>
                             </div>
-                            <div class="row">
-                            <button class="waves-effect waves-light btn col s12" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
-                            </div>
-                            <div class="row">
-                            <button class="waves-effect waves-light btn" ng-click="processText()">Edit Text</button>
-                            </div>
-                            <div class="row">
-                                <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
-                            </div>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="col s10 offset-s1">
-                            <div class="row">
-                            <h5>Add Meta Data</h5>
-                            </div>
-                            <div class="row">
-                            <button class="waves-effect waves-light btn" data-target='archivalSourceModal' modal ready="readyCallback()" complete="completeCallback()" >Add Archival Source</button>
-                            </div>
-                            <div class="row">
-                            <button class="waves-effect waves-light btn" data-target='issueModal' modal ready="readyCallback()" complete="completeCallback()" >Add Issue</button>
-                            </div>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="col s10 offset-s1">
-                            <div class="row">
-                                <h5>Current Meta Data</h5>
-                            </div>
-                            <div class="row">
-                                <div ng-repeat="(index,file) in transformed_files">
-                                    <div ng-repeat="archive in archivalSources" ng-show="archivalSources.length">
-                                        <div ng-if="file.fields.archival_source == archive.id">
-                                            <p>((archive.fields.archive_name))</p>
+                            <div class="divider"></div>
+                            <div class="col s10 offset-s1">
+                                <div class="row">
+                                    <h5>Current Meta Data</h5>
+                                </div>
+                                <div class="row">
+                                    <div ng-repeat="(index,file) in transformed_files">
+                                        <div ng-repeat="archive in archivalSources" ng-show="archivalSources.length">
+                                            <div ng-if="file.fields.archival_source == archive.id">
+                                                <p>((archive.fields.archive_name))</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div ng-show="!archivalSources.length">
-                                        <p>No Archival Sources</p>
-                                    </div>
-                                    <div ng-repeat="issue in issues" ng-show="issues.length">
-                                        <div ng-if="file.fields.issue == issue.id">
-                                            <p>((issue.fields.issue_name))</p>
+                                        <div ng-show="!archivalSources.length">
+                                            <p>No Archival Sources</p>
+                                        </div>
+                                        <div ng-repeat="issue in issues" ng-show="issues.length">
+                                            <div ng-if="file.fields.issue == issue.id">
+                                                <p>((issue.fields.issue_name))</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

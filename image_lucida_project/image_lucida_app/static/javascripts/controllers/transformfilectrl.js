@@ -21,24 +21,33 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
                 }
             });
         });
+        let tabs = $("body").find("#0").addClass("active");
+        console.log("tabs",tabs);
+        // let tab = tabs.prevObject[0].childNodes[2];
+        // console.log("tab", tab);
+        
     });
     TransformFileFactory.getTransformedFiles().then((response)=>{
         $scope.transformed_files = JSON.parse(response.transformed_files);
-        console.log($scope.transformed_files);
+        console.log("$scope.transformed_files", $scope.transformed_files);
         transformed_list = response.transformed_list;
+        console.log("transformed_list", transformed_list);
         angular.forEach($scope.transformed_files, (obj, index)=>{
             obj.fields.id = obj.pk;
             // console.log("obj", obj);
             angular.forEach(transformed_list, (item, index)=>{
                 // console.log("item",item);
-                if(obj.fields.upload_file_name === item[0]){
+                if(obj.fields.transform_file_name === item[0]){
                     obj.fields.url = item[1];
                 }
-                if(obj.fields.upload_file_name === item[1]){
+                if(obj.fields.transform_file_name === item[1]){
                     obj.fields.url = item[0];
                 }
             });
         });
+        let tabs = $("#transformed_list");
+        let tab = tabs.find("#0");
+        tab.addClass("active");
     });
     // TRANSFORM SECTION
     let a_b = [];
