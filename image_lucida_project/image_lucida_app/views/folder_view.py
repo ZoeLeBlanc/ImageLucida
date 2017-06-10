@@ -12,13 +12,6 @@ def get_single_folder(request, folder_id):
     """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
     print(folder_id)
     folder = get_object_or_404(folder_model.Folder, pk=folder_id)
-    # Untransformed files
-    untransformed_files = folder.untransformed_files.all().order_by('id')
-    untransformed_list = []
-    for file in untransformed_files:
-        file_list = []
-        file_list.extend({file.upload_file_name, file.file_url})     
-        untransformed_list.append(file_list)
     # Transformed files
     transformed_files = folder.transformed_files.all().order_by('id')
     transformed_list = []
@@ -26,21 +19,14 @@ def get_single_folder(request, folder_id):
         file_list = []
         file_list.extend({file.transform_file_name, file.file_url})         
         transformed_list.append(file_list)
-    # Text annotations
-    text_annotations = folder.text_annotations.all().order_by('id')
-    # Image annotations
-    image_annotations = folder.image_annotations.all().order_by('id')
     #Tag
     tags = folder.tags.all().order_by('id')
 
     #Serialize EVERYTHING!!!
     folder_serialize = serializers.serialize("json", [folder,])
-    untransformed_files_serialize = serializers.serialize("json", untransformed_files)
     transformed_files_serialize = serializers.serialize("json", transformed_files)
-    text_annotations_serialize = serializers.serialize("json", text_annotations)
-    image_annotations_serialize = serializers.serialize("json", image_annotations)
     tags_serialize = serializers.serialize("json", tags)
-    folder_json = json.dumps({'folder': folder_serialize, 'untransformed_list': untransformed_list, 'untransformed_files':untransformed_files_serialize, "transformed_files": transformed_files_serialize, "transformed_list":transformed_list, "text_annotations":text_annotations_serialize, "image_annotations":image_annotations_serialize, "tags":tags_serialize})
+    folder_json = json.dumps({'folder': folder_serialize, "transformed_files": transformed_files_serialize, "transformed_list":transformed_list, "tags":tags_serialize})
     print(folder_json)
     return HttpResponse(folder_json, content_type="application/json")
     
@@ -97,7 +83,7 @@ def delete_folder(request):
         folder = get_object_or_404(folder_model.Folder, pk=folder_id)
         print(folder)
         folder.delete()
-        response = {'success':True}
+        response = {'success':'True'}
         return HttpResponse(response, content_type="application/json")
 
 def duplicate_folder(request, folder_id):

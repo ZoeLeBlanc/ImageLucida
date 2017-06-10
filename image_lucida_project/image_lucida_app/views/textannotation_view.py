@@ -17,53 +17,32 @@ from tesserocr import PyTessBaseAPI
 from google.cloud import vision
 import google.auth
 
-def segment_text(request):
+def process_text(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
     process_type = data['process_type']
-    segment_type = dat
-    a['segment_type']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     file_name = transform_file.transform_file_name
     uri = transform_file.file_url
     text_anno =text_annotation[0]
-    if segment_type == 'full_page':
-        text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
+    text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
             transform_file=transform_file,
         )
-        process_text(text_annotation.pk, process_type)
-    else:
-        """Need to segment image, potentially in multiples, and record coordinates."""
-        coords = data['multi_cords']
-        new_text_annotation = coordinates_view.crop_shapes(uri, coords)
-        coor_obj = coordinates_model.Coordinates.objects.get_or_create(
-                multi_coords=json.dumps(coords)
-                )
-        rando_numb = uuid.uuid4()
-        new_text_annotation_name = 'image_lucida_app/media/transformed_text_annotation' + str(rando_numb)+ '.jpg'
-        new_text_annotation = io.imsave(new_text_annotation_name,new_text_annotation),
-        open_text = open(new_text_annotation_name, 'rb')
-        newest_text_annotation_file = File(open_text)
-        text_annotation = textannotation_model.Text_Annotation.objects.create(
-        transform_file=file,
-        text_annotation_file_name=new_text_annotation_name,
-        )
-        text_annotation.text_annotation_file.save(new_text_annotation_name, newest_text_annotation_file, save=True)
-        text_annotation.text_annotation_coordinates=coords_obj
-        text_annotation.save()
-        response = process_text(text_annotation.pk, process_type)
-        return HttpResponse(response, content_type='application/json')
+    response = segment_text(text_annotation.pk, process_type, transform_file_id)
+    return HttpResponse(response, content_type='application/json')
 
-def process_text(file_id, process_type):
+def segment_text(file_id, process_type, transform_file_id):
     text_anno = textannotation_model.Text_Annotation.objects.get(pk=file_id)
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     if process_type == 'tesseract':
         if text_anno.tesseract_processed == False:
             with PyTessBaseAPI() as api:
                 api.SetImageFile(file_name)
                 text_annotation_text = api.GetUTF8Text()
                 text_anno.tesseract_text_annotation = text_annotation_text
-                text_anno.tesseract_processed = True
-                text_anno.save()    
+                text_anno.save()
+                transform_file.tesseract_processed = True
+                transform_file.save()      
         return serializers.serialize("json", [text_anno, ])
     if process_type == 'googlevision':
         if text_anno.google_vision_processed == False:
@@ -78,9 +57,9 @@ def process_text(file_id, process_type):
                 text_list += word
             print(text_list)
             text_anno.google_vision_text_annotation = text_list
-            print(text_anno)
-            text_anno.google_vision_processed = True
-            text_anno.save()    
+            text_anno.save()
+            transform_file.google_vision_processed = True 
+            transform_file.save()   
         return serializers.serialize("json", [text_anno, ])
 
 def get_text_anno_and_file(request, text_anno_id):
@@ -127,3 +106,22 @@ def tag_text_annotation(request):
         )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def delete_text_annotation(request):
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        text_anno_id = data['text_anno_id']
+        text_anno = get_object_or_404(textannotation_model.Text_Annotation, pk=text_anno_id)
+        print(text_anno)
+        text_anno.delete()
+        response = {'success':True}
+        return HttpResponse(response, content_type="application/json")
+
+def get_text_annotations(request, transform_file_id):
+    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    print(transform_file)
+    texts = transform_file.text_annotation_set.all()
+    print(texts)
+    texts_serialize = serializers.serialize("json", list(texts))
+    response = json.dumps({'texts': texts_serialize})
+    return HttpResponse(response, content_type='application/json') 

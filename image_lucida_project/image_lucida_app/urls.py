@@ -29,7 +29,8 @@ urlpatterns = [
     # upload file urls
     url(r'^upload_file/', uploadfile_view.upload_file, name= 'upload_file'),
     url(r'^get_untransformed_files/', uploadfile_view.get_untransformed_files, name= 'get_untransformed_files'),
-    url(r'^delete_untransformed_file/', uploadfile_view.delete_untransformed_file, name= 'delete_untransformed_file'),
+    url(r'^delete_uploaded_file/', uploadfile_view.delete_uploaded_file, name= 'delete_uploaded_file'),
+    url(r'^duplicate_untransformed_file/', uploadfile_view.duplicate_untransformed_file, name= 'duplicate_untransformed_file'),
     # transform file urls
     url(r'^transform_upload_file/', transformfile_view.transform_upload_file, name= 'transform_upload_file'),
     url(r'^assign_transform_file/', transformfile_view.assign_transform_file, name= 'assign_transform_file'),
@@ -37,7 +38,9 @@ urlpatterns = [
     url(r'^add_archival_source/', transformfile_view.add_archival_source, name= 'add_archival_source'),
     url(r'^add_issue/', transformfile_view.add_issue, name= 'add_issue'),
     url(r'^delete_transform_file/', transformfile_view.delete_transform_file, name= 'delete_transform_file'),
+    url(r'^duplicate_transform_file/', transformfile_view.duplicate_transform_file, name= 'duplicate_transform_file'),
     url(r'^update_transform_file/', transformfile_view.update_transform_file, name= 'update_transform_file'),
+    url(r'^untransform_file/', transformfile_view.untransform_file, name= 'untransform_file'),
     url(r'^get_transform_files/', transformfile_view.get_transform_files, name= 'get_transform_files'),
     # archival source urls
     url(r'^get_archival_sources/', archivalsource_view.get_archival_sources, name= 'get_archival_sources'),
@@ -50,11 +53,14 @@ urlpatterns = [
     url(r'^get_text_anno_and_file/(?P<text_anno_id>\d+)/$', textannotation_view.get_text_anno_and_file, name= 'get_text_anno_and_file'),
     url(r'^update_text_annotation/', textannotation_view.update_text_annotation, name= 'update_text_annotation'),
     url(r'^tag_text_annotation/', textannotation_view.tag_text_annotation, name= 'tag_text_annotation'),
-    url(r'^segment_text/', textannotation_view.segment_text, name = 'segment_text'),
+    url(r'^delete_text_annotation/', textannotation_view.delete_text_annotation, name= 'delete_text_annotation'),
+    url(r'^get_text_annotations/(?P<transform_file_id>\d+)/$', textannotation_view.get_text_annotations, name = 'get_text_annotations'),
     # image annotation urls
     url(r'^transform_image_annotations/', imageannotation_view.transform_image_annotations, name= 'transform_image_annotations'),
     url(r'^process_image_annotations/', imageannotation_view.process_image_annotations, name= 'process_image_annotations'),
-    url(r'^segment_image_annotation/', imageannotation_view.segment_image_annotation, name='segment_image_annotation'),
+    url(r'^auto_segment_image_annotation/', imageannotation_view.auto_segment_image_annotation, name='auto_segment_image_annotation'),
     url(r'^tag_image_annotation/', imageannotation_view.tag_image_annotation, name= 'tag_image_annotation'),
+    url(r'^delete_image_annotation/', imageannotation_view.delete_image_annotation, name= 'delete_image_annotation'),
+    url(r'^manual_segmentation/', imageannotation_view.manual_segmentation, name= 'manual_segmentation'),
     url(r'^get_image_annotations/(?P<transform_file_id>\d+)/$', imageannotation_view.get_image_annotations, name= 'get_image_annotations'),
 ]

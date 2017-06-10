@@ -1,37 +1,25 @@
 "use strict";
-myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory){
-    // PROJECT SECTION
-    let project_id = $routeParams.id;
-    $scope.project = {};
+myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory, FoldersFactory){
+    // FOLDer SECTION
+    let folder_id = $routeParams.folder_id;
+    $scope.folder = {};
     $scope.transforming = false;
-    $scope.untransformed_files = {};
     $scope.transformed_files = {};
-    let project = {};
+    $scope.tags = {};
+    $scope.clickedImage = false;
+    // $scope.selectedImage = "";
+    let folder = {};
     let untransformed_list = [];
     let transformed_list = [];
-    let four_points = {};
-    ProjectsFactory.getSingleProject(project_id).then( (response)=>{
-        project = JSON.parse(response.project);
-        untransformed_list = response.untransformed_list;
+    FoldersFactory.getSingleFolder(folder_id).then( (response)=>{
+        folder = JSON.parse(response.folder);
         transformed_list = response.transformed_list;
-        console.log(untransformed_list);
-        $scope.project = project[0].fields;
-        $scope.project.id = project[0].pk;
-        $scope.untransformed_files = JSON.parse(response.untransformed_files);
+        image_annotations_list = response.image_annotations_list;
+        $scope.folder = folder[0].fields;
+        $scope.folder.id = folder[0].pk;
         $scope.transformed_files = JSON.parse(response.transformed_files);
-        console.log($scope.transformed_files);
-        angular.forEach($scope.untransformed_files, (obj, index)=>{
-            obj.fields.id = obj.pk;
-            angular.forEach(untransformed_list, (item, index)=>{
-                console.log(item[0]);
-                if(obj.fields.upload_file_name === item[0]){
-                    obj.fields.url = item[1];
-                }
-                if(obj.fields.upload_file_name === item[1]){
-                    obj.fields.url = item[0];
-                }
-            });
-        });
+        $scope.tags = JSON.parse(response.tags);
+        console.log("$scope.transformed_files", $scope.transformed_files);
         angular.forEach($scope.transformed_files, (obj, index)=>{
             obj.fields.id = obj.pk;
             angular.forEach(transformed_list, (item, index)=>{
@@ -46,109 +34,45 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
             console.log(obj);
         });
     });
-    // TRANSFORM SECTION
-    let a_b = [];
-    let b_c = [];
-    let c_d = [];
-    let d_a = [];
-    $scope.startTransformation = ()=>{
-        let active_img_id = $('#untransformed_list').find('.active')[0].text;
-        $scope.transforming = true;
-        let active_img = $('#untransformed-image'+active_img_id+'').find('img');
-        console.log(active_img);
-        let n_h = active_img[0].height;
-        let n_w = active_img[0].width;
-        let o_h = active_img[0].naturalHeight;
-        let o_w = active_img[0].naturalWidth;
-        let aspect_ratio_w = parseInt(o_w) / parseInt(n_w);
-        let aspect_ratio_h = parseInt(o_h) / parseInt(n_h);
-        console.log(aspect_ratio_w);
-        let click_counter = 0;
-        active_img.on("click", function (evt) {
-            click_counter++;
-            let parentOffset = 0;
-            let y_point = [];
-            let x_point = [];
-            parentOffset = $(this).offset(); 
-            console.log(parentOffset);
-            y_point = (evt.pageX - parentOffset.left) * aspect_ratio_h;
-            console.log(y_point);
-            x_point = (evt.pageY - parentOffset.top) * aspect_ratio_w;
-            console.log(x_point);
-            if (click_counter === 1){
-                four_points.top_left = [y_point, x_point];
-                a_b.push({'x1':evt.pageX, 'y1': evt.pageY});
-                d_a.push({'x1':evt.pageX, 'y1': evt.pageY});
-                
-            }
-            if (click_counter === 2){
-                four_points.top_right = [y_point, x_point];
-                a_b.push({'x2':evt.pageX, 'y2': evt.pageY});
-                b_c.push({'x1':evt.pageX, 'y1': evt.pageY});
-                console.log(a_b[0]);
-                console.log(a_b[1]);
-                let first_line = createLine(a_b);
-                $(this).parent().append(first_line);
-            }
-            if (click_counter === 3){
-                four_points.bottom_right = [y_point, x_point];
-                b_c.push({'x2':evt.pageX, 'y2': evt.pageY});
-                c_d.push({'x1':evt.pageX, 'y1': evt.pageY});
-                console.log(b_c);
-                let second_line = createLine(b_c);
-                $(this).parent().append(second_line);
-            }
-            if (click_counter === 4){
-                four_points.bottom_left = [y_point, x_point];
-                c_d.push({'x2':evt.pageX, 'y2': evt.pageY});
-                let third_line = createLine(c_d);
-                $(this).parent().append(third_line);
-                d_a.push({'x2':evt.pageX, 'y2': evt.pageY});
-                let fourth_line = createLine(d_a);
-                console.log(fourth_line);
-                $(this).parent().append(fourth_line);
+    $scope.showImage = (file_id) =>{
+        angular.forEach($scope.transformed_files, (file, index)=>{
+            console.log("file", file.pk);
+            console.log("file_id", file_id);
+            if (file.pk === file_id){
+                $scope.selectedImage = '';
+                $scope.clickedImage = true;
+                let active_id = file.pk;
+                let date = Date.parse(file.fields.date_created);
+                $("#imageArea").html('');
+                $("#imageInfo").html('');
+                $("#imageArea").append(`<img class="materialboxed responsive-img" src="${file.fields.url}"/>`);
+                $("#imageInfo").append(`
+                    <div class="card col s12">
+                    <div class="card-content">
+                        <span class="card-title">
+                            File Properties
+                        </span>
+                        <ul>
+                        <li>Date Created: ${Date(date)}</li>
+                        <li>Archival Source: ${file.fields.archival_source}</li>
+                        <li>Issue: ${file.fields.issue}</li>
+                        <li>Page Number: ${file.fields.page_number}</li>
+                        <li>Google Vision Processed: ${file.fields.google_vision_processed}</li>
+                        <li>Tesseract Processed: ${file.fields.tesseract_processed}</li>
+                        <li>Auto Image Processed: ${file.fields.auto_image_processed}</li>
+                        <li>Manual Image Processed: ${file.fields.manual_image_processed}</li>
+                    </div>
+                    <div class="card-action">
+                        <a href="#!/projects/process-text/${active_id}">OCR Text</a>
+                        <a href="#!/projects/process-image/${active_id}">Process Image </a>
+                        <a href="#!/projects/view-annotations/${active_id}")">View Annotations</a>
+                    </div>
+                </div>`);
+                $('.materialboxed').materialbox();
             }
         });
     };
-    function createLine(array){
-        var length = Math.sqrt((array[0].x1-array[1].x2)*(array[0].x1-array[1].x2) + (array[0].y1-array[1].y2)*(array[0].y1-array[1].y2));
-        var angle  = Math.atan2(array[1].y2 - array[0].y1, array[1].x2 - array[0].x1) * 180 / Math.PI;
-        var transform = 'rotate('+angle+'deg)';
-        var line = $('<div id="line">')
-            .addClass('line')
-            .css({
-              'position': 'absolute',
-              'transform': transform
-            })
-            .width(length)
-            .offset({left: array[0].x1, top: array[0].y1});
-        return line;
-    }
-    $scope.clearTransformation = ()=>{
-        four_points = {};
-        a_b = [];
-        b_c = [];
-        c_d = [];
-        d_a = [];
-        $scope.transforming = false;
-        $("div[id^='line']").remove();
-    };
-    $scope.saveTransformation = ()=>{
-        let active_img_id = $('#untransformed_list').find('.active')[0].text;
-        let active_img = $('#untransformed-image'+active_img_id+'').find('img');
-        let upload_file_name = active_img[0].attributes[0].value;
-        let coords = valuesToArray(four_points);
-        console.log(coords);
-        TransformFileFactory.setTransformation(upload_file_name, coords, project_id).then( (response)=>{
-            console.log(response);
-            Materialize.toast('Transformation Saved', 1000);
-            $scope.transforming = false;
-            $window.location.reload();
-        });
-    };
-    function valuesToArray(obj) {
-      return Object.keys(obj).map(key => obj[key]);
-    }
+    
     // ARCHIVE SECTION
     $scope.selectArchive = true;
     $scope.archivalSources = [];
@@ -220,26 +144,5 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
         TransformFileFactory.addIssue(transform_file_name, issue_id).then( (response)=>{
             console.log(response);
         });
-    };
-    //TEXT PROCESS
-    $scope.processTextTesseract = ()=>{
-        let active_file_id = $('#transformed_list').find('.active')[0].text;
-        let active_file = $('#transformed-image'+active_file_id+'').find('img');
-        let active_id = active_file[0].id;
-        console.log("active_id", active_id);
-        $location.path('/projects/processtext/tesseract/' + active_id);   
-    };
-    $scope.processTextGoogleVision = ()=>{
-        let active_file_id = $('#transformed_list').find('.active')[0].text;
-        let active_file = $('#transformed-image'+active_file_id+'').find('img');
-        let active_id = active_file[0].id;
-        console.log("active_id", active_id);
-        $location.path('/projects/processtext/googlevision/' + active_id);   
-    };
-    $scope.processImage = ()=>{
-        let active_file_id = $('#transformed_list').find('.active')[0].text;
-        let active_file = $('#transformed-image'+active_file_id+'').find('img');
-        let active_id = active_file[0].id;
-        $location.path('/projects/processimage/' + active_id);   
     };
 });

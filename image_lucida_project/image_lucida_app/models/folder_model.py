@@ -19,7 +19,6 @@ class Folder(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     transformed_files = models.ManyToManyField('Transform_File', through='Folder_Transform_File')
-    untransformed_files = models.ManyToManyField('Upload_File', through='Folder_Upload_File')
     text_annotations = models.ManyToManyField('Text_Annotation', through='Folder_Text_Annotation')
     image_annotations = models.ManyToManyField('Image_Annotation', through='Folder_Image_Annotation')
     tags = models.ManyToManyField('Tag', through='Folder_Tag')
@@ -43,20 +42,6 @@ class Folder_Transform_File(models.Model):
     def __str__(self):
         return '%s' % (self.id)
 
-class Folder_Upload_File(models.Model):
-    ''' 
-    The Folder File class is a model that defines a join table for Folder & Transform_File.
-
-    Argument List:
-        -models.Model: This argument allows the class to access field types.
-
-    Author: Zoe LeBlanc
-    '''
-    upload_file = models.ForeignKey(uploadfile_model.Upload_File, null=True, related_name='folder_upload_files')
-    folder = models.ForeignKey(Folder, null=True, related_name='folder_upload_files')
-
-    def __str__(self):
-        return '%s' % (self.id)
 
 class Folder_Text_Annotation(models.Model):
     ''' 

@@ -1,8 +1,8 @@
 <div class="row">
-    {# <div class="fixed-action-btn horizontal"> 
+    <div class="fixed-action-btn horizontal"> 
         <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/((project_id))/new-folder" data-position="top" data-delay="50" data-tooltip="Create a new folder"><i class="large material-icons">add</i>
         </a>
-    </div> <!-- End of Fab --> #}
+    </div> <!-- End of Fab -->
     <div class="row">
         <h6 class="col s2">
             <a href="javascript:void(0);" ng-click="go_back()">Go Back To Projects</a>
@@ -19,57 +19,11 @@
                         ((project.description))
                     </div>
                 </div>
-                <div class="divider"></div>
-                <div class="row col s10 offset-s1">
-                    <div class="row"> <!-- Begging of Tabs -->
-                        <ul class="tabs" tabs>
-                            <li class="tab col s4">
-                                <a ng-href="#untransformed">Untransformed Files</a>
-                            </li>
-                            <li class="tab col s4">
-                                <a ng-href="#transformed">Transformed Files</a>
-                            </li>
-                            <li class="tab col s4">
-                                <a ng-href="#folders">Folders</a>
-                            </li>
-                        </ul>
-                    </div> <!-- End of Tabs -->     
-                </div>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="row" id="untransformed">
-            <div class="row col s10 offset-s1">
-                <ul class="tabs" tabs id="untransformed_list">
-                    <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
-                        <a id="((index))" ng-href="#untransformed-image((index))">((index))</a>
-                    </li>
-                </ul>
-            </div>
-            <div >
-                <div id="untransformed-image((index))" class="col s8" ng-repeat="(index, file) in untransformed_files" >
-                    <img value="((file.fields.upload_file_name))"  src="((file.fields.url))" class="responsive-img"/>
-                </div>
-            </div>
-            <div class="card col s4">
-                <div class="card-content">
-                    <div class="row">
-                        <span class="card-title">
-                        <h4>Transform File</h4>
-                        </span>
-                        <div class="col s10 offset-s1">
-                            <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="clearTransformation()">Clear Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
-                            <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveImageAsTransformation()">Save Image As Is</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <div class="container" id="folders">
             <div ng-repeat="(index,folder) in folders">
                 <div class="card col s12 m10 offset-m1 l5 offset-l1 hoverable">

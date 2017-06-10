@@ -13,8 +13,8 @@
     </div>
     <div class="row">
         <div class="row" id="untransformed">
-            <div class="row">
-                <ul class="tabs" tabs id="untransformed_list">
+            <div class="row" ng-if="showTabs">
+                <ul class="tabs" tabs id="untransformed_list" reload="allTabContentLoaded">
                     <li class="tab col s1" ng-repeat="(index,file) in untransformed_files">
                         <a id="((index))" ng-href="#untransformed-image((index))">((index))</a>
                     </li>
@@ -22,13 +22,13 @@
             </div>
             <div id="untransformed-image((index))" class="row" ng-repeat="(index, file) in untransformed_files">
                 <div class="col s8">
-                    <img value="((file.fields.upload_file_name))"  src="((file.fields.url))" class="responsive-img"/>
+                    <img value="((file.fields.upload_file_name))" id="((file.fields.id))"  src="((file.fields.url))" class="responsive-img"/>
                 </div>
                 <div class="card col s4">
                     <div class="card-content">
                         <div class="row">
                             <span class="card-title">
-                            <h4>Transform File</h4>
+                            <h4>Uploaded File Actions</h4>
                             </span>
                             <div class="col s10 offset-s1">
                                 <a ng-show="!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformation()">Start Transformation</a>
@@ -36,14 +36,18 @@
                                 <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveTransformation()">Save Transformation</a>
                                 <a ng-show="transforming" class="waves-effect waves-light btn-flat" ng-click="saveImageAsTransformation()">Save Image As Is</a>
                             </div>
+                            <div class="col s10 offset-s1">
+                                <a class="waves-effect waves-light btn-flat" ng-click="deleteUploadedFile()">Delete File</a>
+                                <a class="waves-effect waves-light btn-flat" ng-click="duplicateUploadedFile()">Duplicate File</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row" id="transformed">
-            <div class="row">
-                <ul class="tabs" tabs id="transformed_list">
+            <div class="row" ng-if="showTabs">
+                <ul class="tabs" tabs id="transformed_list" reload="allTabContentLoaded">
                     <li class="tab col s1" ng-repeat="(index,file) in transformed_files">
                         <a id="((index))" ng-href="#transformed-image((index))">((index))</a>
                     </li>
@@ -57,36 +61,41 @@
                     <div class="card-content">
                         <div class="row">
                             <span class="card-title">
-                            <h4>Transform File Properties</h4>
+                            <h4>Transform File Actions</h4>
                             </span>
                             <div class="divider"></div>
                             <div class="col s10 offset-s1">
                                 <div class="row">
-                                <h5>Process Transformed File</h5>
+                                    <h5>Add to Project</h5>
                                 </div>
                                 <div class="row">
-                                <button class="waves-effect waves-light btn col s12" ng-click="processTextTesseract()">Process Text With Tesseract OCR</button>
+                                    <label>Select Project</label>
+                                    <select ng-model="selectedProject" material-select ng-change="get_folders(selectedProject)">
+                                        <option value="">---Please select---</option> 
+                                        <option ng-repeat="project in projects" ng-selected="project==selectedProject" value="((project.id))">((project.title))</option> 
+                                    </select>
+                                </div>
+                                <div class="row" ng-show="selected_project">
+                                    <label>Select Folder</label>
+                                    <select ng-model="selectedFolder" material-select>
+                                        <option value="">---Please select---</option> 
+                                        <option ng-repeat="folder in folders" ng-selected="folder==selectedFolder" value="((folder.id))">((folder.title))</option> 
+                                    </select>
                                 </div>
                                 <div class="row">
-                                <button class="waves-effect waves-light btn col s12" ng-click="processTextGoogleVision()">Process Text With Google Vision</button>
-                                </div>
-                                <div class="row">
-                                <button class="waves-effect waves-light btn" ng-click="processText()">Edit Text</button>
-                                </div>
-                                <div class="row">
-                                    <button class="waves-effect waves-light btn" ng-click="processImage()">Process Image</button>
-                                </div>
+                                    <button class="waves-effect waves-light btn" ng-click="saveFile(selectedProject, selectedFolder)">Save</button>
+                                </div>  
                             </div>
                             <div class="divider"></div>
                             <div class="col s10 offset-s1">
                                 <div class="row">
-                                <h5>Add Meta Data</h5>
+                                    <h5>Add Meta Data</h5>
                                 </div>
                                 <div class="row">
-                                <button class="waves-effect waves-light btn" data-target='archivalSourceModal' modal ready="readyCallback()" complete="completeCallback()" >Add Archival Source</button>
+                                    <button class="waves-effect waves-light btn" data-target='archivalSourceModal' modal ready="readyCallback()" complete="completeCallback()" >Add Archival Source</button>
                                 </div>
                                 <div class="row">
-                                <button class="waves-effect waves-light btn" data-target='issueModal' modal ready="readyCallback()" complete="completeCallback()" >Add Issue</button>
+                                    <button class="waves-effect waves-light btn" data-target='issueModal' modal ready="readyCallback()" complete="completeCallback()" >Add Issue</button>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -110,6 +119,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="col s10 offset-s1">
+                                <div class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="deleteTransformedFile()" >Delete Image</button>
+                                </div>
+                                <div class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="duplicateTransformedImage()">Duplicate Image</button>
+                                </div>
+                                <div class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="untransformFile()" >Untransform Image</button>
                                 </div>
                             </div>
                         </div>

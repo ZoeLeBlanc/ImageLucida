@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from image_lucida_app.forms import *
-from . import coordinates_view
+from . import coordinates_view, textannotation_view
 from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.core.files import File
@@ -17,10 +17,45 @@ from sklearn.cluster import KMeans
 from PIL import Image
 
 
-def segment_image_annotation(request):
+def manual_segmentation(request):
     data = json.loads(request.body.decode())
-    file_name = data['transform_file_name']
-    file = transformfile_model.Transform_File.objects.get(transform_file_name=file_name)
+    file_id = data['transform_file_id']
+    file = transformfile_model.Transform_File.objects.get(pk=file_id)
+    uri = file.file_url
+    coords = data['multi_cords']
+    ocr = data['ocr']
+    process_type = data['process_type']
+    new_image_annotation = coordinates_view.crop_shapes(uri, coords)
+    coor_obj = coordinates_model.Coordinates.objects.get_or_create(
+                multi_coords=json.dumps(coords)
+                )
+    rando_numb = uuid.uuid4()
+    new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
+    new_image_annotation = io.imsave(new_image_annotation_name,new_image_annotation),
+    open_image = open(new_image_annotation_name, 'rb')
+    newest_image_annotation_file = File(open_image)
+    image_annotation = imageannotation_model.Image_Annotation.objects.create(
+                    transform_file=file,
+                    image_annotation_file_name=new_image_annotation_name,
+                    )
+    image_annotation.image_annotation_file.save(new_image_annotation_name, newest_image_annotation_file, save=True)
+    image_annotation.image_annotation_coordinates=coords_obj
+    image_annotation.save()
+    if ocr == True:
+        text_annotation = textannotation_model.Text_Annotation.objects.create(
+        transform_file=transform_file)
+        text_annotation.text_annotation_coordinates=coords_obj
+        text_annotation.save()
+        textannotation_view.segment_text(text_annotation.pk, process_type, transform_file_id)
+        response = {'success': 'true'}
+    else:
+        response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+def auto_segment_image_annotation(request):
+    data = json.loads(request.body.decode())
+    file_id = data['transform_file_id']
+    file = transformfile_model.Transform_File.objects.get(pk=file_id)
     data = file.file_url
     new_image_annotations = coordinates_view.segment_images(data)
     list_1 =new_image_annotations[0] 
@@ -44,13 +79,15 @@ def segment_image_annotation(request):
                 image_annotation.image_annotation_file.save(new_image_annotation_name, newest_image_annotation_file, save=True)
                 image_annotation.image_annotation_coordinates=coords_obj
                 image_annotation.save()
+                file.auto_image_processed = True
+                file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
     
 def transform_image_annotations(request):
     data = json.loads(request.body.decode())
-    file_name = data['transform_file_name']
-    file = transformfile_model.Transform_File.objects.get(transform_file_name=file_name)
+    file_id = data['transform_file_id']
+    file = transformfile_model.Transform_File.objects.get(pk=file_id)
     coords = data['four_points']
     print(coords)
     data = file.file_url
@@ -70,6 +107,8 @@ def transform_image_annotations(request):
     image_annotation.image_annotation_file.save(new_image_annotation_name, newest_image_annotation_file, save=True)
     image_annotation.image_annotation_coordinates=coords_obj
     image_annotation.save()
+    file.manual_image_processed = True
+    file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
 
@@ -134,3 +173,13 @@ def tag_image_annotation(request):
         )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def delete_image_annotation(request):
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        image_anno_id = data['image_anno_id']
+        image_anno = get_object_or_404(imageannotation_model.Image_Annotation, pk=image_anno_id)
+        print(image_anno)
+        image_anno.delete()
+        response = {'success':True}
+        return HttpResponse(response, content_type="application/json")

@@ -4,12 +4,16 @@
         <a href="javascript:void(0);" ng-click="go_back()" >Go Back To Project</a>
     </h6>
     </div>
+    <div class="fixed-action-btn horizontal"> 
+        <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/manual-segment/((active_id))" data-position="top" data-delay="50" data-tooltip="Need to manually segment image?"><i class="large material-icons">info</i>
+        </a>
+    </div> <!-- End of Fab -->
     <div class="row">
-        <div class="col s8">
+        <div class="col s6">
             <img class="responsive-img" src="((transform_file.url))" />
         </div>
-        <div class="col s4">
-            <div class="card sticky-action">
+        <div class="col s6">
+            <div class="card">
                 <div class="card-content">
                     <div class="row">
                         <span class="card-title">((transform_file.transform_file_name))</span>
@@ -21,10 +25,10 @@
                             <div class="collapsible-body">
                                 <div class="row">
                                     <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
-                                        <p id="unedited" >((text_anno.tesseract_text_annotation))</p>
+                                        <p id="unedited">((transform_file.tesseract_text_annotation))</p>
                                     </div>
                                     <div class="flow-text" style="overflow:scroll; height:70vh;" ng-show="editing">
-                                        <p id="edited-tesseract" contenteditable="true">((text_anno.tesseract_text_annotation))</p>
+                                        <p id="edited-tesseract" contenteditable="true">((transform_file.tesseract_text_annotation))</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -51,6 +55,10 @@
                             </div>
                         </li>
                     </ul>
+                </div>
+                <div class="card-action">
+                    <a href="" ng-click="processGoogleVision()"/>Process with Google Vision</a>
+                    <a href="" ng-click="processTesseract()"/>Process with Tesseract</a>
                 </div>
             </div>
         </div>

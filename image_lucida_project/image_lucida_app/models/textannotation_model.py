@@ -23,8 +23,6 @@ class Text_Annotation(models.Model):
     cover = models.BooleanField(default=False)
     cover_story = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', through='Text_Annotation_Tag')
-    tesseract_processed = models.BooleanField(default=False)
-    google_vision_processed = models.BooleanField(default=False)
     text_annotation_file = models.ImageField(upload_to=UniqueFileName('text-annotations/'), blank=True)
 
     def __str__(self):

@@ -40,8 +40,9 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
             });
         },
         deleteUploadFile: (untransformed_file_id) => {
+            console.log(untransformed_file_id);
             return $http({
-                url:`${rootUrl}/delete_untransformed_file/`,
+                url:`${rootUrl}/delete_uploaded_file/`,
                 method: 'DELETE',
                 data: {
                     'untransformed_file_id':untransformed_file_id
@@ -54,6 +55,23 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
                     return res.status;
                 }
             });
-        }
+        },
+        duplicateUploadFile: (untransformed_file_id) => {
+            return $http({
+                url:`${rootUrl}/duplicate_untransformed_file/`,
+                method: 'POST',
+                data: {
+                    'untransformed_file_id':untransformed_file_id
+                }
+            }).then( (res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+
     };
 });

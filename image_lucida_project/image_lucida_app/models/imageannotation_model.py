@@ -24,7 +24,6 @@ class Image_Annotation(models.Model):
     cover = models.BooleanField(default=False)
     cover_image = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', through='Image_Annotation_Tag')
-    processed = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s' % (self.id)

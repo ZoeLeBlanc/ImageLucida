@@ -32,7 +32,7 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, $w
     $scope.deleteFolder = (folderId)=>{
         FoldersFactory.deleteFolder(folderId).then( (response)=>{
             console.log(response);
-            $window.location.reload();
+            // $window.location.reload();
         });
         // console.log(folderId);
     };

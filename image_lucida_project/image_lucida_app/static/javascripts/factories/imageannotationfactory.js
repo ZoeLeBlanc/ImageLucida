@@ -2,12 +2,12 @@
 angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        setImageTransformation: (transform_file_name, four_points) =>{
+        setImageTransformation: (transform_file_id, four_points) =>{
             return $http({
                 url:`${rootUrl}/transform_image_annotations/`,
                 method: 'POST',
                 data: {
-                    'transform_file_name': transform_file_name,
+                    'transform_file_id': transform_file_id,
                     'four_points':four_points
                 }
             }).then((res)=>{
@@ -41,14 +41,29 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        updateTextAnnotation: (text_anno_id, new_text)=>{
-            console.log(new_text);
+        deleteImageAnnotation: (image_anno_id) => {
             return $http({
-                url:`${rootUrl}/update_text_annotation/`,
+                url:`${rootUrl}/delete_image_annotation/`,
+                method: 'DELETE',
+                data: {
+                    'image_anno_id':image_anno_id
+                }
+            }).then( (res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        tagImageAnnotation: (image_anno_id, tag_name)=>{
+            return $http({
+                url:`${rootUrl}/tag_image_annotation/`,
                 method: 'POST',
                 data: {
-                    'text_anno_id': text_anno_id,
-                    'new_text':new_text
+                    'image_anno_id': image_anno_id,
+                    'tag_name':tag_name
                 }
             }).then((res)=>{
                 return res.data;
@@ -58,16 +73,32 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        addIssue: (transform_file_name, issue_id)=>{
+        manualSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
             return $http({
-                url:`${rootUrl}/add_issue/`,
+                url:`${rootUrl}/manual_segmentation/`,
                 method: 'POST',
                 data: {
-                    'transform_file_name': transform_file_name,
-                    'issue_id':issue_id
+                    'transform_file_id': transform_file_id,
+                    'multi_coords':multi_coords,
+                    'ocr':ocr,
+                    'process_type':process_type
                 }
             }).then((res)=>{
-                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        autoImageSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
+            return $http({
+                url:`${rootUrl}/auto_segment_image_annotation/`,
+                method: 'POST',
+                data: {
+                    'transform_file_id': transform_file_id
+                }
+            }).then((res)=>{
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){
