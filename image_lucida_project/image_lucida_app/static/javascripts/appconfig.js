@@ -56,24 +56,49 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/view-project.html',
                 resolve: {user_auth}
             })
-            .when('/projects/upload/:id', {
+            .when('/projects/upload/', {
                 controller: 'UploadFileCtrl',
                 templateUrl: '/static/partials/upload-file.html',
                 resolve: {user_auth}
             })
-            .when('/projects/processtext/tesseract/:active_id', {
+            .when('/projects/transform/', {
+                controller: 'TransformFileCtrl',
+                templateUrl: '/static/partials/transform-file.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/:id/new-folder', {
+                controller: 'NewFolderCtrl',
+                templateUrl: '/static/partials/new-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/:id/edit-folder/:folder_id', {
+                controller: 'NewFolderCtrl',
+                templateUrl: '/static/partials/new-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/:id/view-folder/:folder_id', {
+                controller: 'ViewFolderCtrl',
+                templateUrl: '/static/partials/view-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/process-text/:active_id', {
                 controller: 'ProcessTextCtrl',
                 templateUrl: '/static/partials/process-text.html',
                 resolve: {user_auth}
             })
-            .when('/projects/processtext/googlevision/:active_id', {
-                controller: 'ProcessTextCtrl',
-                templateUrl: '/static/partials/process-text.html',
-                resolve: {user_auth}
-            })
-            .when('/projects/processimage/:active_id', {
+            .when('/projects/process-image/:active_id', {
                 controller: 'ProcessImageCtrl',
                 templateUrl: '/static/partials/process-image.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/manual-segment/:active_id', {
+                controller: 'ManualSegmentImageCtrl',
+                templateUrl: '/static/partials/manual-segment-image.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/view-annotations/:active_id', {
+                controller: 'ViewAnnotationsCtrl',
+                templateUrl: '/static/partials/view-annotations.html',
                 resolve: {user_auth}
             })
             .when('/explore/', {

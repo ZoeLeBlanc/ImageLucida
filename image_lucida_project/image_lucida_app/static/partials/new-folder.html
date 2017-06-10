@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="card col s10 offset-s1">
+        <div class="row">
+            <h4 ng-show="!editing" class="center-align">Create New Folder</h4>
+            <h4 ng-show="editing" class="center-align">Edit Folder</h4>
+        </div>
+        <div class="divider"></div>
+        <div class="row col s10 offset-s1">
+            <label>Folder Title</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Folder Title" ng-model="createFolder.title" required autofocus>
+            </div>
+            <label>Folder Description</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Folder Description" ng-model="createFolder.description" required>
+            </div>
+            <label>Folder Tags</label>
+            <div class="row">
+                <div class="input-field col s10 offset-s1">
+                    <div ng-show="!editing" class="chips" id="createFolderTags">
+                      <input id="search" ng-model="createFolder.tags">
+                    </div>
+                    <div ng-show="editing" class="chips chips-initial" id="editFolderTags">
+                      <input id="search" ng-model="createFolder.tags">
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="!editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewFolder(createFolder)">CREATE FOLDER</a></h5>
+            </div>
+            <div class="row" ng-show="editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewFolder(createFolder)">EDIT FOLDER</a></h5>
+            </div>
+        </div>
+    </div>
+</div>

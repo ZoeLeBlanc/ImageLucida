@@ -2,8 +2,8 @@
 angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getUntransformedFiles: () => {
-            return $http.get(`${rootUrl}/get_untransformed_files/`)
+        getTransformedFiles: () => {
+            return $http.get(`${rootUrl}/get_transform_files/`)
             .then( (res)=>{
                 return res.data;
             });
@@ -14,14 +14,14 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 return res.data;
             });
         },
-        setTransformation: (upload_file_name, four_points, project_id) =>{
+        setTransformation: (upload_file_id, upload_file_name, four_points) =>{
             return $http({
                 url:`${rootUrl}/transform_upload_file/`,
                 method: 'POST',
                 data: {
+                    'upload_file_id': upload_file_id,
                     'upload_file_name': upload_file_name,
-                    'four_points':four_points,
-                    'project_id':project_id
+                    'four_points':four_points
                 }
             }).then((res)=>{
                 console.log(JSON.parse(res));
@@ -32,12 +32,30 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 }
             });
         },
-        addArchivalSource: (transform_file_name, archival_source_id)=>{
+        assignTransformFile: (transform_file_id, project_id, folder_id)=>{
+            return $http({
+                url:`${rootUrl}/assign_transform_file/`,
+                method: 'POST',
+                data: {
+                    'transform_file_id': transform_file_id,
+                    'project_id':project_id,
+                    'folder_id':folder_id
+                }
+            }).then((res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        addArchivalSource: (transform_file_id, archival_source_id)=>{
             return $http({
                 url:`${rootUrl}/add_archival_source/`,
                 method: 'POST',
                 data: {
-                    'transform_file_name': transform_file_name,
+                    'transform_file_id': transform_file_id,
                     'archival_source_id':archival_source_id
                 }
             }).then((res)=>{
@@ -49,15 +67,70 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 }
             });
         },
-        addIssue: (transform_file_name, issue_id)=>{
+        addIssue: (transform_file_id, issue_id)=>{
             return $http({
                 url:`${rootUrl}/add_issue/`,
                 method: 'POST',
                 data: {
-                    'transform_file_name': transform_file_name,
+                    'transform_file_id': transform_file_id,
                     'issue_id':issue_id
                 }
             }).then((res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        updateTransformFile: (transformed_file_id, transform_file_name) =>{
+            return $http({
+                url:`${rootUrl}/update_transform_file/`,
+                method: 'POST',
+                data: {
+                    'transform_file_name':transform_file_name,
+                    'transformed_file_id':transformed_file_id
+                }
+            }).then((res)=>{
+                return res.data;
+            });
+        },
+        untransformFile: (transformed_file_id) =>{
+            return $http({
+                url:`${rootUrl}/untransform_file/`,
+                method: 'POST',
+                data: {
+                    'transformed_file_id':transformed_file_id
+                }
+            }).then((res)=>{
+                return res.data;
+            });
+        },
+        deleteTransformedFile: (transformed_file_id) => {
+            return $http({
+                url:`${rootUrl}/delete_transform_file/`,
+                method: 'DELETE',
+                data: {
+                    'transformed_file_id':transformed_file_id
+                }
+            }).then( (res)=>{
+                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        duplicateTransformedFile: (transformed_file_id) => {
+            return $http({
+                url:`${rootUrl}/duplicate_transform_file/`,
+                method: 'POST',
+                data: {
+                    'transformed_file_id':transformed_file_id
+                }
+            }).then( (res)=>{
                 console.log(JSON.parse(res));
                 return res.data;
             }, (res)=>{

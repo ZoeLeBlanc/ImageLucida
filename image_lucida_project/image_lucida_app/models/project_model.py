@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import transformfile_model, status_model, tag_model, uploadfile_model
+from . import transformfile_model, status_model, tag_model, uploadfile_model, textannotation_model, imageannotation_model
 
 class Project(models.Model):
     ''' The Project class is a model that defines which data is available in the Project table so a database can be created from it.
@@ -19,7 +19,8 @@ class Project(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     transformed_files = models.ManyToManyField('Transform_File', through='Project_Transform_File')
-    untransformed_files = models.ManyToManyField('Upload_File', through='Project_Upload_File')
+    text_annotations = models.ManyToManyField('Text_Annotation', through='Project_Text_Annotation')
+    image_annotations = models.ManyToManyField('Image_Annotation', through='Project_Image_Annotation')
     tags = models.ManyToManyField('Tag', through='Project_Tag')
     status = models.ForeignKey(status_model.Status, null=True, on_delete=models.CASCADE, blank=True)
     private = models.BooleanField(default=False)
@@ -42,20 +43,6 @@ class Project_Transform_File(models.Model):
     def __str__(self):
         return '%s' % (self.id)
 
-class Project_Upload_File(models.Model):
-    ''' 
-    The Project File class is a model that defines a join table for Project & Transform_File.
-
-    Argument List:
-        -models.Model: This argument allows the class to access field types.
-
-    Author: Zoe LeBlanc
-    '''
-    upload_file = models.ForeignKey(uploadfile_model.Upload_File, null=True, related_name='project_upload_files')
-    project = models.ForeignKey(Project, null=True, related_name='project_upload_files')
-
-    def __str__(self):
-        return '%s' % (self.id)
 
 class Project_Tag(models.Model):
     ''' 
@@ -68,6 +55,36 @@ class Project_Tag(models.Model):
     '''
     tag = models.ForeignKey(tag_model.Tag, null=True, related_name='project_tag')
     project = models.ForeignKey(Project, null=True, related_name='project_tag')
+
+    def __str__(self):
+        return '%s' % (self.id)
+
+class Project_Text_Annotation(models.Model):
+    ''' 
+    The Project File class is a model that defines a join table for Project & Text_Annotation.
+
+    Argument List:
+        -models.Model: This argument allows the class to access field types.
+
+    Author: Zoe LeBlanc
+    '''
+    text_annotation = models.ForeignKey(textannotation_model.Text_Annotation, null=True, related_name='project_text_annotations')
+    Project = models.ForeignKey(Project, null=True, related_name='project_text_annotations')
+
+    def __str__(self):
+        return '%s' % (self.id)
+
+class Project_Image_Annotation(models.Model):
+    ''' 
+    The Project File class is a model that defines a join table for Project & Transform_File.
+
+    Argument List:
+        -models.Model: This argument allows the class to access field types.
+
+    Author: Zoe LeBlanc
+    '''
+    image_annotation = models.ForeignKey(imageannotation_model.Image_Annotation, null=True, related_name='project_image_annotations')
+    Project = models.ForeignKey(Project, null=True, related_name='project_image_annotations')
 
     def __str__(self):
         return '%s' % (self.id)

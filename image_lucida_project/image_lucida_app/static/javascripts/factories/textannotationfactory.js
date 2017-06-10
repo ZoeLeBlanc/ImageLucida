@@ -2,12 +2,6 @@
 angular.module('ImageLucidaApp').factory("TextAnnotationFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getUntransformedFiles: () => {
-            return $http.get(`${rootUrl}/get_untransformed_files/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
         getSingleTextAndFile: (text_anno_id) => {
             console.log(text_anno_id);
             return $http.get(`${rootUrl}/get_text_anno_and_file/${text_anno_id}/`)
@@ -51,21 +45,42 @@ angular.module('ImageLucidaApp').factory("TextAnnotationFactory", ($http)=>{
                 }
             });
         },
-        addIssue: (transform_file_name, issue_id)=>{
+        deleteTextAnnotation: (text_anno_id) => {
             return $http({
-                url:`${rootUrl}/add_issue/`,
-                method: 'POST',
+                url:`${rootUrl}/delete_text_annotation/`,
+                method: 'DELETE',
                 data: {
-                    'transform_file_name': transform_file_name,
-                    'issue_id':issue_id
+                    'text_anno_id':text_anno_id
                 }
-            }).then((res)=>{
+            }).then( (res)=>{
                 console.log(JSON.parse(res));
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){
                     return res.status;
                 }
+            });
+        },
+        tagTextAnnotation: (text_anno_id, tag_name)=>{
+            return $http({
+                url:`${rootUrl}/tag_text_annotation/`,
+                method: 'POST',
+                data: {
+                    'text_anno_id': text_anno_id,
+                    'tag_name':tag_name
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        getTextAnnotations: (transform_file_id) => {
+            return $http.get(`${rootUrl}/get_text_annotations/${transform_file_id}/`)
+            .then( (res)=>{
+                return res.data;
             });
         }
     };

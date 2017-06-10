@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <title>Image Lucida</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     <link href="{% static 'lib/bower_components/angular-xeditable/dist/css/xeditable.css' %}" rel="stylesheet">
@@ -19,7 +19,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'lib/bower_components/angular/angular.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js" crossorigin="anonymous"></script>
     
     <script type="text/javascript" src="{% static 'lib/bower_components/angular-materialize/src/angular-materialize.js' %}"></script>
     <script type="text/javascript" src="{% static 'lib/bower_components/angular-route/angular-route.min.js' %}"></script>
@@ -34,6 +34,7 @@
     <script type="text/javascript" src="{% static 'javascripts/appconfig.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/factories/userfactory.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/factories/projectsfactory.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/factories/foldersfactory.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/factories/statusfactory.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/factories/uploadfilefactory.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/factories/transformfilefactory.js' %}"></script>
@@ -50,9 +51,14 @@
     <script type="text/javascript" src="{% static 'javascripts/controllers/authctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/projectsctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/newprojectctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/newfolderctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/viewprojectctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/viewfolderctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/uploadfilectrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/transformfilectrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/processtextctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/processimagectrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/viewannotationsctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/manualsegmentimagectrl.js' %}"></script>
   </body>
 </html>

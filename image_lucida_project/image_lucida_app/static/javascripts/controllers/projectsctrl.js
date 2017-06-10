@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("ProjectsCtrl", function($scope, $location, UserFactory, ProjectsFactory, StatusFactory){
+myApp.controller("ProjectsCtrl", function($scope, $location, $window, UserFactory, ProjectsFactory, StatusFactory){
     $scope.projects = [];
     ProjectsFactory.getProjects().then( (response)=>{
         console.log(response);
@@ -10,4 +10,14 @@ myApp.controller("ProjectsCtrl", function($scope, $location, UserFactory, Projec
         });
         console.log($scope.projects);
     });
+    $scope.duplicateProject = (projectId) =>{
+        ProjectsFactory.duplicateProject(projectId).then( (response)=>{
+            $window.location.reload();
+        });
+    };
+    $scope.deleteProject = (projectId)=>{
+        ProjectsFactory.deleteProject(projectId).then( (response)=>{
+            $window.location.reload();
+        });
+    };
 });

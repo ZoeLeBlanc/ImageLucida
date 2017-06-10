@@ -29,23 +29,33 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 return res.data;
             });
         },
-        updateProject: (userData) =>{
+        updateProject: (projectData) =>{
             return $http({
-                url:`${rootUrl}/login/`,
+                url:`${rootUrl}/update_project/`,
                 method: 'POST',
                 data: {
-                    'username': userData.username,
-                    'password': userData.password,
+                    'title':projectData.title,
+                    'description':projectData.description,
+                    'tags':projectData.tags,
+                    'status':projectData.status,
+                    'private':projectData.private,
+                    'project_id':projectData.id
                 }
             }).then((res)=>{
                 return res.data;
             });
         },
-        deleteProject: (projectId) => {
-            return $http.delete(`${rootUrl}/projects/${projectId}`)
+        deleteProject: (project_id) => {
+            return $http.delete(`${rootUrl}/delete_project/${project_id}`)
             .then( (res)=>{
                 return res.data;
             });
-        } 
+        },
+        duplicateProject: (project_id) => {
+            return $http.get(`${rootUrl}/duplicate_project/${project_id}`)
+            .then( (res)=>{
+                return res.data;
+            });
+        }  
     };
 });

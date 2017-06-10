@@ -1,45 +1,26 @@
 "use strict";
 myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $routeParams, $window, UserFactory, TextAnnotationFactory, TransformFileFactory){
     let transform_file_id = $routeParams.active_id;
+    $scope.active_id = transform_file_id;
     let current_path = $location.path();
-    let text_anno = {};
+    // let text_anno = {};
     let transform_file = {};
     $scope.editing = false;
     let text_anno_id;
-    if (current_path.includes('googlevision')){
-        TextAnnotationFactory.processText(transform_file_id, 'googlevision').then( (response)=>{
-            Materialize.toast('Text Processed', 1000);
-            console.log(response[0]);
-            text_anno_id = response[0].pk;
-            TextAnnotationFactory.getSingleTextAndFile(text_anno_id).then( (response)=>{
-                console.log(response);
-                text_anno = JSON.parse(response.text_anno);
-                $scope.text_anno = text_anno[0].fields;
-                $scope.text_anno.id = text_anno[0].pk;
-                transform_file = JSON.parse(response.transform_file);
-                $scope.transform_file = transform_file[0].fields;
-                $scope.transform_file.id = transform_file[0].pk;
-                $scope.transform_file.url = response.transform_file_url;
-            });  
+    $scope.transform_file = {};
+    TransformFileFactory.getSingleTransformFile(transform_file_id).then( (response)=>{
+        // console.log(response);
+        let transform_file = JSON.parse(response.transform_file);
+        let texts = JSON.parse(response.texts_serialize);
+        angular.forEach(texts, (text, index)=>{
+            transform_file.google_vision_text_annotation = text.fields.google_vision_text_annotation;
+            transform_file.tesseract_text_annotation = text.fields.tesseract_text_annotation;
+            console.log(transform_file.tesseract_text_annotation);
         });
-    } 
-    if (current_path.includes('tesseract')){
-        TextAnnotationFactory.processText(transform_file_id, 'tesseract').then( (response)=>{
-            Materialize.toast('Text Processed', 1000);
-            console.log(response[0]);
-            text_anno_id = response[0].pk;
-            TextAnnotationFactory.getSingleTextAndFile(text_anno_id).then( (response)=>{
-                console.log(response);
-                text_anno = JSON.parse(response.text_anno);
-                $scope.text_anno = text_anno[0].fields;
-                $scope.text_anno.id = text_anno[0].pk;
-                transform_file = JSON.parse(response.transform_file);
-                $scope.transform_file = transform_file[0].fields;
-                $scope.transform_file.id = transform_file[0].pk;
-                $scope.transform_file.url = response.transform_file_url;
-            });  
-        });
-    }
+        $scope.transform_file = transform_file[0].fields;
+        $scope.transform_file.id = transform_file[0].pk;
+        $scope.transform_file.url = response.transform_file_url;
+    });
     
     $scope.editTesseractText = ()=>{
         $scope.editing = true;
@@ -69,5 +50,42 @@ myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $rou
     };
     $scope.go_back = function() { 
         $window.history.back();
+    };
+    //TEXT PROCESS
+    $scope.processGoogleVision = ()=>{
+        let process_type = 'googlevision';
+        TextAnnotationFactory.processText(transform_file_id, process_type).then( (response)=>{
+            Materialize.toast('Text Processed', 1000);
+            console.log(response);
+            // text_anno_id = response[0].pk;
+            // TextAnnotationFactory.getSingleTextAndFile(text_anno_id).then( (response)=>{
+            //     console.log(response);
+            //     text_anno = JSON.parse(response.text_anno);
+            //     $scope.text_anno = text_anno[0].fields;
+            //     $scope.text_anno.id = text_anno[0].pk;
+            //     transform_file = JSON.parse(response.transform_file);
+            //     $scope.transform_file = transform_file[0].fields;
+            //     $scope.transform_file.id = transform_file[0].pk;
+            //     $scope.transform_file.url = response.transform_file_url;
+            // });  
+        });
+    };
+    $scope.processTesseract = ()=>{
+        let process_type = 'tesseract';
+        TextAnnotationFactory.processText(transform_file_id, process_type).then( (response)=>{
+            Materialize.toast('Text Processed', 1000);
+            console.log(response);
+            // text_anno_id = response[0].pk;
+            // TextAnnotationFactory.getSingleTextAndFile(text_anno_id).then( (response)=>{
+            //     console.log(response);
+            //     text_anno = JSON.parse(response.text_anno);
+            //     $scope.text_anno = text_anno[0].fields;
+            //     $scope.text_anno.id = text_anno[0].pk;
+            //     transform_file = JSON.parse(response.transform_file);
+            //     $scope.transform_file = transform_file[0].fields;
+            //     $scope.transform_file.id = transform_file[0].pk;
+            //     $scope.transform_file.url = response.transform_file_url;
+            // });  
+        }); 
     };
 });

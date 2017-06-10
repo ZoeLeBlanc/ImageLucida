@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="row">
+        <h6 class="col s2">
+            <a href="javascript:void(0);" ng-click="go_back()">Go Back To Project</a>
+        </h6>
+    </div>
+    <div class="row">
+        <div class="card col s10 offset-s1">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col s12">
+                        <span class="card-title">
+                        <h4>((folder.title))</h4>
+                        </span>
+                        ((folder.description))
+                    </div>
+                    <div class="divider"></div>
+                    {# Add search function here #}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row" id="files">
+            <div class="col s4" style="overflow:scroll; height: 60vh;">
+                <div class="collection" ng-repeat="(index,file) in transformed_files">
+                    <a class="collection-item" ng-click="showImage(file.pk)" title="">((file.fields.transform_file))</a>
+                </div>
+            </div>
+            <div class="col s5">
+                <div ng-show="clickedImage" id="imageArea">
+                    
+                </div>
+            </div>
+            <div class="col s3">
+                <div ng-show="clickedImage" id="imageInfo">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
