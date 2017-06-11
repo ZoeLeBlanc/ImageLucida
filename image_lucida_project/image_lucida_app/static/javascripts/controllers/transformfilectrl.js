@@ -10,6 +10,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
     $scope.showTabs = false;
     $scope.allTabContentLoaded = false;
     $scope.selected_project = false;
+    $scope.meta_data = false;
     // Upload SECTION
     const loadData = ()=>{
         UploadFileFactory.getUntransformedFiles().then( (response)=>{
@@ -162,11 +163,13 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
     $scope.saveTransformation = ()=>{
         let active_img_id = $('#untransformed_list').find('.active')[0].text;
         let active_img = $('#untransformed-image'+active_img_id+'').find('img');
+        let height = active_img[0].naturalHeight;
+        let width = active_img[0].naturalWidth;
         let upload_file_id = active_img[0].id;
         let upload_file_name = active_img[0].attributes[0].value;
         let coords = valuesToArray(four_points);
         console.log(coords);
-        TransformFileFactory.setTransformation(upload_file_id, upload_file_name, coords).then( (response)=>{
+        TransformFileFactory.setTransformation(upload_file_id, upload_file_name, coords, height, width).then( (response)=>{
             console.log(response);
             Materialize.toast('Transformation Saved', 1000);
             $scope.transforming = false;
@@ -249,79 +252,9 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
             Materialize.toast('File Error', 1000);  
         });
     };
-    // ARCHIVE SECTION
-    $scope.selectArchive = true;
-    $scope.archivalSources = [];
-    ArchivalSourceFactory.getArchivalSources().then((response)=>{
-        console.log(response);
-        if (response.error){
-            $scope.archivalSources = [];
-        } 
-        else {
-            angular.forEach(response, (archive, index)=>{
-            archive.fields.id = archive.pk;
-            console.log(archive);
-            $scope.archivalSources.push(archive.fields);
-            });
-        }   
-    });
-    $scope.addNewArchive = ()=>{
-        $scope.selectArchive = false;
-    };
-    $scope.saveNewArchive = ()=>{
-        ArchivalSourceFactory.newArchivalSource($scope.archival_source).then( (response)=>{
-            $scope.archival_source = {};
-            $scope.saveArchive(response[0].pk);
-        });
-    };
-    $scope.saveArchive = (select_archive)=>{
-        let archive_id = select_archive;
+   $scope.addMetaData = ()=>{
         let active_file_id = $('#transformed_list').find('.active')[0].text;
-        let active_file = $('#transformed-image'+active_file_id+'').find('img');
-        console.log(active_file);
-        let transform_file_name = active_file[0].attributes[0].value;
-        let transform_file_id = active_file[0].id;
-        console.log(archive_id, transform_file_name);
-        TransformFileFactory.addArchivalSource(transform_file_id, archive_id).then( (response)=>{
-            console.log(response);
-        });
-    };
-    // ISSUE SECTION
-    $scope.selectIssue = true;
-    $scope.issues = [];
-    IssueFactory.getIssues().then((response)=>{
-        console.log(response);
-        if (response.error){
-            $scope.issues = [];
-        } 
-        else {
-            angular.forEach(response, (issue, index)=>{
-            issue.fields.id = issue.pk;
-            console.log(issue);
-            $scope.issues.push(issue.fields);
-            });
-        }   
-    });
-    $scope.addNewIssue = ()=>{
-        $scope.selectIssue = false;
-    };
-    $scope.saveNewIssue = ()=>{
-        IssueFactory.newIssue($scope.issue).then( (response)=>{
-            $scope.issue = {};
-            $scope.saveIssue(response[0].pk);
-        });
-    };
-    $scope.saveIssue = (select_issue)=>{
-        let issue_id = select_issue;
-        let active_file_id = $('#transformed_list').find('.active')[0].text;
-        let active_file = $('#transformed-image'+active_file_id+'').find('img');
-        console.log(active_file);
-        let transform_file_name = active_file[0].attributes[0].value;
-        let transform_file_id = active_file[0].id;
-        console.log(issue_id, transform_file_name);
-        TransformFileFactory.addIssue(transform_file_id, issue_id).then( (response)=>{
-            console.log(response);
-        });
-    };
+        $location.path('#!/projects/meta-data/${active_file_id}');
+   };
     
 });

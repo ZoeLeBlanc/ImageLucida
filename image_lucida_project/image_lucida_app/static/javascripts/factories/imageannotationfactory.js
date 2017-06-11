@@ -73,7 +73,8 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        manualSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
+        manualSegmentation: (transform_file_id, multi_coords, ocr, process_type, height, width)=>{
+            console.log(process_type);
             return $http({
                 url:`${rootUrl}/manual_segmentation/`,
                 method: 'POST',
@@ -81,7 +82,9 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                     'transform_file_id': transform_file_id,
                     'multi_coords':multi_coords,
                     'ocr':ocr,
-                    'process_type':process_type
+                    'process_type':process_type,
+                    'height':height,
+                    'width':width
                 }
             }).then((res)=>{
                 return res.data;

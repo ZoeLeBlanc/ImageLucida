@@ -93,3 +93,16 @@ def duplicate_folder(request, folder_id):
     folder.save()
     response = {'success':True}
     return HttpResponse(response, content_type="application/json")
+
+def tag_folder(request):
+    data = json.loads(request.body.decode())
+    folder_id = data['folder_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    folder = get_object_or_404(folder_model.Folder, pk=folder_id)
+    tag_folder = folder_model.Folder_Tag.objects.get_or_create(
+        tag =tag,
+        folder = folder
+        )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')

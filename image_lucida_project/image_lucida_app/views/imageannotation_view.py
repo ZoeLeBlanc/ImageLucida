@@ -22,13 +22,17 @@ def manual_segmentation(request):
     file_id = data['transform_file_id']
     file = transformfile_model.Transform_File.objects.get(pk=file_id)
     uri = file.file_url
-    coords = data['multi_cords']
+    coords = data['multi_coords']
     ocr = data['ocr']
     process_type = data['process_type']
-    new_image_annotation = coordinates_view.crop_shapes(uri, coords)
-    coor_obj = coordinates_model.Coordinates.objects.get_or_create(
+    height = data['height']
+    width = data['width']
+    print(coords)
+    new_image_annotation = coordinates_view.crop_shapes(uri, coords, height, width)
+    coords_obj = coordinates_model.Coordinates.objects.get_or_create(
                 multi_coords=json.dumps(coords)
                 )
+    print(coords_obj)
     rando_numb = uuid.uuid4()
     new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
     new_image_annotation = io.imsave(new_image_annotation_name,new_image_annotation),
@@ -39,7 +43,8 @@ def manual_segmentation(request):
                     image_annotation_file_name=new_image_annotation_name,
                     )
     image_annotation.image_annotation_file.save(new_image_annotation_name, newest_image_annotation_file, save=True)
-    image_annotation.image_annotation_coordinates=coords_obj
+    image_annotation.image_annotation_coordinates=coords_obj[0]
+    image_annotation.manual_image_processed=True
     image_annotation.save()
     if ocr == True:
         text_annotation = textannotation_model.Text_Annotation.objects.create(

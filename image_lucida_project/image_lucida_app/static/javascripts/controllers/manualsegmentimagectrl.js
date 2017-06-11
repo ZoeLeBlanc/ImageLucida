@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $location, $routeParams, $window, UserFactory, TextAnnotationFactory, TransformFileFactory){
+myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $location, $routeParams, $window, UserFactory, TextAnnotationFactory, TransformFileFactory, ImageAnnotationFactory){
     let transform_file_id = $routeParams.active_id;
     $scope.active_id = transform_file_id;
     let transform_file = {};
@@ -13,7 +13,7 @@ myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $locatio
         $scope.transform_file.id = transform_file[0].pk;
         $scope.transform_file.url = response.transform_file_url;
         $scope.imageSrc = response.transform_file_url;
-        console.log($scope.imageSrc);
+        console.log($scope.transform_file);
         $scope.loaddata=true;
          //IMAGE ANNOTATION TEST
         $scope.points = [[]];
@@ -43,9 +43,24 @@ myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $locatio
         $scope.enabled = true;
         $scope.points.push([]);
         $scope.activePolygon = $scope.points.length - 1;
-        console.log($scope.points);
+        console.log("$scope.points", $scope.points);
     };
     $scope.savePolygons = function () {
-        console.log($scope.points);
+        let width = document.getElementById('canvasImage').width;
+        let height = document.getElementById('canvasImage').height;
+        angular.forEach($scope.points, (array, index)=>{
+            if(array.length > 0){
+                let outsideArray = [];
+                outsideArray.push(array);
+                let ocr = false;
+                let process_type = 'None';
+                ImageAnnotationFactory.manualSegmentation($scope.active_id, outsideArray, ocr, process_type, height, width).then((response)=>{
+                    console.log(response);
+                });
+            }
+        });
+    };
+    $scope.go_back = function() { 
+        $window.history.back();
     };
 });

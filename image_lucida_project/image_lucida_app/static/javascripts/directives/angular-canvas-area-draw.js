@@ -65,7 +65,7 @@ myApp.directive('canvasAreaDraw', function () {
             ctx = $canvas[0].getContext('2d');
             console.log($canvas);
             image = new Image();
-            console.log("image", image);
+            console.log("image", image.height);
             scope.resize = function() {
                 $canvas.attr('height', image.height).attr('width', image.width);
                 $canvas.attr('height', $canvas[0].offsetHeight).attr('width', $canvas[0].offsetWidth);
@@ -78,6 +78,7 @@ myApp.directive('canvasAreaDraw', function () {
             $canvas.css({backgroundSize: 'contain'});
             $canvas.css({'max-width': '100%'});
             $canvas.css({'height': 'auto'});
+            $canvas.attr('id', 'canvasImage');
             // $canvas.addClass('responsive-img');
 
             $(element).append($canvas);

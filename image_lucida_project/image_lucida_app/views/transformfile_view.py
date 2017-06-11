@@ -20,6 +20,8 @@ def transform_upload_file(request):
     file_name = data['upload_file_name']
     file = uploadfile_model.Upload_File.objects.get(pk=file_id)
     coords = data['four_points']
+    height = data['height']
+    width = data['width']
     data = file.file_url
     new_file = coordinates_view.four_point_transform(data, coords)
     rows, cols, ch = new_file.shape
@@ -37,6 +39,8 @@ def transform_upload_file(request):
         )
     transform_file.transform_file.save(new_file_name, new_transform_file, save=True)
     transform_file.transform_file_coordinates=coords_obj
+    transform_file.height = height
+    transform_file.width = width
     transform_file.save()
     print(transform_file)
     response = {'success': 'true'}
@@ -160,4 +164,29 @@ def get_transform_files(request):
         transformed_list.append(file_list)
     files_json = serializers.serialize("json", transformed_files)
     response = json.dumps({'transformed_files':files_json, 'transformed_list':transformed_list})
+    return HttpResponse(response, content_type='application/json')
+
+def unassign_transform_file(request):
+    data = json.loads(request.body.decode())
+    transform_file_id = data['transform_file_id']
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+    folder = transform_file.folder_transform_files_set.all()
+    transform_file.folder_transform_files_set.remove(folder)
+    project = transform_file.project_transform_files_set.all()
+    transform_file.project_transform_files_set.remove(project)
+    transform_file.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+def tag_transform_file(request):
+    data = json.loads(request.body.decode())
+    transform_file_id = data['transform_file_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    tag_transform_file = transformfile_model.Transform_File_Tag.objects.get_or_create(
+        tag =tag,
+        transform_file = transform_file
+        )
+    response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')

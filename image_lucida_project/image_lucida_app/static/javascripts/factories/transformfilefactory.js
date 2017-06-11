@@ -14,14 +14,16 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 return res.data;
             });
         },
-        setTransformation: (upload_file_id, upload_file_name, four_points) =>{
+        setTransformation: (upload_file_id, upload_file_name, four_points, height, width) =>{
             return $http({
                 url:`${rootUrl}/transform_upload_file/`,
                 method: 'POST',
                 data: {
                     'upload_file_id': upload_file_id,
                     'upload_file_name': upload_file_name,
-                    'four_points':four_points
+                    'four_points':four_points,
+                    'height':height,
+                    'width':width
                 }
             }).then((res)=>{
                 console.log(JSON.parse(res));
@@ -107,6 +109,17 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 return res.data;
             });
         },
+        unassignTransformFile: (transform_file_id) =>{
+            return $http({
+                url:`${rootUrl}/unassign_transform_file/`,
+                method: 'POST',
+                data: {
+                    'transform_file_id':transform_file_id
+                }
+            }).then((res)=>{
+                return res.data;
+            });
+        },
         deleteTransformedFile: (transformed_file_id) => {
             return $http({
                 url:`${rootUrl}/delete_transform_file/`,
@@ -138,6 +151,22 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                     return res.status;
                 }
             });
-        }
+        },
+        tagTransformFile: (transform_file_id, tag_name)=>{
+            return $http({
+                url:`${rootUrl}/tag_transform_file/`,
+                method: 'POST',
+                data: {
+                    'transform_file_id': transform_file_id,
+                    'tag_name':tag_name
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
     };
 });

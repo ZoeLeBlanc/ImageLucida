@@ -12,12 +12,12 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
     let untransformed_list = [];
     let transformed_list = [];
     FoldersFactory.getSingleFolder(folder_id).then( (response)=>{
+        console.log(response);
         folder = JSON.parse(response.folder);
-        transformed_list = response.transformed_list;
-        image_annotations_list = response.image_annotations_list;
         $scope.folder = folder[0].fields;
         $scope.folder.id = folder[0].pk;
         $scope.transformed_files = JSON.parse(response.transformed_files);
+        let transformed_list = response.transformed_list;
         $scope.tags = JSON.parse(response.tags);
         console.log("$scope.transformed_files", $scope.transformed_files);
         angular.forEach($scope.transformed_files, (obj, index)=>{

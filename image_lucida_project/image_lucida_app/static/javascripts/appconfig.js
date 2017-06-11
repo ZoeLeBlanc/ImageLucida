@@ -101,6 +101,11 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/view-annotations.html',
                 resolve: {user_auth}
             })
+            .when('/projects/meta-data/:active_id', {
+                controller: 'MetaDataCtrl',
+                templateUrl: '/static/partials/meta-data.html',
+                resolve: {user_auth}
+            })
             .when('/explore/', {
                 controller: 'ExploreCtrl',
                 templateUrl: '/static/partials/explore.html',

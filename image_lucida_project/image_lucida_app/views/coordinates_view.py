@@ -128,14 +128,24 @@ def plot_colors(hist, centroids):
     # return the bar chart
     return bar
 
-def crop_shapes(img, points):
+def crop_shapes(img, points, new_height, new_width):
     # original image
     # -1 loads as-is so if it will be 3 or 4 channel as the original
     image = io.imread(img)
     # mask defaulting to black for 3-channel and transparent for 4-channel
     # (of course replace corners with yours)
     mask = np.zeros(image.shape, dtype=np.uint8)
-    roi_corners = np.array(points, dtype=np.int32)
+    height, width, channel = image.shape
+    aspect_ratio_height = height / new_height
+    aspect_ratio_width = width / new_width
+    initial_corners = np.array(points, dtype=np.int32)
+    new_array = []
+    for array in initial_corners:
+        for item in array:
+            test_array = [item[0] * aspect_ratio_width, item[1]* aspect_ratio_height]
+            new_array.append(test_array)
+    print(new_array)
+    roi_corners = np.array([new_array], dtype=np.int32)
     # fill the ROI so it doesn't get wiped out when the mask is applied
     channel_count = image.shape[2]  # i.e. 3 or 4 depending on your image
     ignore_mask_color = (255,)*channel_count

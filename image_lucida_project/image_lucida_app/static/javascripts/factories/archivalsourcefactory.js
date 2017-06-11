@@ -2,8 +2,14 @@
 angular.module('ImageLucidaApp').factory("ArchivalSourceFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getArchivalSources: () => {
-            return $http.get(`${rootUrl}/get_archival_sources/`)
+        getAllArchivalSources: () => {
+            return $http.get(`${rootUrl}/get_all_archival_sources/`)
+            .then( (res)=>{
+                return res.data;
+            });
+        },
+        getFileArchivalSources: (transform_file_id) =>{
+            return $http.get(`${rootUrl}/get_file_archival_sources/${transform_file_id}/`)
             .then( (res)=>{
                 return res.data;
             });
@@ -21,22 +27,33 @@ angular.module('ImageLucidaApp').factory("ArchivalSourceFactory", ($http)=>{
                 return res.data;
             });
         },
-        updateProject: (userData) =>{
+        updateArchivalSource: (archivalSourceData) =>{
             return $http({
-                url:`${rootUrl}/login/`,
+                url:`${rootUrl}/update_archival_source/`,
                 method: 'POST',
                 data: {
-                    'username': userData.username,
-                    'password': userData.password,
+                    'archive_name':archivalSourceData.archive_name,
+                    'collection_name':archivalSourceData.collection_name,
+                    'folder_name':archivalSourceData.folder_name
                 }
             }).then((res)=>{
                 return res.data;
             });
         },
-        deleteProject: (projectId) => {
-            return $http.delete(`${rootUrl}/projects/${projectId}`)
-            .then( (res)=>{
+        deleteArchivalSource: (archival_source_id) => {
+            return $http({
+                url:`${rootUrl}/delete_archival_source/`,
+                method: 'DELETE',
+                data: {
+                    'archival_source_id':archival_source_id
+                }
+            }).then( (res)=>{
+                console.log(JSON.parse(res));
                 return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
             });
         } 
     };
