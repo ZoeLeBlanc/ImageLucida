@@ -7,6 +7,7 @@ myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $locatio
     $scope.annotating= false;
     $scope.loaddata=false;
     $scope.transform_file = {};
+    $scope.process_type = {};
     TransformFileFactory.getSingleTransformFile(transform_file_id).then( (response)=>{
         let transform_file = JSON.parse(response.transform_file);
         $scope.transform_file = transform_file[0].fields;
@@ -48,12 +49,17 @@ myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $locatio
     $scope.savePolygons = function () {
         let width = document.getElementById('canvasImage').width;
         let height = document.getElementById('canvasImage').height;
+        let ocr = false;
+        let process_type = 'None';
+        if ($scope.process_type.google_vision || $scope.process_type.tesseract) {
+            ocr = true;
+            process_type = Object.keys($scope.process_type)[0];
+        }
+        console.log(ocr, process_type);
         angular.forEach($scope.points, (array, index)=>{
             if(array.length > 0){
                 let outsideArray = [];
                 outsideArray.push(array);
-                let ocr = false;
-                let process_type = 'None';
                 ImageAnnotationFactory.manualSegmentation($scope.active_id, outsideArray, ocr, process_type, height, width).then((response)=>{
                     console.log(response);
                 });

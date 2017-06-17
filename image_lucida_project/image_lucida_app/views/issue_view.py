@@ -20,13 +20,6 @@ def get_all_issues(request):
         })
         return HttpResponse(response, content_type="application/json")
 
-def get_file_issues(request, transform_file_id):
-    issues = issue_model.Issue.objects.filter(transform_file=transform_file_id)
-    print(issues)
-    issues_json = serializers.serialize("json", issues)
-    return HttpResponse(issues_json, content_type="application/json")
-
-
 def create_issue(request): 
     """Method view to register new user"""
     data = json.loads(request.body.decode())

@@ -1,29 +1,39 @@
 "use strict";
 myApp.controller("MetaDataCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory){
     let transform_file_id = $routeParams.active_id;
+    $scope.selectIssue = true;
+    $scope.selectArchive = true;
+    $scope.tagsExist = false;
+    $('.chips').material_chip();
     // ARCHIVE SECTION
     $scope.selectArchive = true;
     $scope.allArchivalSources = {};
-    $scope.fileArchivalSources = {};
-    ArchivalSourceFactory.getAllArchivalSources().then((response)=>{
+    $scope.fileArchivalSources = [];
+    $scope.transform_file = {};
+    TransformFileFactory.getSingleTransformFile(transform_file_id).then( (response)=>{
         console.log(response);
-        $scope.allArchivalSources = response;
-            // angular.forEach(response, (archive, index)=>{
-            // archive.fields.id = archive.pk;
-            // console.log(archive);
-            // $scope.allArchivalSources.push(archive.fields);
-            // });   
-          
+        let transform_file = JSON.parse(response.transform_file);
+        $scope.current_archival_source = JSON.parse(response.archival_source);
+        $scope.current_issue = JSON.parse(response.issue);
+        $scope.transform_file = transform_file[0].fields;
+        console.log($scope.transform_file);
+        let tags = JSON.parse(response.tags_serialize);
+        $scope.tags = tags;
+        let data = [];
+        angular.forEach($scope.tags, (item, index)=>{
+            console.log(item);
+            data.push({tag:item.fields.tag_name});
+        });
+        console.log(data);
+        $('.chips-initial').material_chip({data});
     });
-    ArchivalSourceFactory.getFileArchivalSources(transform_file_id).then((response)=>{
-        console.log(response);
-        $scope.allFileArchivalSources = response;
-            // angular.forEach(response, (archive, index)=>{
-            // archive.fields.id = archive.pk;
-            // console.log(archive);
-            // $scope.allArchivalSources.push(archive.fields);
-            // });   
-           
+    ArchivalSourceFactory.getAllArchivalSources().then((response)=>{
+        $scope.allArchivalSources = response;
+        angular.forEach($scope.allArchivalSources, (source, index)=>{
+            source.fields.id = source.pk;
+        });
+    
+        console.log($scope.allArchivalSources);
     });
     $scope.addNewArchive = ()=>{
         $scope.selectArchive = false;
@@ -41,23 +51,20 @@ myApp.controller("MetaDataCtrl", function($scope, $location, $routeParams, $wind
         // console.log(active_file);
         // let transform_file_name = active_file[0].attributes[0].value;
         // let transform_file_id = active_file[0].id;
-        // console.log(archive_id, transform_file_name);
+        console.log(archive_id, transform_file_id);
         TransformFileFactory.addArchivalSource(transform_file_id, archive_id).then( (response)=>{
             console.log(response);
         });
     };
     // ISSUE SECTION
-    $scope.selectIssue = true;
-    $scope.allIssues = {};
-    $scope.fileIssues = {};
     IssueFactory.getAllIssues().then((response)=>{
         console.log(response);
         $scope.allIssues = response;
+        angular.forEach($scope.allIssues, (issue, index)=>{
+            issue.fields.id = issue.pk;
+        });
     });
-    IssueFactory.getFileIssues(transform_file_id).then((response)=>{
-        console.log(response);
-        $scope.fileIssues = response;
-    });
+    
     $scope.addNewIssue = ()=>{
         $scope.selectIssue = false;
     };
@@ -73,5 +80,33 @@ myApp.controller("MetaDataCtrl", function($scope, $location, $routeParams, $wind
             console.log(response);
         });
     };
-    
+    $scope.go_back = function() { 
+        $window.history.back();
+    };
+    $('.chips-initial').on('chip.delete', (e, chip)=>{
+        TransformFileFactory.removeTag(transform_file_id, chip.tag).then((response)=>{
+            console.log(response);
+        });
+    });
+    $scope.saveTags = ()=>{
+        let all_tags = [];
+        console.log($scope.tags);
+        var data = $('.chips-initial').material_chip('data');
+        console.log(data);
+        if (data.length === 0){
+            data = $('.chips').material_chip('data');
+        }
+        console.log(data);
+        angular.forEach(data, (value, index)=>{
+            console.log("data", data[index].tag);
+            all_tags.push({
+                'tag':data[index].tag,
+            });
+        });
+        angular.forEach(all_tags, (tag, index)=>{
+            TransformFileFactory.tagTransformFile(transform_file_id, tag.tag).then( (response)=>{
+                console.log(response);
+            });
+        });
+    };
 });

@@ -18,12 +18,6 @@ def get_all_archival_sources(request):
         })
     return HttpResponse(response, content_type="application/json")
 
-def get_file_archival_sources(request, transform_file_id):
-    archival_sources = archivalsource_model.Archival_Source.objects.filter(transform_file=transform_file_id)
-    print(archival_sources)
-    response= serializers.serialize("json", archival_sources)
-    return HttpResponse(response, content_type="application/json")
-
 def create_archival_source(request): 
     """Method view to register new user"""
     data = json.loads(request.body.decode())

@@ -46,8 +46,8 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/new-project.html',
                 resolve: {user_auth}
             })
-            .when('/projects/edit:id', {
-                controller: 'EditProjectCtrl',
+            .when('/projects/edit/:id', {
+                controller: 'NewProjectCtrl',
                 templateUrl: '/static/partials/new-project.html',
                 resolve: {user_auth}
             })

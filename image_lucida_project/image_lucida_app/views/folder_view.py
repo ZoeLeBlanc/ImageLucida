@@ -14,11 +14,23 @@ def get_single_folder(request, folder_id):
     folder = get_object_or_404(folder_model.Folder, pk=folder_id)
     # Transformed files
     transformed_files = folder.transformed_files.all().order_by('id')
-    transformed_list = []
-    for file in transformed_files:
-        file_list = []
-        file_list.extend({file.transform_file_name, file.file_url})         
-        transformed_list.append(file_list)
+    transformed_list = {}
+    for index,file in enumerate(transformed_files):
+        file_list = {}
+        tags = file.tags.all()
+        if tags.exists():
+            tags_serialized = serializers.serialize("json", tags)
+            print(tags_serialized)
+            file_list['file_name'] =file.transform_file_name
+            file_list['file_url'] = file.file_url 
+            file_list['file_tags'] = tags_serialized
+            transformed_list[index] = file_list
+        else:
+            file_list['file_name'] =file.transform_file_name
+            file_list['file_url'] = file.file_url 
+            file_list['file_tags'] = []
+            transformed_list[index] = file_list 
+    print(transformed_list)
     #Tag
     tags = folder.tags.all().order_by('id')
 

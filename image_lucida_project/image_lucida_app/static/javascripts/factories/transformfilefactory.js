@@ -168,5 +168,21 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 }
             });
         },
+        removeTag: (transform_file_id, tag_name)=>{
+            return $http({
+                url:`${rootUrl}/remove_tag_transform_file/`,
+                method: 'DELETE',
+                data: {
+                    'transform_file_id': transform_file_id,
+                    'tag_name':tag_name
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        }
     };
 });

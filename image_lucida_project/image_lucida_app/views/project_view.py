@@ -24,10 +24,12 @@ def get_single_project(request, project_id):
     """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
+    tags = project.tags.all()
     folders = project.folder_set.all()
     project_serialize = serializers.serialize("json", [project,])
     folders_serialize = serializers.serialize("json", folders)
-    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize})
+    tags_serialize = serializers.serialize("json", tags)
+    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize, 'tags': tags_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
     

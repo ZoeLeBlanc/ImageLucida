@@ -253,8 +253,13 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         });
     };
    $scope.addMetaData = ()=>{
-        let active_file_id = $('#transformed_list').find('.active')[0].text;
-        $location.path('#!/projects/meta-data/${active_file_id}');
+        let active_img_id = $('#transformed_list').find('.active')[0].text;
+        let active_file = $('#transformed-image'+active_img_id+'').find('img');
+        let active_id = active_file[0].id;
+        console.log(active_id);
+        let url = '#!/projects/meta-data/'+ active_id.toString();
+        console.log(url);
+        $window.location.href = url;
    };
     
 });

@@ -46,15 +46,14 @@ urlpatterns = [
     url(r'^untransform_file/', transformfile_view.untransform_file, name= 'untransform_file'),
     url(r'^get_transform_files/', transformfile_view.get_transform_files, name= 'get_transform_files'),
     url(r'^tag_transform_file/', transformfile_view.tag_transform_file, name= 'tag_transform_file'),
+    url(r'^remove_tag_transform_file/', transformfile_view.remove_tag_transform_file, name= 'remove_tag_transform_file'),
     # archival source urls
     url(r'^get_all_archival_sources/', archivalsource_view.get_all_archival_sources, name= 'get_all_archival_sources'),
-    url(r'^get_file_archival_sources/(?P<transform_file_id>\d+)/$', archivalsource_view.get_file_archival_sources, name= 'get_file_archival_sources'),
     url(r'^create_archival_source/', archivalsource_view.create_archival_source, name= 'create_archival_source'),
     url(r'^delete_archival_source/', archivalsource_view.delete_archival_source, name= 'delete_archival_source'),
     url(r'^update_archival_source/', archivalsource_view.update_archival_source, name= 'update_archival_source'),
     # issues urls
     url(r'^get_all_issues/', issue_view.get_all_issues, name= 'get_all_issues'),
-    url(r'^get_file_issues/(?P<transform_file_id>\d+)/$', issue_view.get_file_issues, name= 'get_file_issues'),
     url(r'^update_issue/', issue_view.update_issue, name= 'update_issue'),
     url(r'^create_issue/', issue_view.create_issue, name= 'create_issue'),
     url(r'^delete_issue/', issue_view.delete_issue, name= 'delete_issue'),

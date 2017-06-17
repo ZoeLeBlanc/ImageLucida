@@ -30,6 +30,7 @@ class Transform_File(models.Model):
     manual_image_processed = models.BooleanField(default=False)
     height = models.IntegerField(null=True, default=0)
     width = models.IntegerField(null=True, default=0)
+    tags = models.ManyToManyField('Tag', through='Transform_File_Tag')
 
     def __str__(self):
         return '%s' % (self.transform_file_name)

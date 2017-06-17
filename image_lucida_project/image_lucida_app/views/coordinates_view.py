@@ -166,15 +166,18 @@ def segment_images(img):
     mask = image < val
     clean_border = segmentation.clear_border(mask)
     labeled = label(clean_border)
-    cropped_images = []
-    cropped_coords = []
+    cropped_images = {}
+    cropped_coords = {}
     pad = 20
     for region_index, region in enumerate(regionprops(labeled)):
-      if region.area < 2000:
-        continue
+        print(region_index)
+        if region.area < 2000:
+            continue
         minr, minc, maxr, maxc = region.bbox
-        cropped_coords[str(region_index) + 'image'] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
-        cropped_images[str(region_index) + 'image'] = img[minr-pad:maxr+pad, minc-pad:maxc+pad]
+        print("bounding box:", minr, minc, maxr, maxc)
+        cropped_coords[region_index] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
+        cropped_images[region_index] = image[minr-pad:maxr+pad, minc-pad:maxc+pad]
+    print(cropped_coords)
     return cropped_coords, cropped_images
 
 

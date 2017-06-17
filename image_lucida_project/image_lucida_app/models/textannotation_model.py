@@ -22,26 +22,10 @@ class Text_Annotation(models.Model):
     google_vision_text_annotation = models.TextField(blank=True)
     cover = models.BooleanField(default=False)
     cover_story = models.BooleanField(default=False)
-    tags = models.ManyToManyField('Tag', through='Text_Annotation_Tag')
     text_annotation_file = models.ImageField(upload_to=UniqueFileName('text-annotations/'), blank=True)
 
     def __str__(self):
         return '%s' % (self.id)
 
-class Text_Annotation_Tag(models.Model):
-    ''' The Text Annotation Tag class is a model that defines which data is available in the Text Tag Annotation table so a database can be created from it.
 
-    Method List:
-        -none
-
-    Argument List:
-        -models.Model: This argument allows the class to access field types.
-
-    Author: Zoe LeBlanc
-    '''
-    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='text_annotation_tag')
-    text_annotation = models.ForeignKey(Text_Annotation, null=True, related_name='text_annotation_tag')
-
-    def __str__(self):
-        return '%s' % (self.id)
 

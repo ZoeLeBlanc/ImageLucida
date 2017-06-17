@@ -3,30 +3,38 @@ myApp.controller("ViewAnnotationsCtrl", function($scope, $location, $routeParams
     // FOLDer SECTION
     let transform_file_id = $routeParams.active_id;
     $scope.transformed_file = {};
-    $scope.text_annotations = {};
+    $scope.text_annotation = {};
     $scope.image_annotations = {};
     $scope.tags = {};
+    $scope.showTabs = false;
+    $scope.allTabContentLoaded = false;
     let image_annotations_list = [];
     TextAnnotationFactory.getTextAnnotations(transform_file_id).then((response)=>{
-        $scope.text_annotations = JSON.parse(response.texts);
-        console.log($scope.text_annotations);
+        $scope.text_annotation = JSON.parse(response.texts);
+        console.log($scope.text_annotation);
     });
-    let images;
-    let images_urls;
     ImageAnnotationFactory.getImageAnnotations(transform_file_id).then( (response)=>{
-        console.log('response', JSON.parse(response.images));
-        images_urls = response.image_urls;
+        console.log(response);
+        let images_data = response.images_data;
         $scope.image_annotations = JSON.parse(response.images);
         angular.forEach($scope.image_annotations, (image, index)=>{
             image.fields.id = image.pk;
-            angular.forEach(images_urls, (url, index)=>{
-                if (image.fields.image_annotation_file_name == url[0]){
-                    image.fields.url = url[1];
-                }
-                if (image.fields.image_annotation_file_name == url[1]){
-                    image.fields.url = url[0];
+            angular.forEach(images_data, (item, index)=>{
+                console.log(item);
+                if(image.fields.image_annotation_file_name === item.image_name){
+                    image.fields.url = item.image_url;
+                    image.fields.tags = item.image_tags;
+                    // if(item.image_tags.length > 0){
+                    //     image.fields.tags = JSON.parse(image.fields.tags);
+                    // }
                 }
             });
         });
+        console.log($scope.image_annotations);
+        $scope.allTabContentLoaded = true;
+        $scope.showTabs = true;
     });
+    $scope.go_back = function() { 
+        $window.history.back();
+    };
 });

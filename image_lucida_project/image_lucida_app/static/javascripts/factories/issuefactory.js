@@ -8,12 +8,6 @@ angular.module('ImageLucidaApp').factory("IssueFactory", ($http)=>{
                 return res.data;
             });
         },
-        getFileIssues: (transform_file_id) =>{
-            return $http.get(`${rootUrl}/get_file_issues/${transform_file_id}/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
         newIssue: (issueData) =>{
             return $http({
                 url:`${rootUrl}/create_issue/`,

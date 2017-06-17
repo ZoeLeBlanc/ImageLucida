@@ -8,12 +8,6 @@ angular.module('ImageLucidaApp').factory("ArchivalSourceFactory", ($http)=>{
                 return res.data;
             });
         },
-        getFileArchivalSources: (transform_file_id) =>{
-            return $http.get(`${rootUrl}/get_file_archival_sources/${transform_file_id}/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
         newArchivalSource: (archivalSourceData) =>{
             return $http({
                 url:`${rootUrl}/create_archival_source/`,

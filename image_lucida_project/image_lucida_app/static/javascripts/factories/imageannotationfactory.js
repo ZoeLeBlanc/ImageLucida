@@ -94,7 +94,7 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        autoImageSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
+        autoImageSegmentation: (transform_file_id)=>{
             return $http({
                 url:`${rootUrl}/auto_segment_image_annotation/`,
                 method: 'POST',

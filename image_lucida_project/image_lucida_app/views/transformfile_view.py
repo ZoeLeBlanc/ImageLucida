@@ -94,18 +94,55 @@ def add_issue(request):
     return HttpResponse(response, content_type='application/json')
 
 def get_single_transform_file(request, transform_file_id):
-    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+    archival_source = transform_file.archival_source
+    if archival_source is None:
+        archival_source = archivalsource_model.Archival_Source.objects.get_or_create(pk=1)
+        print(archival_source)
+        archival_source_serialize = serializers.serialize("json", [archival_source[0],])
+        archival_source_default = True
+    else:
+        archival_source_serialize = serializers.serialize("json", [archival_source,])
+        archival_source_default = False
+
+    issue = transform_file.issue
+    if issue is None:
+        issue = issue_model.Issue.objects.get_or_create(pk=1)
+        issue_serialize = serializers.serialize("json", [issue[0],])
+        issue_default = True
+    else:
+        issue_serialize = serializers.serialize("json", [issue,])
+        issue_default = False
     texts = transform_file.text_annotation_set.all()
-    images = transform_file.image_annotation_set.all()    
+    images = transform_file.image_annotation_set.all()
+    tags = transform_file.tags.all()
+    tags_serialize = serializers.serialize("json", list(tags))
+    print(tags)
+    # if tags.exists():
+    #     tags_serialize = serializers.serialize("json", list(tags))
+    #     tags_default = False
+    # else:
+    #     tags = tag_model.Tag.objects.get_or_create(pk=1)
+    #     tags_serialize = serializers.serialize("json", [tags[0],])
+    #     tags_default = True
+    
     transform_file_url = transform_file.file_url
     texts_serialize = serializers.serialize("json", list(texts))
-    images_serialize = serializers.serialize("json", list(images))    
+    images_serialize = serializers.serialize("json", list(images))
+      
     transform_file_serialize = serializers.serialize("json", [transform_file,])
+    
     transform_file_json = json.dumps({
         'transform_file':transform_file_serialize,
+        'archival_source':archival_source_serialize,
+        'archival_source_default':archival_source_default,
+        'issue':issue_serialize,
+        'issue_default':issue_default,
         'transform_file_url':transform_file_url,
         'texts_serialize':texts_serialize,
-        'images_serialize':images_serialize
+        'images_serialize':images_serialize,
+        'tags_serialize':tags_serialize
+        # 'tags_default':tags_default
         })
     return HttpResponse(transform_file_json, content_type="application/json")
 
@@ -182,11 +219,27 @@ def tag_transform_file(request):
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
     tag_name = data['tag_name']
-    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    tag = tag_model.Tag.objects.get_or_create( tag_name=tag_name)
     transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
     tag_transform_file = transformfile_model.Transform_File_Tag.objects.get_or_create(
-        tag =tag,
+        tag =tag[0],
         transform_file = transform_file
         )
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
+
+def remove_tag_transform_file(request):
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        transform_file_id = data['transform_file_id']
+        tag_name = data['tag_name']
+        tag = tag_model.Tag.objects.get_or_create( tag_name=tag_name)
+        transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+        tag_transform_file = transformfile_model.Transform_File_Tag.objects.get(
+            tag =tag[0],
+            transform_file = transform_file
+            )
+        tag_transform_file.delete()
+        response = {'success': 'true'}
+        return HttpResponse(response, content_type='application/json')
+
