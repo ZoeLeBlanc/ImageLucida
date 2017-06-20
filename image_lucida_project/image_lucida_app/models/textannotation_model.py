@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import coordinates_model, transformfile_model, tag_model
+from . import coordinates_model, transformfile_model, tag_model, imageannotation_model
 from image_lucida_app.helpers import UniqueFileName
 
 class Text_Annotation(models.Model):
@@ -14,6 +14,7 @@ class Text_Annotation(models.Model):
 
     Author: Zoe LeBlanc
     '''
+    image_annotation = models.ForeignKey(imageannotation_model.Image_Annotation, null=True, on_delete=models.CASCADE, blank=True)
     transform_file = models.ForeignKey(transformfile_model.Transform_File, null=True, on_delete=models.CASCADE, blank=True)
     text_annotation_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     article_title = models.CharField(max_length=200, blank=True)
@@ -23,6 +24,7 @@ class Text_Annotation(models.Model):
     cover = models.BooleanField(default=False)
     cover_story = models.BooleanField(default=False)
     text_annotation_file = models.ImageField(upload_to=UniqueFileName('text-annotations/'), blank=True)
+    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '%s' % (self.id)

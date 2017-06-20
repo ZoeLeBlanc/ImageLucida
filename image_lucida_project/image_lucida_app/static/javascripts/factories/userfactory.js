@@ -5,7 +5,7 @@ myApp.factory("UserFactory", ($http)=>{
         authUser: () => {
             return $http.get(`${rootUrl}/auth_user/`)
             .then( (res)=>{
-                return res.data.user;
+                return res.data.username;
             });
         },
         registerUser: (userData) =>{

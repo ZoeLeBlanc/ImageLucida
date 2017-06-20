@@ -10,7 +10,6 @@ from django.core import serializers
 import json
 
 def auth_user(request):
-    print(request)
     if request.user.is_authenticated:
         response = json.dumps({"user":True, "username":request.user.username})
         print(response)

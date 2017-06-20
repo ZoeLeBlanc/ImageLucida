@@ -51,6 +51,8 @@ def assign_transform_file(request):
     project_id = data['project_id']
     folder_id = data['folder_id']
     transform_file_id = data['transform_file_id']
+    cover = data['cover']
+    page_number = data['page_number']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     if len(project_id) > 0:
         project = project_model.Project.objects.get(pk=project_id)
@@ -65,6 +67,8 @@ def assign_transform_file(request):
         folder=folder
         )
     transform_file.assigned = True
+    transform_file.cover = cover
+    transform_file.page_number = page_number
     transform_file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
@@ -204,11 +208,11 @@ def get_transform_files(request):
     return HttpResponse(response, content_type='application/json')
 
 def unassign_transform_file(request):
+    '''Needs refactoring '''
     data = json.loads(request.body.decode())
     transform_file_id = data['transform_file_id']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
-    folder = transform_file.folder_transform_files_set.all()
-    transform_file.folder_transform_files_set.remove(folder)
+    folder_model.Folder_Transform_File.remove(folder)
     project = transform_file.project_transform_files_set.all()
     transform_file.project_transform_files_set.remove(project)
     transform_file.save()

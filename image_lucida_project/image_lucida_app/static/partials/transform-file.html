@@ -83,6 +83,13 @@
                                     </select>
                                 </div>
                                 <div class="row">
+                                    <input type="checkbox" id="cover" ng-model="info.coverPage"/>
+                                    <label for="cover">Cover Page</label>
+                                </div>
+                                <div class="row">
+                                    <input type="text" class="input-field" placeholder="Enter page number" ng-model="info.pageNumber"  autofocus>
+                                </div>
+                                <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="saveFile(selectedProject, selectedFolder)">Save</button>
                                 </div>  
                             </div>

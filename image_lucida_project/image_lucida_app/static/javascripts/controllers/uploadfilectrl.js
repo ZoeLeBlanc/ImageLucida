@@ -1,9 +1,12 @@
 "use strict";
-myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, $compile, UserFactory, ProjectsFactory, UploadFileFactory){
+myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $routeParams, $compile, UserFactory, ProjectsFactory, UploadFileFactory){
+    UserFactory.authUser().then((response)=>{
+        $scope.username = response;
+    });
     $scope.files = [];
     document.getElementById("file-upload").onchange = function (event) {
         angular.forEach(this.files, (file, index)=>{
-            console.log(index);
+            console.log(file);
             var reader = new FileReader();
             reader.onload = function (e) {
             // get loaded data and render thumbnail.
@@ -12,7 +15,7 @@ myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, $co
                 file.height = img.naturalHeight;
                 file.width = img.naturalWidth;
                 img.classList.add("responsive-img");
-                img.id = index;
+                img.id = file.name;
                 let html = `
                 <div class="row">
                     <div class="col s10" id="imagePreview">
@@ -31,11 +34,22 @@ myApp.controller("UploadFileCtrl", function($scope, $location, $routeParams, $co
             
         
     };
+    console.log($rootScope.username);
     $scope.uploadFiles = ()=>{
         console.log($scope.files);
         angular.forEach($scope.files, (file, index)=>{
             console.log(file);
-            UploadFileFactory.uploadFile(file.file).then( (response)=>{
+            let active_img = $('#'+file.name);
+            let file_height = active_img.context.images[0].height;
+            let file_width = active_img.context.images[0].width;
+            let date = Date.now();
+            let name = $scope.username +'/'+ date.toString() +'_' + file.name;
+            console.log(name);
+            Object.defineProperty(file.file, 'name', {
+              writable: true,
+              value: name
+            });
+            UploadFileFactory.uploadFile(file.file, file_width, file_height).then( (response)=>{
                 console.log(response);
                 if (response.form != 'not saved'){
                     Materialize.toast('Images Uploaded', 1000);

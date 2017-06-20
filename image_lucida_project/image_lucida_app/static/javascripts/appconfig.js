@@ -106,6 +106,11 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/meta-data.html',
                 resolve: {user_auth}
             })
+            .when('/projects/unassign-image/:active_id', {
+                controller: 'UnassignCtrl',
+                templateUrl: '/static/partials/unassign.html',
+                resolve: {user_auth}
+            })
             .when('/explore/', {
                 controller: 'ExploreCtrl',
                 templateUrl: '/static/partials/explore.html',

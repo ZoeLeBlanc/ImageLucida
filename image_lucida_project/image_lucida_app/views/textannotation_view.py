@@ -25,23 +25,39 @@ def process_text(request):
     text_annotation = textannotation_model.Text_Annotation.objects.get_or_create(
             transform_file=transform_file,
         )
-    response = segment_text(text_annotation[0].pk, process_type, transform_file_id)
+    segment_type = 'full_page'
+    response = segment_text(text_annotation[0].pk, process_type, transform_file_id, segment_type)
     # response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
 
-def segment_text(file_id, process_type, transform_file_id):
-    text_anno = textannotation_model.Text_Annotation.objects.get(pk=file_id)
-    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
-    uri = transform_file.file_url
+def segment_text(text_anno_id, process_type, file_id, segment_type):
+    text_anno = textannotation_model.Text_Annotation.objects.get(pk=text_anno_id)
+    if segment_type =='full_page':
+        file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+        uri = file.file_url
+        file_name = file.transform_file_name
+        response = analyze_text(file, uri, process_type, file_name)
+        return response
+    if segment_type == 'image_annotation':
+        file = imageannotation_model.Image_Annotation.objects.get(pk=file_id)
+        uri = file.file_url
+        file_name = file.image_annotation_file_name
+        print(file_name)
+        response = analyze_text(file, uri, process_type, file_name, text_anno)
+        return response
+
+def analyze_text(file, uri, process_type, file_name, text_anno):
+    print(process_type)
+    print(file.google_vision_processed)
     if process_type == 'tesseract':
         with PyTessBaseAPI() as api:
-            api.SetImageFile(transform_file.transform_file_name)
-            text_annotation_text = api.GetUTF8Text()
+            api.SetImageFile(file_name)
+            text_annotation_text = api.GetUTF8Text(file_name)
             text_anno.tesseract_text_annotation = text_annotation_text
             text_anno.save()
-        if transform_file.tesseract_processed == False:
-            transform_file.tesseract_processed = True
-            transform_file.save()      
+        if file.tesseract_processed == False:
+            file.tesseract_processed = True
+            file.save()      
         return serializers.serialize("json", [text_anno, ])
     if process_type == 'googlevision':
         credentials, project = google.auth.default() 
@@ -55,9 +71,9 @@ def segment_text(file_id, process_type, transform_file_id):
         print(text_list)
         text_anno.google_vision_text_annotation = text_list
         text_anno.save()
-        if transform_file.google_vision_processed == False:
-            transform_file.google_vision_processed = True 
-            transform_file.save()   
+        if file.google_vision_processed == False:
+            file.google_vision_processed = True 
+            file.save()   
         return serializers.serialize("json", [text_anno, ])
 
 def get_text_anno_and_file(request, text_anno_id):

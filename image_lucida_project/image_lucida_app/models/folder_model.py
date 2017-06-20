@@ -22,6 +22,7 @@ class Folder(models.Model):
     text_annotations = models.ManyToManyField('Text_Annotation', through='Folder_Text_Annotation')
     image_annotations = models.ManyToManyField('Image_Annotation', through='Folder_Image_Annotation')
     tags = models.ManyToManyField('Tag', through='Folder_Tag')
+    date_updated = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):

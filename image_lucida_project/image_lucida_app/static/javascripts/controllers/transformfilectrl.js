@@ -11,6 +11,9 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
     $scope.allTabContentLoaded = false;
     $scope.selected_project = false;
     $scope.meta_data = false;
+    $scope.info = {};
+    $scope.info.coverPage = false;
+    $scope.info.pageNumber = 0;
     // Upload SECTION
     const loadData = ()=>{
         UploadFileFactory.getUntransformedFiles().then( (response)=>{
@@ -239,6 +242,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
             $scope.selected_project = true;
         });
     };
+    // $scope.coverPage = true;
     $scope.saveFile = (select_project, select_folder) =>{
         let project_id = select_project;
         let folder_id = select_folder;
@@ -247,7 +251,8 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         console.log(select_folder, select_project, active_file);
         let transform_file_name = active_file[0].attributes[0].value;
         let transform_file_id = active_file[0].id;
-        TransformFileFactory.assignTransformFile(transform_file_id, project_id, folder_id).then((response)=>{
+        console.log($scope.info);
+        TransformFileFactory.assignTransformFile(transform_file_id, project_id, folder_id, $scope.info.coverPage, $scope.info.pageNumber).then((response)=>{
             console.log("response", response);
             Materialize.toast('File Error', 1000);  
         });

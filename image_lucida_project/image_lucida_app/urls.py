@@ -65,11 +65,12 @@ urlpatterns = [
     url(r'^delete_text_annotation/', textannotation_view.delete_text_annotation, name= 'delete_text_annotation'),
     url(r'^get_text_annotations/(?P<transform_file_id>\d+)/$', textannotation_view.get_text_annotations, name = 'get_text_annotations'),
     # image annotation urls
+    url(r'^tag_images/', imageannotation_view.tag_images, name='tag_images'),
     url(r'^transform_image_annotations/', imageannotation_view.transform_image_annotations, name= 'transform_image_annotations'),
     url(r'^process_image_annotations/', imageannotation_view.process_image_annotations, name= 'process_image_annotations'),
     url(r'^auto_segment_image_annotation/', imageannotation_view.auto_segment_image_annotation, name='auto_segment_image_annotation'),
-    url(r'^tag_image_annotation/', imageannotation_view.tag_image_annotation, name= 'tag_image_annotation'),
     url(r'^delete_image_annotation/', imageannotation_view.delete_image_annotation, name= 'delete_image_annotation'),
     url(r'^manual_segmentation/', imageannotation_view.manual_segmentation, name= 'manual_segmentation'),
     url(r'^get_image_annotations/(?P<transform_file_id>\d+)/$', imageannotation_view.get_image_annotations, name= 'get_image_annotations'),
+    url(r'^get_image_annotations_texts/(?P<image_anno_id>\d+)/$', imageannotation_view.get_image_annotations_texts, name= 'get_image_annotations_texts'),
 ]

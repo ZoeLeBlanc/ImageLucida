@@ -43,7 +43,8 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
                 $scope.clickedImage = true;
                 let active_id = file.pk;
                 console.log("file", file.fields.tags);
-                let date = Date.parse(file.fields.date_created);
+                let date_created = Date.parse(file.fields.date_created);
+                let date_updated = Date.parse(file.fields.date_updated);
                 $("#imageArea").html('');
                 $("#imageInfo").html('');
                 $("#imageArea").append(`<img class="materialboxed responsive-img" src="${file.fields.url}"/>`);
@@ -54,9 +55,11 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
                             File Properties
                         </span>
                         <ul>
-                        <li>Date Created: ${Date(date)}</li>
+                        <li>Date Created: ${Date(date_created)}</li>
+                        <li>Date Updated: ${Date(date_updated)}</li>
                         <li>Archival Source: ${file.fields.archival_source}</li>
                         <li>Issue: ${file.fields.issue}</li>
+                        <li>Cover: ${file.fields.cover}</li>
                         <li>Page Number: ${file.fields.page_number}</li>
                         <li>Google Vision Processed: ${file.fields.google_vision_processed}</li>
                         <li>Tesseract Processed: ${file.fields.tesseract_processed}</li>
@@ -73,6 +76,7 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
                         <a href="#!/projects/process-image/${active_id}">Process Image </a>
                         <a href="#!/projects/view-annotations/${active_id}")">View Annotations</a>
                         <a href="#!/projects/meta-data/${active_id}">Edit File Properties</a>
+                        <a href="#!/projects/unassign-image/${active_id}">Unassign Image</a>
                     </div>
                 </div>`);
                 $('.materialboxed').materialbox();
@@ -88,6 +92,9 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
             }
         });
         
+    };
+    $scope.unassignImage = (image_id)=>{
+        console.log(image_id);
     };
     
 });

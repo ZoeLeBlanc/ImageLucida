@@ -58,8 +58,9 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
             });
         },
         tagImageAnnotation: (image_anno_id, tag_name)=>{
+            console.log(image_anno_id, tag_name);
             return $http({
-                url:`${rootUrl}/tag_image_annotation/`,
+                url:`${rootUrl}/tag_images/`,
                 method: 'POST',
                 data: {
                     'image_anno_id': image_anno_id,
@@ -108,6 +109,12 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                     return res.status;
                 }
             });
-        }
+        },
+        getImageAnnotationsTexts:(image_anno_id)=>{
+            return $http.get(`${rootUrl}/get_image_annotations_texts/${image_anno_id}/`)
+            .then( (res)=>{
+                return res.data;
+            });
+        },
     };
 });

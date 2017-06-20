@@ -28,14 +28,17 @@ def manual_segmentation(request):
     height = data['height']
     width = data['width']
     print(coords)
-    new_image_annotation = coordinates_view.crop_shapes(uri, coords, height, width)
+    im = coordinates_view.crop_shapes(uri, coords, height, width)
+    array_image = Image.fromarray(np.uint8(im))
+    bounded_image = array_image.getbbox()
+    new_image_annotation = array_image.crop(bounded_image)
     coords_obj = coordinates_model.Coordinates.objects.get_or_create(
                 multi_coords=json.dumps(coords)
                 )
-    print(coords_obj)
     rando_numb = uuid.uuid4()
-    new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
-    new_image_annotation = io.imsave(new_image_annotation_name,new_image_annotation),
+    new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation'+ str(rando_numb) + '.jpg'
+    # new_image_annotation = io.imsave(new_image_annotation_name,new_image_annotation),
+    new_image_annotation = new_image_annotation.save(new_image_annotation_name)
     open_image = open(new_image_annotation_name, 'rb')
     newest_image_annotation_file = File(open_image)
     image_annotation = imageannotation_model.Image_Annotation.objects.create(
@@ -48,10 +51,12 @@ def manual_segmentation(request):
     image_annotation.save()
     if ocr == True:
         text_annotation = textannotation_model.Text_Annotation.objects.create(
-        transform_file=file)
+        image_annotation=image_annotation)
         text_annotation.text_annotation_coordinates=coords_obj[0]
         text_annotation.save()
-        textannotation_view.segment_text(text_annotation.pk, process_type, file_id)
+        segment_type = 'image_annotation'
+        print(segment_type)
+        textannotation_view.segment_text(text_annotation.pk, process_type, image_annotation.pk, segment_type)
         response = {'success': 'true'}
     else:
         response = {'success': 'true'}
@@ -77,7 +82,7 @@ def auto_segment_image_annotation(request):
                 multi_coords=json.dumps(pts.tolist())
                 )
                 rando_numb = uuid.uuid4()
-                new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
+                new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + file.transform_file_name+str(rando_numb)+ '.jpg'
                 new_image_annotation = io.imsave(new_image_annotation_name,image),
                 open_image = open(new_image_annotation_name, 'rb')
                 newest_image_annotation_file = File(open_image)
@@ -105,7 +110,7 @@ def transform_image_annotations(request):
     rows, cols, ch = new_image_annotation.shape
     coords_obj = coordinates_view.calculate_coordinates(int(rows), int(cols))
     rando_numb = uuid.uuid4()
-    new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + str(rando_numb)+ '.jpg'
+    new_image_annotation_name = 'image_lucida_app/media/transformed_image_annotation' + file.transform_file_name + str(rando_numb)+ '.jpg'
     new_image_annotation = io.imsave(new_image_annotation_name,new_image_annotation),
     open_image = open(new_image_annotation_name, 'rb')
     newest_image_annotation_file = File(open_image)
@@ -134,11 +139,12 @@ def get_image_annotations(request, transform_file_id):
             tags_serialized = serializers.serialize("json", tags)
             images_list['image_name'] = image.image_annotation_file_name
             images_list['image_url'] = image.file_url
-            images_list['image_tags'] = tags
+            images_list['image_tags'] = tags_serialized
             images_data[index] = images_list
         else:
             images_list['image_name'] = image.image_annotation_file_name
             images_list['image_url'] = image.file_url
+            images_list['image_tags'] =[]
             images_data[index] = images_list
     images_serialize = serializers.serialize("json", list(images))
     response = json.dumps({'images': images_serialize, 'images_data': images_data})
@@ -178,7 +184,7 @@ def process_image_annotations(request):
         })
     return HttpResponse(image_json, content_type='application/json')
 
-def tag_image_annotation(request):
+def tag_images(request):
     data = json.loads(request.body.decode())
     image_anno_id = data['image_anno_id']
     tag_name = data['tag_name']
@@ -200,3 +206,11 @@ def delete_image_annotation(request):
         image_anno.delete()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")
+
+def get_image_annotations_texts(request, image_anno_id):
+    image_anno = get_object_or_404(imageannotation_model.Image_Annotation, pk=image_anno_id)
+    texts = image_anno.text_annotation_set.all()
+    print("texts", texts)
+    texts_serialize = serializers.serialize("json", list(texts))
+    response = json.dumps({'texts': texts_serialize})
+    return HttpResponse(response, content_type='application/json') 

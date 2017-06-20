@@ -5,38 +5,11 @@
         </h6>
     </div>
     <div class="row">
-        <div class="col s10 offset-s1"><!-- Begging of Tabs -->
-            <ul class="tabs" tabs>
-                <li class="tab col s6">
-                    <a ng-href="#text_annotations">Text Annotations</a>
-                </li>
-                <li class="tab col s6">
-                    <a ng-href="#image_annotations">Image Annotations</a>
-                </li>
-            </ul>
-        </div> <!-- End of Tabs -->     
-    </div>
-    <div class="row">
-        <div class="row" id="text_annotations">
-            <div class="col s10">
-                <div class="card-panel col s6">
-                    <h4>Google Vision:</h4>
-                    <span ng-show="text_annotation.fields.google_vision_text_annotation.length"> ((text_annotation.fields.google_vision_text_annotation))</span>
-                    <span ng-show="!text_annotation.fields.google_vision_text_annotation.length">No text annotation
-                    </span>
-                </div>
-                <div class="card-panel col s6">
-                    <h4>Tesseract:</h4> 
-                    <span ng-show="text_annotation.fields.tesseract.length">((text_annotation.fields.tesseract))</span>
-                    <span ng-show="!text_annotation.fields.tesseract.length">No text annotation</span>
-                </div>
-            </div>
-        </div>
         <div class="row" id="image_annotations">
             <div class="row" ng-if="showTabs">
                 <ul class="tabs" tabs id="image_annotations_list" reload="allTabContentLoaded">
                     <li class="tab col s1" ng-repeat="(index,file) in image_annotations">
-                        <a id="((index))" ng-href="#image_annotations((index))">((index))</a>
+                        <a id="((index))" ng-href="#image_annotations((index))" ng-click="tabClick(index)">((index))</a>
                     </li>
                 </ul>
             </div>
@@ -49,17 +22,56 @@
                         <span class="card-title truncate">
                             ((image.fields.image_annotation_file_name))
                         </span>
-                        <div ng-repeat="tag in image.fields.tags">
-                            <p class="chips">((tag.fields.tag_name))</p>
+                        <div class="chips" ng-show="!image.fields.tags">
+                            <input ng-model="all_tags">
+                        </div>
+                        <div ng-show="image.fields.tags" class="chips chips-initial">
+                          <input ng-model="all_tags">
                         </div>
                     </div>
+                    <div class="divider"></div>
+                    <ul class="collapsible" data-collapsible="accordion">
+                        <li>
+                            <div class="collapsible-header">Tesseract OCR Text</div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
+                                        <p id="unedited">((image.fields.texts.fields.tesseract_text_annotation))</p>
+                                    </div>
+                                    <div class="flow-text" style="overflow:scroll; height:70vh;" ng-show="editing">
+                                        <p id="edited-tesseract((image.pk))" contenteditable="true">((image.fields.texts.fields.tesseract_text_annotation))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editTesseractText()">Edit Text</button>
+                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveTesseractEdits(image)">Save Edits</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header">Google Vision API Text</div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
+                                        <p id="unedited" class="edit-textarea">((image.fields.texts.fields.google_vision_text_annotation))</p>
+                                    </div>
+                                    <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:70vh;">
+                                        <p id="edited-googlevision((image.pk))" contenteditable="true">((image.fields.texts.fields.google_vision_text_annotation))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editGoogleVisionText()">Edit Text</button>
+                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveGoogleVisionEdits(image)">Save Edits</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="card-action">
-                        <a href="" ng-click="editImage(image.fields.id)">EDIT</a>
-                        <a href="" ng-click="deleteImage(image.fields.id)">DELETE</a>
+                        <a href="" ng-click="saveImage(image)">SAVE</a>
+                        <a href="" ng-click="deleteImage(image)">DELETE</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-

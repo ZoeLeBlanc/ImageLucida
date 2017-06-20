@@ -51,7 +51,7 @@ myApp.controller("ManualSegmentImageCtrl", function($scope, $rootScope, $locatio
         let height = document.getElementById('canvasImage').height;
         let ocr = false;
         let process_type = 'None';
-        if ($scope.process_type.google_vision || $scope.process_type.tesseract) {
+        if ($scope.process_type.googlevision || $scope.process_type.tesseract) {
             ocr = true;
             process_type = Object.keys($scope.process_type)[0];
         }

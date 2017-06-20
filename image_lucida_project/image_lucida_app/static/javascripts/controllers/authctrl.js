@@ -6,6 +6,7 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
         UserFactory.registerUser($scope.user).then( (response)=>{
             if (response[0]) {
                 $scope.user = {};
+
                 $rootScope.user_status = true;
                 $location.path('#!/projects/');
             }
@@ -16,10 +17,10 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
     };
     $scope.login = ()=>{
         UserFactory.loginUser($scope.user).then( (response)=>{
-            console.log(response);
             if (response) {
-                console.log("test");
                 $rootScope.user_status = true;
+                $rootScope.username = response[0].fields.username;
+                console.log($rootScope.username);
                 $scope.user = {};
                 // $location.path('/projects');
                 $window.location.replace('#!/projects');
@@ -31,6 +32,7 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
     };
     if($location.path()=== "/logout"){
         UserFactory.logoutUser().then( (response)=>{
+            console.log(response);
             if (response.logout) {
                 $rootScope.user_status = false;
                 $scope.user = {};

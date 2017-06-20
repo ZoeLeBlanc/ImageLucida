@@ -34,14 +34,16 @@ angular.module('ImageLucidaApp').factory("TransformFileFactory", ($http)=>{
                 }
             });
         },
-        assignTransformFile: (transform_file_id, project_id, folder_id)=>{
+        assignTransformFile: (transform_file_id, project_id, folder_id, cover, page_number)=>{
             return $http({
                 url:`${rootUrl}/assign_transform_file/`,
                 method: 'POST',
                 data: {
                     'transform_file_id': transform_file_id,
                     'project_id':project_id,
-                    'folder_id':folder_id
+                    'folder_id':folder_id,
+                    'cover':cover,
+                    'page_number':page_number
                 }
             }).then((res)=>{
                 console.log(JSON.parse(res));

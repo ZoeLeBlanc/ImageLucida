@@ -20,14 +20,22 @@ def calculate_coordinates(img_rows, img_cols):
     top_right = [0,img_cols-1]
     bottom_left = [img_rows-1,0]
     bottom_right = [img_rows-1, img_cols-1]
-    coor_obj = coordinates_model.Coordinates.objects.get_or_create(
-        top_left=json.dumps(top_left),
-        top_right=json.dumps(top_right),
-        bottom_left=json.dumps(bottom_left),
-        bottom_right=json.dumps(bottom_right)
-        )
+    try:
+        coor_obj = coordinates_model.Coordinates.objects.filter(
+            top_left=json.dumps(top_left),
+            top_right=json.dumps(top_right),
+            bottom_left=json.dumps(bottom_left),
+            bottom_right=json.dumps(bottom_right)
+            )[0]
+    except IndexError:
+        coor_obj = coordinates_model.Coordinates.objects.create(
+            top_left=json.dumps(top_left),
+            top_right=json.dumps(top_right),
+            bottom_left=json.dumps(bottom_left),
+            bottom_right=json.dumps(bottom_right)
+            )
     print(coor_obj)
-    return coor_obj[0]
+    return coor_obj
 
 def order_points(pts):
     # initialzie a list of coordinates that will be ordered
