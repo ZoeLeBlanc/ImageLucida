@@ -56,6 +56,22 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
             .then( (res)=>{
                 return res.data;
             });
-        }  
+        },
+        tagProject: (project_id, tag_name)=>{
+            return $http({
+                url:`${rootUrl}/tag_project/`,
+                method: 'POST',
+                data: {
+                    'project_id': project_id,
+                    'tag_name':tag_name
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },  
     };
 });

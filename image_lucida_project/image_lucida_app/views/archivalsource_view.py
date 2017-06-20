@@ -7,19 +7,16 @@ from django.core.urlresolvers import reverse
 from django.core import serializers
 import json
 
-def get_archival_sources(request):
+def get_all_archival_sources(request):
     try:
         archival_sources = get_list_or_404(archivalsource_model.Archival_Source, user=request.user.pk)
         print(archival_sources)
-        archival_sources_json = serializers.serialize("json", archival_sources)
-        print(archival_sources_json)
-        return HttpResponse(archival_sources_json, content_type="application/json")
+        response = serializers.serialize("json", archival_sources)
     except:
         response = json.dumps({
             "error": "No archival sources."
         })
-        return HttpResponse(response, content_type="application/json")
-    
+    return HttpResponse(response, content_type="application/json")
 
 def create_archival_source(request): 
     """Method view to register new user"""
@@ -35,10 +32,25 @@ def create_archival_source(request):
     return HttpResponse(response, content_type='application/json')
 
 def update_archival_source(request): 
-    """Method view to login user"""
-    pass
+    data = json.loads(request.body.decode())
+    user = User.objects.get_or_create(username=request.user)
+    archival_source = archivalsource_model.Archival_Source.objects.update_or_create(
+        user = user[0],
+        archive_name = data['archive_name'], 
+        collection_name = data['collection_name'], 
+        folder_name = data['folder_name'],
+        )
+    response = serializers.serialize("json", [archival_source[0], ])
+    return HttpResponse(response, content_type='application/json')
 
  
 def delete_archival_source(request): 
-    """Method view to logout user"""
-    pass
+    """Method to delete a folder"""
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        archival_source_id = data['archival_source_id']
+        archival_source = get_object_or_404(archivalsource_model.Archival_Source, pk=archival_source_id)
+        print(archival_source)
+        archival_source.delete()
+        response = {'success':'True'}
+        return HttpResponse(response, content_type="application/json")

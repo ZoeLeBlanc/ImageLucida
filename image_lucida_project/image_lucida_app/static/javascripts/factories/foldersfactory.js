@@ -42,6 +42,18 @@ angular.module('ImageLucidaApp').factory("FoldersFactory", ($http)=>{
                 return res.data;
             });
         },
+        tagFolder: (folder_id, tag_name) =>{
+            return $http({
+                url:`${rootUrl}/tag_folder/`,
+                method: 'POST',
+                data: {
+                    'folder_id':folder_id,
+                    'tag_name':tag_name
+                }
+            }).then((res)=>{
+                return res.data;
+            });
+        },
         deleteFolder: (folder_id) => {
             return $http({
                 url:`${rootUrl}/delete_folder/`,

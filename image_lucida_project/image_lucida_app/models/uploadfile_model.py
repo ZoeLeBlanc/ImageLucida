@@ -19,6 +19,8 @@ class Upload_File(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     upload_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     transformed = models.BooleanField(default=False)
+    height = models.IntegerField(null=True, default=0)
+    width = models.IntegerField(null=True, default=0)
 
     def __str__(self):
         return '%s' % (self.upload_file_name)

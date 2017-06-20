@@ -46,8 +46,8 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/new-project.html',
                 resolve: {user_auth}
             })
-            .when('/projects/edit:id', {
-                controller: 'EditProjectCtrl',
+            .when('/projects/edit/:id', {
+                controller: 'NewProjectCtrl',
                 templateUrl: '/static/partials/new-project.html',
                 resolve: {user_auth}
             })
@@ -99,6 +99,16 @@ angular.module('ImageLucidaApp').config([
             .when('/projects/view-annotations/:active_id', {
                 controller: 'ViewAnnotationsCtrl',
                 templateUrl: '/static/partials/view-annotations.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/meta-data/:active_id', {
+                controller: 'MetaDataCtrl',
+                templateUrl: '/static/partials/meta-data.html',
+                resolve: {user_auth}
+            })
+            .when('/projects/unassign-image/:active_id', {
+                controller: 'UnassignCtrl',
+                templateUrl: '/static/partials/unassign.html',
                 resolve: {user_auth}
             })
             .when('/explore/', {

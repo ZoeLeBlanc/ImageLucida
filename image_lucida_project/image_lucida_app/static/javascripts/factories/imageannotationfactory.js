@@ -58,8 +58,9 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
             });
         },
         tagImageAnnotation: (image_anno_id, tag_name)=>{
+            console.log(image_anno_id, tag_name);
             return $http({
-                url:`${rootUrl}/tag_image_annotation/`,
+                url:`${rootUrl}/tag_images/`,
                 method: 'POST',
                 data: {
                     'image_anno_id': image_anno_id,
@@ -73,7 +74,8 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        manualSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
+        manualSegmentation: (transform_file_id, multi_coords, ocr, process_type, height, width)=>{
+            console.log(process_type);
             return $http({
                 url:`${rootUrl}/manual_segmentation/`,
                 method: 'POST',
@@ -81,7 +83,9 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                     'transform_file_id': transform_file_id,
                     'multi_coords':multi_coords,
                     'ocr':ocr,
-                    'process_type':process_type
+                    'process_type':process_type,
+                    'height':height,
+                    'width':width
                 }
             }).then((res)=>{
                 return res.data;
@@ -91,7 +95,7 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                 }
             });
         },
-        autoImageSegmentation: (transform_file_id, multi_coords, ocr, process_type)=>{
+        autoImageSegmentation: (transform_file_id)=>{
             return $http({
                 url:`${rootUrl}/auto_segment_image_annotation/`,
                 method: 'POST',
@@ -105,6 +109,12 @@ angular.module('ImageLucidaApp').factory("ImageAnnotationFactory", ($http)=>{
                     return res.status;
                 }
             });
-        }
+        },
+        getImageAnnotationsTexts:(image_anno_id)=>{
+            return $http.get(`${rootUrl}/get_image_annotations_texts/${image_anno_id}/`)
+            .then( (res)=>{
+                return res.data;
+            });
+        },
     };
 });

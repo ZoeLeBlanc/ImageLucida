@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import coordinates_model, uploadfile_model, archivalsource_model, issue_model
+from . import coordinates_model, uploadfile_model, archivalsource_model, issue_model, tag_model
 from image_lucida_app.helpers import UniqueFileName
 
 class Transform_File(models.Model):
@@ -20,6 +20,7 @@ class Transform_File(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     transform_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     page_number = models.IntegerField(null=True, default=0)
+    cover = models.BooleanField(default=False)
     issue = models.ForeignKey(issue_model.Issue, null=True, on_delete=models.CASCADE, blank=True)
     archival_source = models.ForeignKey(archivalsource_model.Archival_Source, null=True, on_delete=models.CASCADE, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
@@ -28,6 +29,10 @@ class Transform_File(models.Model):
     google_vision_processed = models.BooleanField(default=False)
     auto_image_processed = models.BooleanField(default=False)
     manual_image_processed = models.BooleanField(default=False)
+    height = models.IntegerField(null=True, default=0)
+    width = models.IntegerField(null=True, default=0)
+    tags = models.ManyToManyField('Tag', through='Transform_File_Tag')
+    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '%s' % (self.transform_file_name)
@@ -36,3 +41,20 @@ class Transform_File(models.Model):
     def file_url(self):
         if self.transform_file and hasattr(self.transform_file, 'url'):
             return self.transform_file.url
+
+class Transform_File_Tag(models.Model):
+    ''' The Text Annotation Tag class is a model that defines which data is available in the Text Tag Annotation table so a database can be created from it.
+
+    Method List:
+        -none
+
+    Argument List:
+        -models.Model: This argument allows the class to access field types.
+
+    Author: Zoe LeBlanc
+    '''
+    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='transform_file_tag')
+    transform_file = models.ForeignKey(Transform_File, null=True, related_name='transform_file_tag')
+
+    def __str__(self):
+        return '%s' % (self.id)

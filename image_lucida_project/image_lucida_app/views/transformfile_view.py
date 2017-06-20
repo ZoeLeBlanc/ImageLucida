@@ -20,6 +20,8 @@ def transform_upload_file(request):
     file_name = data['upload_file_name']
     file = uploadfile_model.Upload_File.objects.get(pk=file_id)
     coords = data['four_points']
+    height = data['height']
+    width = data['width']
     data = file.file_url
     new_file = coordinates_view.four_point_transform(data, coords)
     rows, cols, ch = new_file.shape
@@ -37,6 +39,8 @@ def transform_upload_file(request):
         )
     transform_file.transform_file.save(new_file_name, new_transform_file, save=True)
     transform_file.transform_file_coordinates=coords_obj
+    transform_file.height = height
+    transform_file.width = width
     transform_file.save()
     print(transform_file)
     response = {'success': 'true'}
@@ -47,6 +51,8 @@ def assign_transform_file(request):
     project_id = data['project_id']
     folder_id = data['folder_id']
     transform_file_id = data['transform_file_id']
+    cover = data['cover']
+    page_number = data['page_number']
     transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
     if len(project_id) > 0:
         project = project_model.Project.objects.get(pk=project_id)
@@ -61,6 +67,8 @@ def assign_transform_file(request):
         folder=folder
         )
     transform_file.assigned = True
+    transform_file.cover = cover
+    transform_file.page_number = page_number
     transform_file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
@@ -90,18 +98,55 @@ def add_issue(request):
     return HttpResponse(response, content_type='application/json')
 
 def get_single_transform_file(request, transform_file_id):
-    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+    archival_source = transform_file.archival_source
+    if archival_source is None:
+        archival_source = archivalsource_model.Archival_Source.objects.get_or_create(pk=1)
+        print(archival_source)
+        archival_source_serialize = serializers.serialize("json", [archival_source[0],])
+        archival_source_default = True
+    else:
+        archival_source_serialize = serializers.serialize("json", [archival_source,])
+        archival_source_default = False
+
+    issue = transform_file.issue
+    if issue is None:
+        issue = issue_model.Issue.objects.get_or_create(pk=1)
+        issue_serialize = serializers.serialize("json", [issue[0],])
+        issue_default = True
+    else:
+        issue_serialize = serializers.serialize("json", [issue,])
+        issue_default = False
     texts = transform_file.text_annotation_set.all()
-    images = transform_file.image_annotation_set.all()    
+    images = transform_file.image_annotation_set.all()
+    tags = transform_file.tags.all()
+    tags_serialize = serializers.serialize("json", list(tags))
+    print(tags)
+    # if tags.exists():
+    #     tags_serialize = serializers.serialize("json", list(tags))
+    #     tags_default = False
+    # else:
+    #     tags = tag_model.Tag.objects.get_or_create(pk=1)
+    #     tags_serialize = serializers.serialize("json", [tags[0],])
+    #     tags_default = True
+    
     transform_file_url = transform_file.file_url
     texts_serialize = serializers.serialize("json", list(texts))
-    images_serialize = serializers.serialize("json", list(images))    
+    images_serialize = serializers.serialize("json", list(images))
+      
     transform_file_serialize = serializers.serialize("json", [transform_file,])
+    
     transform_file_json = json.dumps({
         'transform_file':transform_file_serialize,
+        'archival_source':archival_source_serialize,
+        'archival_source_default':archival_source_default,
+        'issue':issue_serialize,
+        'issue_default':issue_default,
         'transform_file_url':transform_file_url,
         'texts_serialize':texts_serialize,
-        'images_serialize':images_serialize
+        'images_serialize':images_serialize,
+        'tags_serialize':tags_serialize
+        # 'tags_default':tags_default
         })
     return HttpResponse(transform_file_json, content_type="application/json")
 
@@ -161,3 +206,44 @@ def get_transform_files(request):
     files_json = serializers.serialize("json", transformed_files)
     response = json.dumps({'transformed_files':files_json, 'transformed_list':transformed_list})
     return HttpResponse(response, content_type='application/json')
+
+def unassign_transform_file(request):
+    '''Needs refactoring '''
+    data = json.loads(request.body.decode())
+    transform_file_id = data['transform_file_id']
+    transform_file = transformfile_model.Transform_File.objects.get(pk=transform_file_id)
+    folder_model.Folder_Transform_File.remove(folder)
+    project = transform_file.project_transform_files_set.all()
+    transform_file.project_transform_files_set.remove(project)
+    transform_file.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+def tag_transform_file(request):
+    data = json.loads(request.body.decode())
+    transform_file_id = data['transform_file_id']
+    tag_name = data['tag_name']
+    tag = tag_model.Tag.objects.get_or_create( tag_name=tag_name)
+    transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+    tag_transform_file = transformfile_model.Transform_File_Tag.objects.get_or_create(
+        tag =tag[0],
+        transform_file = transform_file
+        )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+def remove_tag_transform_file(request):
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        transform_file_id = data['transform_file_id']
+        tag_name = data['tag_name']
+        tag = tag_model.Tag.objects.get_or_create( tag_name=tag_name)
+        transform_file = get_object_or_404(transformfile_model.Transform_File, pk=transform_file_id)
+        tag_transform_file = transformfile_model.Transform_File_Tag.objects.get(
+            tag =tag[0],
+            transform_file = transform_file
+            )
+        tag_transform_file.delete()
+        response = {'success': 'true'}
+        return HttpResponse(response, content_type='application/json')
+

@@ -24,10 +24,12 @@ def get_single_project(request, project_id):
     """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
+    tags = project.tags.all()
     folders = project.folder_set.all()
     project_serialize = serializers.serialize("json", [project,])
     folders_serialize = serializers.serialize("json", folders)
-    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize})
+    tags_serialize = serializers.serialize("json", tags)
+    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize, 'tags': tags_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
     
@@ -84,7 +86,14 @@ def update_project(request):
  
 def delete_project(request, project_id): 
     """Method view to logout user"""
-    pass
+    if request.method=='DELETE': 
+        data = json.loads(request.body.decode())
+        project_id = data['project_id']
+        project = get_object_or_404(project_model.Project, pk=project_id)
+        print(project)
+        project.delete()
+        response = {'success':True}
+        return HttpResponse(response, content_type="application/json")
 
 def duplicate_project(request, project_id):
     """Method to duplicate project"""
@@ -94,3 +103,16 @@ def duplicate_project(request, project_id):
     project.save()
     response = {'success':True}
     return HttpResponse(response, content_type="application/json")
+
+def tag_project(request):
+    data = json.loads(request.body.decode())
+    project_id = data['project_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    project = get_object_or_404(project_model.Project, pk=project_id)
+    tag_project = project_model.Project_Tag.objects.get_or_create(
+        tag =tag,
+        project = project
+        )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')

@@ -14,11 +14,23 @@ def get_single_folder(request, folder_id):
     folder = get_object_or_404(folder_model.Folder, pk=folder_id)
     # Transformed files
     transformed_files = folder.transformed_files.all().order_by('id')
-    transformed_list = []
-    for file in transformed_files:
-        file_list = []
-        file_list.extend({file.transform_file_name, file.file_url})         
-        transformed_list.append(file_list)
+    transformed_list = {}
+    for index,file in enumerate(transformed_files):
+        file_list = {}
+        tags = file.tags.all()
+        if tags.exists():
+            tags_serialized = serializers.serialize("json", tags)
+            print(tags_serialized)
+            file_list['file_name'] =file.transform_file_name
+            file_list['file_url'] = file.file_url 
+            file_list['file_tags'] = tags_serialized
+            transformed_list[index] = file_list
+        else:
+            file_list['file_name'] =file.transform_file_name
+            file_list['file_url'] = file.file_url 
+            file_list['file_tags'] = []
+            transformed_list[index] = file_list 
+    print(transformed_list)
     #Tag
     tags = folder.tags.all().order_by('id')
 
@@ -93,3 +105,16 @@ def duplicate_folder(request, folder_id):
     folder.save()
     response = {'success':True}
     return HttpResponse(response, content_type="application/json")
+
+def tag_folder(request):
+    data = json.loads(request.body.decode())
+    folder_id = data['folder_id']
+    tag_name = data['tag_name']
+    tag = get_object_or_404(tag_model.Tag, tag_name=tag_name)
+    folder = get_object_or_404(folder_model.Folder, pk=folder_id)
+    tag_folder = folder_model.Folder_Tag.objects.get_or_create(
+        tag =tag,
+        folder = folder
+        )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')

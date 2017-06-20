@@ -14,13 +14,13 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
                 return res.data;
             });
         },
-        uploadFile: (file) =>{
+        uploadFile: (file, width, height) =>{
             let fd = new FormData();
-            console.log(fd);
+            console.log(file);
             fd.append('upload_file', file);
             fd.append('upload_file_name', file.name);
-            fd.append('upload_file_height', file.height);
-            fd.append('upload_file_width', file.width);
+            fd.append('upload_file_height', height);
+            fd.append('upload_file_width', width);
             console.log(fd);
             return $http({
                 url:`${rootUrl}/upload_file/`,

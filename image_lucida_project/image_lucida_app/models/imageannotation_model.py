@@ -21,9 +21,10 @@ class Image_Annotation(models.Model):
     image_palette_file = models.ImageField(upload_to=UniqueFileName('image-pallettes/'), null=True)
     image_palette_file_name = models.CharField(max_length=200, blank=True)
     image_annotation_file_name =models.CharField(max_length=200, blank=True)
-    cover = models.BooleanField(default=False)
-    cover_image = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', through='Image_Annotation_Tag')
+    tesseract_processed = models.BooleanField(default=False)
+    google_vision_processed = models.BooleanField(default=False)
+    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '%s' % (self.id)

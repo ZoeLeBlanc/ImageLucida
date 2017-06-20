@@ -1,7 +1,7 @@
 <di class="row">
     <div class="row">
         <h6>
-            <a href="javascript:void(0);" ng-click="go_back()" >Go Back To Project</a>
+            <a href="javascript:void(0);" ng-click="go_back()" >Go Back To Process Text</a>
         </h6>
     </div>
     <div class="row">
@@ -20,10 +20,6 @@
                         <h4>Transform File</h4>
                         </span>
                         <div class="col s10 offset-s1">
-                            <a ng-show="!annotating" class="waves-effect waves-light btn-flat" ng-click="startAnnotation()">Start Annotation</a>
-                            <a ng-show="annotating" class="waves-effect waves-light btn-flat" ng-click="clearAnnotation()">Clear Annotation</a>
-                            <a ng-show="annotating" class="waves-effect waves-light btn-flat" ng-click="saveAnnotation()">Save Annotation</a>
-                            <a ng-show="annotating" class="waves-effect waves-light btn-flat" ng-click="saveImageAsAnnotation()">Save Image As Is</a>
                             <div class="row">
                                 <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
                             </div>
@@ -38,6 +34,13 @@
                             </div>
                             <div class="row">
                                 <button class="waves-effect waves-light btn" ng-click="savePolygons()">Save</button>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <input type="checkbox" id="Tesseract" ng-model="process_type.tesseract"/>
+                                <label for="Tesseract">Select Tesseract OCR</label>
+                                <input type="checkbox" id="GoogleVision" ng-model="process_type.googlevision"/>
+                                <label for="GoogleVision">Select Google Vision OCR</label>
                             </div>
                         </div>
                     </div>

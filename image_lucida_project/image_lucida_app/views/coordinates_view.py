@@ -20,14 +20,22 @@ def calculate_coordinates(img_rows, img_cols):
     top_right = [0,img_cols-1]
     bottom_left = [img_rows-1,0]
     bottom_right = [img_rows-1, img_cols-1]
-    coor_obj = coordinates_model.Coordinates.objects.get_or_create(
-        top_left=json.dumps(top_left),
-        top_right=json.dumps(top_right),
-        bottom_left=json.dumps(bottom_left),
-        bottom_right=json.dumps(bottom_right)
-        )
+    try:
+        coor_obj = coordinates_model.Coordinates.objects.filter(
+            top_left=json.dumps(top_left),
+            top_right=json.dumps(top_right),
+            bottom_left=json.dumps(bottom_left),
+            bottom_right=json.dumps(bottom_right)
+            )[0]
+    except IndexError:
+        coor_obj = coordinates_model.Coordinates.objects.create(
+            top_left=json.dumps(top_left),
+            top_right=json.dumps(top_right),
+            bottom_left=json.dumps(bottom_left),
+            bottom_right=json.dumps(bottom_right)
+            )
     print(coor_obj)
-    return coor_obj[0]
+    return coor_obj
 
 def order_points(pts):
     # initialzie a list of coordinates that will be ordered
@@ -128,14 +136,24 @@ def plot_colors(hist, centroids):
     # return the bar chart
     return bar
 
-def crop_shapes(img, points):
+def crop_shapes(img, points, new_height, new_width):
     # original image
     # -1 loads as-is so if it will be 3 or 4 channel as the original
     image = io.imread(img)
     # mask defaulting to black for 3-channel and transparent for 4-channel
     # (of course replace corners with yours)
     mask = np.zeros(image.shape, dtype=np.uint8)
-    roi_corners = np.array(points, dtype=np.int32)
+    height, width, channel = image.shape
+    aspect_ratio_height = height / new_height
+    aspect_ratio_width = width / new_width
+    initial_corners = np.array(points, dtype=np.int32)
+    new_array = []
+    for array in initial_corners:
+        for item in array:
+            test_array = [item[0] * aspect_ratio_width, item[1]* aspect_ratio_height]
+            new_array.append(test_array)
+    print(new_array)
+    roi_corners = np.array([new_array], dtype=np.int32)
     # fill the ROI so it doesn't get wiped out when the mask is applied
     channel_count = image.shape[2]  # i.e. 3 or 4 depending on your image
     ignore_mask_color = (255,)*channel_count
@@ -156,15 +174,18 @@ def segment_images(img):
     mask = image < val
     clean_border = segmentation.clear_border(mask)
     labeled = label(clean_border)
-    cropped_images = []
-    cropped_coords = []
+    cropped_images = {}
+    cropped_coords = {}
     pad = 20
     for region_index, region in enumerate(regionprops(labeled)):
-      if region.area < 2000:
-        continue
+        print(region_index)
+        if region.area < 2000:
+            continue
         minr, minc, maxr, maxc = region.bbox
-        cropped_coords[str(region_index) + 'image'] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
-        cropped_images[str(region_index) + 'image'] = img[minr-pad:maxr+pad, minc-pad:maxc+pad]
+        print("bounding box:", minr, minc, maxr, maxc)
+        cropped_coords[region_index] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
+        cropped_images[region_index] = image[minr-pad:maxr+pad, minc-pad:maxc+pad]
+    print(cropped_coords)
     return cropped_coords, cropped_images
 
 
