@@ -1,10 +1,3 @@
-### Story
-**As a** user
-
-**In order** 
-
-**I want to** 
-
 ### Context
 1. What should the feature do?
 2. When and where should the feature appear?
