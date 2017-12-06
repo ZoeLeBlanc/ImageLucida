@@ -17,8 +17,9 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
     };
     $scope.login = ()=>{
         UserFactory.loginUser($scope.user).then( (response)=>{
-            if (response) {
+            if (response.user !== false) {
                 $rootScope.user_status = true;
+                console.log(response);
                 $rootScope.username = response[0].fields.username;
                 console.log($rootScope.username);
                 $scope.user = {};
@@ -26,7 +27,7 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
                 $window.location.replace('#!/projects');
             }
             else {
-                console.log('login failed');
+                console.log('login failed', response);
             }
         });
     };

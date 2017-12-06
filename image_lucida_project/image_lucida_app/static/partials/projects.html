@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="fixed-action-btn horizontal"> 
+    <div class="fixed-action-btn horizontal">
         <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/new" data-position="top" data-delay="50" data-tooltip="Start a new project"><i class="large material-icons">add</i>
         </a>
     </div> <!-- End of Fab -->
@@ -12,7 +12,7 @@
                         <span class="card-title">
                             <h4>Projects Dashboard</h4>
                         </span>
-                    
+
                         <p>Total number of projects: ((projects.length))</p>
                      </div>
                     <div class="col s12 center-align">
@@ -33,12 +33,12 @@
                         <a ng-href="#completed">Completed Projects</a>
                       </li>
                   </ul>
-                </div> <!-- End of Tabs -->        
+                </div> <!-- End of Tabs -->
             </div>
         </div> <!-- End of User Project Dashboard -->
         <div class="row"> <!-- Projects Area Container Row -->
             <div class="row" id="future"> <!-- Beginning of future projects -->
-                <div ng-repeat="project in projects | filterBy: ['status']: 1">
+                <div ng-repeat="project in projects | filterBy: ['status']: 'future'">
                     <div class="card col s12 m10 offset-m1 l5 offset-l1 hoverable">
                         <div class="card-content">
                             <span class="card-title">
@@ -55,9 +55,9 @@
                         </div>
                     </div>
                 </div>
-            </div> <!-- End of Future Projects --> 
+            </div> <!-- End of Future Projects -->
             <div class="row" id="current"> <!-- Beginning of current projects -->
-                <div ng-repeat="project in projects | filterBy: ['status']: 2">
+                <div ng-repeat="project in projects | filterBy: ['status']: 'current'">
                     <div class="card col s12 m10 offset-m1 l5 offset-l1 hoverable">
                         <div class="card-content">
                             <span class="card-title">
@@ -94,6 +94,6 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- End of completed Projects -->  
+        </div> <!-- End of completed Projects -->
     </div>
 </div>

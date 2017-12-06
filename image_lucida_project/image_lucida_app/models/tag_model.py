@@ -14,7 +14,9 @@ class Tag(models.Model):
     '''
     tag_name = models.CharField(max_length=500, blank=True, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    
+
+    def natural_key(self):
+        return (self.tag_name)
 
     def __str__(self):
         return '%s' % (self.tag_name)

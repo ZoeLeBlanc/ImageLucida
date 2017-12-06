@@ -17,43 +17,50 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
     // Upload SECTION
     const loadData = ()=>{
         UploadFileFactory.getUntransformedFiles().then( (response)=>{
-            $scope.untransformed_files = JSON.parse(response.untransformed_files);
-            untransformed_list = response.untransformed_list;
-            angular.forEach($scope.untransformed_files, (obj, index)=>{
-                obj.fields.id = obj.pk;
-                angular.forEach(untransformed_list, (item, index)=>{
-                    if(obj.fields.upload_file_name === item[0]){
-                        obj.fields.url = item[1];
-                    }
-                    if(obj.fields.upload_file_name === item[1]){
-                        obj.fields.url = item[0];
-                    }
-                });
-            });
-            console.log($scope.untransformed_files);
-            TransformFileFactory.getTransformedFiles().then((response)=>{
-                $scope.transformed_files = JSON.parse(response.transformed_files);
-                console.log("$scope.transformed_files", $scope.transformed_files);
-                transformed_list = response.transformed_list;
-                console.log("transformed_list", transformed_list);
-                angular.forEach($scope.transformed_files, (obj, index)=>{
+            if (response.error === "No uploaded files."){
+                console.log('no files');
+            } else {
+                $scope.untransformed_files = JSON.parse(response.untransformed_files);
+                untransformed_list = response.untransformed_list;
+                angular.forEach($scope.untransformed_files, (obj, index)=>{
                     obj.fields.id = obj.pk;
-                    // console.log("obj", obj);
-                    angular.forEach(transformed_list, (item, index)=>{
-                        // console.log("item",item);
-                        if(obj.fields.transform_file_name === item[0]){
+                    angular.forEach(untransformed_list, (item, index)=>{
+                        if(obj.fields.upload_file_name === item[0]){
                             obj.fields.url = item[1];
                         }
-                        if(obj.fields.transform_file_name === item[1]){
+                        if(obj.fields.upload_file_name === item[1]){
                             obj.fields.url = item[0];
                         }
                     });
                 });
-                $scope.allTabContentLoaded = true;
-                $scope.showTabs = true;
+            }
+            TransformFileFactory.getTransformedFiles().then((response)=>{
+                if (response.error === "No transformed files."){
+                    $scope.allTabContentLoaded = true;
+                    $scope.showTabs = true;
+                } else {
+                    $scope.transformed_files = JSON.parse(response.transformed_files);
+                    transformed_list = response.transformed_list;
+                    angular.forEach($scope.transformed_files, (obj, index)=>{
+                        obj.fields.id = obj.pk;
+                        // console.log("obj", obj);
+                        angular.forEach(transformed_list, (item, index)=>{
+                            // console.log("item",item);
+                            if(obj.fields.transform_file_name === item[0]){
+                                obj.fields.url = item[1];
+                            }
+                            if(obj.fields.transform_file_name === item[1]){
+                                obj.fields.url = item[0];
+                            }
+                        });
+                    });
+                    $scope.allTabContentLoaded = true;
+                    $scope.showTabs = true;
+                }
+
             });
         });
-    
+
     };
     loadData();
     $scope.deleteUploadedFile = ()=>{
@@ -99,7 +106,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
             let parentOffset = 0;
             let y_point = [];
             let x_point = [];
-            parentOffset = $(this).offset(); 
+            parentOffset = $(this).offset();
             console.log(parentOffset);
             y_point = (evt.pageX - parentOffset.left) * aspect_ratio_h;
             console.log(y_point);
@@ -109,7 +116,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
                 four_points.top_left = [y_point, x_point];
                 a_b.push({'x1':evt.pageX, 'y1': evt.pageY});
                 d_a.push({'x1':evt.pageX, 'y1': evt.pageY});
-                
+
             }
             if (click_counter === 2){
                 four_points.top_right = [y_point, x_point];
@@ -166,18 +173,19 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
     $scope.saveTransformation = ()=>{
         let active_img_id = $('#untransformed_list').find('.active')[0].text;
         let active_img = $('#untransformed-image'+active_img_id+'').find('img');
+        console.log(active_img);
         let height = active_img[0].naturalHeight;
         let width = active_img[0].naturalWidth;
         let upload_file_id = active_img[0].id;
         let upload_file_name = active_img[0].attributes[0].value;
         let coords = valuesToArray(four_points);
-        console.log(coords);
-        TransformFileFactory.setTransformation(upload_file_id, upload_file_name, coords, height, width).then( (response)=>{
-            console.log(response);
-            Materialize.toast('Transformation Saved', 1000);
-            $scope.transforming = false;
-            $window.location.reload();
-        });
+        console.log(coords, upload_file_name);
+        // TransformFileFactory.setTransformation(upload_file_id, upload_file_name, coords, height, width).then( (response)=>{
+        //     console.log(response);
+        //     Materialize.toast('Transformation Saved', 1000);
+        //     $scope.transforming = false;
+        //     // $window.location.reload();
+        // });
     };
     function valuesToArray(obj) {
       return Object.keys(obj).map(key => obj[key]);
@@ -218,16 +226,16 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         console.log(response);
         if (response.error){
             $scope.projects = [];
-        } 
+        }
         else {
             angular.forEach(response, (project, index)=>{
                 project.fields.id = project.pk;
                 console.log(project);
                 $scope.projects.push(project.fields);
             });
-        }   
+        }
     });
-    
+
     $scope.get_folders = (select_project) =>{
         $scope.folders = [];
         console.log(select_project);
@@ -254,7 +262,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         console.log($scope.info);
         TransformFileFactory.assignTransformFile(transform_file_id, project_id, folder_id, $scope.info.coverPage, $scope.info.pageNumber).then((response)=>{
             console.log("response", response);
-            Materialize.toast('File Error', 1000);  
+            Materialize.toast('File Error', 1000);
         });
     };
    $scope.addMetaData = ()=>{
@@ -266,5 +274,5 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         console.log(url);
         $window.location.href = url;
    };
-    
+
 });

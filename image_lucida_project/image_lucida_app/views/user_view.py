@@ -17,39 +17,41 @@ def auth_user(request):
         response = json.dumps({"user":False})
     return HttpResponse(response, content_type='application/json')
 
-def register_user(request): 
+def register_user(request):
     """Method view to register new user"""
     data = json.loads(request.body.decode())
     user = User.objects.create_user(
-        username = data['username'], 
-        password = data['password'], 
-        email = data['email'], 
+        username = data['username'],
+        password = data['password'],
+        email = data['email'],
         first_name = data['first_name'],
         last_name = data['last_name']
         )
+    user.save()
     return login_user(request)
 
-def login_user(request): 
+def login_user(request):
     """Method view to login user"""
     data = json.loads(request.body.decode())
     username = data['username']
     password = data['password']
     user = authenticate(
-        username = username, 
+        username = username,
         password = password
-        ) 
-    print(user)
-    if user is not None: 
+        )
+    if user is not None:
+        print(user)
         login(request = request, user = user)
         user_json = serializers.serialize("json", [user, ])
+        print(user_json)
         return HttpResponse(user_json, content_type='application/json')
     else:
         user_json = json.dumps({'user':False})
         return HttpResponse(user_json, content_type='application/json')
 
- 
-def logout_user(request): 
+
+def logout_user(request):
     """Method view to logout user"""
-    logout(request) 
+    logout(request)
     response = json.dumps({'logout': True})
     return HttpResponse(response, content_type='application/json')

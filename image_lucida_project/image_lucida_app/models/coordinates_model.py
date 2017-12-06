@@ -17,7 +17,8 @@ class Coordinates(models.Model):
     bottom_right= models.CharField(max_length=500, blank=True)
     multi_coords= models.CharField(max_length=500, blank=True)
 
+    def natural_key(self):
+        return (self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.multi_coords)
 
     def __str__(self):
         return '%s' % (self.id)
-

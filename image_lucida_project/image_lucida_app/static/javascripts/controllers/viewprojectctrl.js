@@ -3,19 +3,16 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, $w
     // PROJECT SECTION
     $scope.project_id = $routeParams.id;
     $scope.project = {};
-    // $scope.transforming = false;
-    // $scope.untransformed_files = {};
-    // $scope.transformed_files = {};
     let project = {};
     let folders = [];
-    // let transformed_list = [];
-    // let four_points = {};
-    $('.tap-target').tapTarget('open');
-    $('.tap-target').tapTarget('close');
+    let tags = [];
+
+
     ProjectsFactory.getSingleProject($scope.project_id).then( (response)=>{
         project = JSON.parse(response.project);
         console.log(project);
         folders = response.folders;
+        tags = response.tags;
         console.log("folders", folders);
         $scope.project = project[0].fields;
         $scope.project.id = project[0].pk;
@@ -23,6 +20,11 @@ myApp.controller("ViewProjectCtrl", function($scope, $location, $routeParams, $w
         angular.forEach($scope.folders, (obj, index)=>{
             obj.fields.id = obj.pk;
         });
+        $scope.tags = JSON.parse(response.tags);
+        angular.forEach($scope.tags, (obj, index)=>{
+            obj.fields.id = obj.pk;
+        });
+        console.log($scope.tags);
     });
     $scope.duplicateFolder = (folderId) =>{
         FoldersFactory.duplicateFolder(folderId).then( (response)=>{

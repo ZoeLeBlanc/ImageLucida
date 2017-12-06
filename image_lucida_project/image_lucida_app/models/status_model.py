@@ -12,7 +12,9 @@ class Status(models.Model):
     Author: Zoe LeBlanc
     '''
     status = models.CharField(max_length=500, blank=True, unique=True)
-    
+
+    def natural_key(self):
+        return (self.status)
 
     def __str__(self):
         return '%s' % (self.status)

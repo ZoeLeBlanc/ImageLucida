@@ -1,13 +1,14 @@
 "use strict";
 myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory){
     let current_location = $location.path();
-    
+
     $scope.editing = false;
     $scope.switchValue = true;
     $scope.tagsExist = false;
     $scope.createProject ={};
     $scope.statuses = [{'1': 'future'}, {'2':'current'},{'3':'completed'}];
     if (current_location.includes('edit')){
+        $('#tagsDiv').append(`<div class="chips chips-initial"></div>`);
         $scope.editing = true;
         let project_id = $routeParams.id;
         ProjectsFactory.getSingleProject(project_id).then( (response)=>{
@@ -35,13 +36,13 @@ myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, Use
             $scope.switchValue = $scope.createProject.private;
         });
     }
-    
-
-    
-    // $('.chips').material_chip();
+    if (current_location.includes('new')){
+        $('#tagsDiv').append(`<div class="chips"></div>`);
+        $('.chips').material_chip();
+    }
     $scope.createNewProject = ()=>{
         $scope.createProject.private = $scope.switchValue;
-        $scope.createProject.status = $scope.selectedStatus;
+        $scope.createProject.status = $("form").find("input:checked").val();
         $scope.tags = [];
         var data = $('.chips').material_chip('data');
         angular.forEach(data, (value, index)=>{
@@ -49,19 +50,21 @@ myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, Use
             $scope.tags.push({
                 'tag':data[index].tag,
             });
-        }); 
+        });
         $scope.createProject.tags = $scope.tags;
-        console.log($scope.createProject);
-        if ($scope.editing){
+        console.log($scope.editing);
+        if ($scope.editing === true){
             ProjectsFactory.updateProject($scope.createProject).then( (response)=>{
             $location.path('#!/projects/');
-        });
+            });
         } else {
           ProjectsFactory.newProject($scope.createProject).then( (response)=>{
             $location.path('#!/projects/');
-        });  
+        });
         }
-        
+
     };
+
+
 
 });

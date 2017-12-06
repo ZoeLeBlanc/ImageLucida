@@ -21,6 +21,7 @@ def upload_file(request):
             form.save()
             coor_obj = coordinates_view.calculate_coordinates(int(file_width), int(file_height))
             file = uploadfile_model.Upload_File.objects.get(upload_file_name=file_name)
+            print(file)
             file.upload_file_coordinates=coor_obj
             file.height = file_height
             file.width = file_width
@@ -32,20 +33,26 @@ def upload_file(request):
         return HttpResponse(response, content_type='application/json')
 
 def get_untransformed_files(request):
-    untransformed_files = get_list_or_404(uploadfile_model.Upload_File, user=request.user.pk, transformed=False)
-    untransformed_list = []
-    for file in untransformed_files:
-        file_list = []
-        file_list.extend({file.upload_file_name, file.file_url})     
-        untransformed_list.append(file_list)
-    files_json = serializers.serialize("json", untransformed_files)
-    response = json.dumps({'untransformed_files':files_json, 'untransformed_list':untransformed_list})
-    return HttpResponse(response, content_type='application/json')
+    try:
+        untransformed_files = get_list_or_404(uploadfile_model.Upload_File, user=request.user.pk, transformed=False)
+        untransformed_list = []
+        for file in untransformed_files:
+            file_list = []
+            file_list.extend({file.upload_file_name, file.file_url})
+            untransformed_list.append(file_list)
+        files_json = serializers.serialize("json", untransformed_files)
+        response = json.dumps({'untransformed_files':files_json, 'untransformed_list':untransformed_list})
+        return HttpResponse(response, content_type='application/json')
+    except:
+        response = json.dumps({
+            "error": "No uploaded files."
+        })
+        return HttpResponse(response, content_type="application/json")
 
 def delete_uploaded_file(request):
     """Method to delete an uploaded file"""
     print("is this printing first?")
-    if request.method=='DELETE': 
+    if request.method=='DELETE':
         data = json.loads(request.body.decode())
         untransformed_file_id = data['untransformed_file_id']
         untransformed_file = get_object_or_404(uploadfile_model.Upload_File, pk=untransformed_file_id)
@@ -56,7 +63,7 @@ def delete_uploaded_file(request):
 
 def duplicate_untransformed_file(request):
     """Method to delete an uploaded file"""
-    if request.method=='POST': 
+    if request.method=='POST':
         data = json.loads(request.body.decode())
         untransformed_file_id = data['untransformed_file_id']
         untransformed_file = get_object_or_404(uploadfile_model.Upload_File, pk=untransformed_file_id)
@@ -65,4 +72,3 @@ def duplicate_untransformed_file(request):
         untransformed_file.save()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")
-
