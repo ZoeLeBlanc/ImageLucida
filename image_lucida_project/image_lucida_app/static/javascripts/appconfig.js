@@ -36,9 +36,9 @@ angular.module('ImageLucidaApp').config([
                 controller: 'AuthCtrl',
                 templateUrl: '/static/partials/landing-page.html'
             })
-            .when('/projects', {
-                controller: 'ProjectsCtrl',
-                templateUrl: '/static/partials/projects.html',
+            .when('/home', {
+                controller: 'HomeCtrl',
+                templateUrl: '/static/partials/home.html',
                 resolve: {user_auth}
             })
             .when('/projects/new', {
@@ -49,11 +49,6 @@ angular.module('ImageLucidaApp').config([
             .when('/projects/edit/:id', {
                 controller: 'NewProjectCtrl',
                 templateUrl: '/static/partials/new-project.html',
-                resolve: {user_auth}
-            })
-            .when('/projects/view/:id', {
-                controller: 'ViewProjectCtrl',
-                templateUrl: '/static/partials/view-project.html',
                 resolve: {user_auth}
             })
             .when('/projects/upload/', {
@@ -74,11 +69,6 @@ angular.module('ImageLucidaApp').config([
             .when('/projects/:id/edit-folder/:folder_id', {
                 controller: 'NewFolderCtrl',
                 templateUrl: '/static/partials/new-folder.html',
-                resolve: {user_auth}
-            })
-            .when('/projects/:id/view-folder/:folder_id', {
-                controller: 'ViewFolderCtrl',
-                templateUrl: '/static/partials/view-folder.html',
                 resolve: {user_auth}
             })
             .when('/projects/process-text/:active_id', {

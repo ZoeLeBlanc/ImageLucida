@@ -17,7 +17,9 @@ class Archival_Source(models.Model):
     archive_name = models.TextField(blank=True)
     collection_name = models.TextField(blank=True)
     folder_name = models.TextField(blank=True)
-    
 
+    def natural_key(self):
+        return (self.archive_name, self.collection_name, self.folder_name)
+    
     def __str__(self):
         return '%s %s %s' % (self.archive_name, self.collection_name, self.folder_name)

@@ -28,7 +28,7 @@ def transform_upload_file(request):
     coords_obj = coordinates_view.calculate_coordinates(int(rows), int(cols))
     rando_numb = uuid.uuid4()
     new_file_name = 'image_lucida_app/media/transformed_' + file_name.split('.')[0] + str(rando_numb)+ '.jpg'
-    file.transformed=True
+    # file.transformed=True
     file.save()
     new_file = io.imsave(new_file_name,new_file),
     open_file = open(new_file_name, 'rb')
@@ -129,13 +129,13 @@ def get_single_transform_file(request, transform_file_id):
     #     tags = tag_model.Tag.objects.get_or_create(pk=1)
     #     tags_serialize = serializers.serialize("json", [tags[0],])
     #     tags_default = True
-    
+
     transform_file_url = transform_file.file_url
     texts_serialize = serializers.serialize("json", list(texts))
     images_serialize = serializers.serialize("json", list(images))
-      
-    transform_file_serialize = serializers.serialize("json", [transform_file,])
-    
+
+    transform_file_serialize = serializers.serialize("json", [transform_file,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+    print(transform_file_serialize)
     transform_file_json = json.dumps({
         'transform_file':transform_file_serialize,
         'archival_source':archival_source_serialize,
@@ -151,7 +151,7 @@ def get_single_transform_file(request, transform_file_id):
     return HttpResponse(transform_file_json, content_type="application/json")
 
 def delete_transform_file(request):
-    if request.method=='DELETE': 
+    if request.method=='DELETE':
         data = json.loads(request.body.decode())
         transformed_file_id = data['transformed_file_id']
         transformed_file = get_object_or_404(transformfile_model.Transform_File, pk=transformed_file_id)
@@ -162,7 +162,7 @@ def delete_transform_file(request):
 
 def duplicate_transform_file(request):
     """Method to delete an transformed file"""
-    if request.method=='POST': 
+    if request.method=='POST':
         data = json.loads(request.body.decode())
         transformed_file_id = data['transformed_file_id']
         transformed_file = get_object_or_404(transformfile_model.Transform_File, pk=transformed_file_id)
@@ -197,15 +197,23 @@ def untransform_file(request):
     return HttpResponse(response, content_type='application/json')
 
 def get_transform_files(request):
-    transformed_files = get_list_or_404(transformfile_model.Transform_File, user=request.user.pk, assigned=False)
-    transformed_list = []
-    for file in transformed_files:
-        file_list = []
-        file_list.extend({file.transform_file_name, file.file_url})     
-        transformed_list.append(file_list)
-    files_json = serializers.serialize("json", transformed_files)
-    response = json.dumps({'transformed_files':files_json, 'transformed_list':transformed_list})
-    return HttpResponse(response, content_type='application/json')
+    try:
+        transformed_files = get_list_or_404(transformfile_model.Transform_File, user=request.user.pk, assigned=False)
+        print(transformed_files)
+        transformed_list = []
+        for file in transformed_files:
+            file_list = []
+            file_list.extend({file.transform_file_name, file.file_url})
+            transformed_list.append(file_list)
+        files_json = serializers.serialize("json", transformed_files)
+        print(files_json)
+        response = json.dumps({'transformed_files':files_json, 'transformed_list':transformed_list})
+        return HttpResponse(response, content_type='application/json')
+    except:
+        response = json.dumps({
+            "error": "No transformed files."
+        })
+        return HttpResponse(response, content_type="application/json")
 
 def unassign_transform_file(request):
     '''Needs refactoring '''
@@ -233,7 +241,7 @@ def tag_transform_file(request):
     return HttpResponse(response, content_type='application/json')
 
 def remove_tag_transform_file(request):
-    if request.method=='DELETE': 
+    if request.method=='DELETE':
         data = json.loads(request.body.decode())
         transform_file_id = data['transform_file_id']
         tag_name = data['tag_name']
@@ -247,3 +255,21 @@ def remove_tag_transform_file(request):
         response = {'success': 'true'}
         return HttpResponse(response, content_type='application/json')
 
+def get_files(request, folder_id):
+    try:
+        transformed_files = get_list_or_404(transformfile_model.Transform_File, folder_id=folder_id)
+        print(transformed_files)
+        transformed_list = []
+        for file in transformed_files:
+            file_list = []
+            file_list.extend({file.transform_file_name, file.file_url})
+            transformed_list.append(file_list)
+        files_json = serializers.serialize("json", transformed_files)
+        print(files_json)
+        response = json.dumps({'files':files_json, 'list':transformed_list})
+        return HttpResponse(response, content_type='application/json')
+    except:
+        response = json.dumps({
+            "error": "No files."
+        })
+        return HttpResponse(response, content_type="application/json")

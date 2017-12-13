@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from django.contrib import admin
-from image_lucida_app.views import * 
+from image_lucida_app.views import *
 
 
 
@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^duplicate_project/(?P<project_id>[0-9])/$', project_view.duplicate_project, name= 'duplicate_project'),
     # folder urls
     url(r'^get_single_folder/(?P<folder_id>[0-9])/$', folder_view.get_single_folder, name= 'get_single_folder'),
+    url(r'^get_folders/(?P<project_id>[0-9])/$', folder_view.get_folders, name= 'get_folders'),
     url(r'^create_folder/', folder_view.create_folder, name= 'create_folder'),
     url(r'^update_folder/', folder_view.update_folder, name= 'update_folder'),
     url(r'^delete_folder/', folder_view.delete_folder, name= 'delete_folder'),
@@ -38,6 +39,7 @@ urlpatterns = [
     url(r'^assign_transform_file/', transformfile_view.assign_transform_file, name= 'assign_transform_file'),
     url(r'^unassign_transform_file/', transformfile_view.unassign_transform_file, name= 'unassign_transform_file'),
     url(r'^get_single_transform_file/(?P<transform_file_id>\d+)/$', transformfile_view.get_single_transform_file, name= 'get_single_transform_file'),
+    url(r'^get_files/(?P<folder_id>\d+)/$', transformfile_view.get_files, name= 'get_files'),
     url(r'^add_archival_source/', transformfile_view.add_archival_source, name= 'add_archival_source'),
     url(r'^add_issue/', transformfile_view.add_issue, name= 'add_issue'),
     url(r'^delete_transform_file/', transformfile_view.delete_transform_file, name= 'delete_transform_file'),

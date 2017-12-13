@@ -6,3 +6,5 @@ obj
 *.db
 *.sqlite3
 media
+ImageLucida/
+*.pyc

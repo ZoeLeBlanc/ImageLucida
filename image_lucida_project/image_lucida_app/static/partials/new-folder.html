@@ -15,15 +15,7 @@
                 <input class="input-field col s10 offset-s1" type="text" placeholder="Folder Description" ng-model="createFolder.description" required>
             </div>
             <label>Folder Tags</label>
-            <div class="row">
-                <div class="input-field col s10 offset-s1">
-                    <div ng-show="!editing" class="chips" id="createFolderTags">
-                      <input id="search" ng-model="createFolder.tags">
-                    </div>
-                    <div ng-show="editing" class="chips chips-initial" id="editFolderTags">
-                      <input id="search" ng-model="createFolder.tags">
-                    </div>
-                </div>
+            <div class="row" id="tagsDiv">
             </div>
             <div class="row" ng-show="!editing">
                  <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewFolder(createFolder)">CREATE FOLDER</a></h5>

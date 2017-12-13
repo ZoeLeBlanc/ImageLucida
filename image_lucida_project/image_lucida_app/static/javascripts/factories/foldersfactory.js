@@ -2,8 +2,8 @@
 angular.module('ImageLucidaApp').factory("FoldersFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getFolders: () => {
-            return $http.get(`${rootUrl}/get_folders/`)
+        getFolders: (project_id) => {
+            return $http.get(`${rootUrl}/get_folders/${project_id}/`)
             .then( (res)=>{
                 return res.data;
             });
@@ -15,6 +15,7 @@ angular.module('ImageLucidaApp').factory("FoldersFactory", ($http)=>{
             });
         },
         newFolder: (folderData) =>{
+            console.log(folderData);
             return $http({
                 url:`${rootUrl}/create_folder/`,
                 method: 'POST',
@@ -22,7 +23,7 @@ angular.module('ImageLucidaApp').factory("FoldersFactory", ($http)=>{
                     'title':folderData.title,
                     'description':folderData.description,
                     'tags':folderData.tags,
-                    'project_id':folderData.project
+                    'project_id':folderData.project_id
                 }
             }).then((res)=>{
                 return res.data;
@@ -80,6 +81,6 @@ angular.module('ImageLucidaApp').factory("FoldersFactory", ($http)=>{
                     return res.status;
                 }
             });
-        }  
+        }
     };
 });

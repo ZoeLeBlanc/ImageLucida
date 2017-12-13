@@ -1,10 +1,11 @@
 "use strict";
-myApp.factory("UserFactory", ($http)=>{
+myApp.factory("UserFactory", ($q, $http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
         authUser: () => {
             return $http.get(`${rootUrl}/auth_user/`)
             .then( (res)=>{
+                console.log(res);
                 return res.data.username;
             });
         },
@@ -40,6 +41,6 @@ myApp.factory("UserFactory", ($http)=>{
             .then( (res)=>{
                 return res.data;
             });
-        } 
+        }
     };
 });

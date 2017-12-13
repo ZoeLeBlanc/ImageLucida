@@ -1,0 +1,16 @@
+2017-11-16 10:15:34.032 EST [44057] LOG:  listening on IPv6 address "::1", port 5432
+2017-11-16 10:15:34.032 EST [44057] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2017-11-16 10:15:34.034 EST [44057] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2017-11-16 10:15:34.048 EST [44058] LOG:  database system was shut down at 2017-11-16 10:15:05 EST
+2017-11-16 10:15:34.052 EST [44057] LOG:  database system is ready to accept connections
+2017-11-16 10:30:14.136 EST [44117] ERROR:  database "myproject" does not exist
+2017-11-16 10:30:14.136 EST [44117] STATEMENT:  GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
+2017-11-16 10:38:53.966 EST [45611] FATAL:  database "zgl3n" does not exist
+2017-11-16 10:44:05.615 EST [45775] ERROR:  syntax error at or near "SELECT" at character 44
+2017-11-16 10:44:05.615 EST [45775] STATEMENT:  SELECT * FROM image_lucida_app_upload_file
+	SELECT * FROM image_lucida_app_upload_file;
+2017-11-16 17:37:39.083 EST [44057] LOG:  received fast shutdown request
+2017-11-16 17:37:39.086 EST [44057] LOG:  aborting any active transactions
+2017-11-16 17:37:39.097 EST [44057] LOG:  worker process: logical replication launcher (PID 44064) exited with exit code 1
+2017-11-16 17:37:39.098 EST [44059] LOG:  shutting down
+2017-11-16 17:37:39.138 EST [44057] LOG:  database system is shut down

@@ -11,7 +11,7 @@ def get_projects(request):
     try:
         projects = get_list_or_404(project_model.Project, user=request.user.pk)
         print(projects)
-        projects_json = serializers.serialize("json", projects)
+        projects_json = serializers.serialize("json", projects, indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
         print(projects_json)
         return HttpResponse(projects_json, content_type="application/json")
     except:
@@ -25,16 +25,14 @@ def get_single_project(request, project_id):
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
     tags = project.tags.all()
-    folders = project.folder_set.all()
-    project_serialize = serializers.serialize("json", [project,])
-    folders_serialize = serializers.serialize("json", folders)
+    project_serialize = serializers.serialize("json", [project,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     tags_serialize = serializers.serialize("json", tags)
-    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize, 'tags': tags_serialize})
+    project_json = json.dumps({'project': project_serialize, 'tags': tags_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
-    
 
-def create_project(request): 
+
+def create_project(request):
     """Method view to register new user"""
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username=request.user)
@@ -42,9 +40,9 @@ def create_project(request):
     print(status)
     project = project_model.Project.objects.get_or_create(
         user = user[0],
-        title = data['title'], 
-        description = data['description'], 
-        status = status[0], 
+        title = data['title'],
+        description = data['description'],
+        status = status[0],
         private = data['private'],
         )
     for item in data['tags']:
@@ -59,7 +57,7 @@ def create_project(request):
     response = serializers.serialize("json", [project[0], ])
     return HttpResponse(response, content_type='application/json')
 
-def update_project(request): 
+def update_project(request):
     """Method to update a project"""
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username=request.user)
@@ -67,9 +65,9 @@ def update_project(request):
     print(status)
     project = project_model.Project.objects.update_or_create(
         user = user[0],
-        title = data['title'], 
-        description = data['description'], 
-        status = status[0], 
+        title = data['title'],
+        description = data['description'],
+        status = status[0],
         private = data['private'],
         )
     for item in data['tags']:
@@ -83,10 +81,10 @@ def update_project(request):
             )
     response = serializers.serialize("json", [project[0], ])
     return HttpResponse(response, content_type='application/json')
- 
-def delete_project(request, project_id): 
+
+def delete_project(request, project_id):
     """Method view to logout user"""
-    if request.method=='DELETE': 
+    if request.method=='DELETE':
         data = json.loads(request.body.decode())
         project_id = data['project_id']
         project = get_object_or_404(project_model.Project, pk=project_id)

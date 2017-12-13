@@ -10,3 +10,7 @@ textarea {
 .tabs {
     display: flex;
 }
+
+#sidenav-overlay {
+    z-index: 1;
+}

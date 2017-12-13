@@ -4,37 +4,29 @@
           <div class="nav wrapper">
             <!-- Brand and toggle get grouped for better mobile display -->
             <a href="#!" class="brand-logo center black-text"><i class="material-icons">monochrome_photos</i> Image Lucida</a>
-            <a href="#" data-activates="nav-mobile" class="button-collapse top-nav" data-sidenav="left" data-menuwidth="300"  data-closeonclick="true">
+            <a href="#" data-activates="landingPage-mobile" class="button-collapse top-nav show-on-medium-and-down" data-sidenav="left" data-menuwidth="300"  data-closeonclick="true">
             <i class="material-icons black-text">menu</i></a>
            <!-- LANDING PAGE navigation -->
-            <ul class="right hide-on-med-and-down" ng-show="!user_status">
+            <ul class="right hide-on-med-and-down">
                 <li><a class="black-text" href="#!/about">About</a></li>
-                <li><a class="black-text" href="#!/register">Register</a></li>
-                <li><a class="black-text" href="#!/login">Login</a></li>
-            </ul>  
+                <li ng-show="!user_status"><a class="black-text" href="#!/register" >Register</a></li>
+                <li ng-show="!user_status"><a class="black-text" href="#!/login">Login</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/home">Projects</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/explore">Explore</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/logout">Logout</a></li>
+            </ul>
             <!-- LANDING PAGE side-navigation  -->
-            <ul class="side-nav" id="landingPage-mobile" ng-show="!user.username">     
-                <li><a href="#!/about"><i class="material-icons">star</i>About</a></li>
-                <li><a href="#!/register"><i class="material-icons">star</i>Register</a></li>
-                <li><a href="#!/login"><i class="material-icons">star</i>Login</a></li>
-                <li><a data-target='loginModal' modal ready="readyCallback()" complete="completeCallback()" open="openModal"><i class="material-icons">star</i>Login/Sign Up</li>
-            </ul> <!-- End of signed in side navigation -->
-            <!-- SIGNED IN navigation -->
-            <ul class="right hide-on-med-and-down" ng-show="user_status">
-                <li><a class="black-text" href="#!/projects">Projects</a></li>
-                <li><a class="black-text" href="#!/explore">Explore</a></li>
-                <li><a class="black-text" href="#!/logout">Logout</a></li>
-            </ul>  
-            <!-- SIGNED IN Side navigation  -->
-            <ul class="side-nav" id="signedIn-mobile" ng-show="user_status">
-                    
-                <li><a href="#/projects"><i class="material-icons">menu</i>Projects</a></li>
-                <li><a href="#/explore"><i class="material-icons">search</i>Explore</a></li>
-                <li><div class="divider"></div></li>
-                <li><a class="waves-effect" href="#/logout">Logout</a></li>
-            </ul> <!-- End of signed in side navigation -->
-            
+            <ul class="side-nav" id="landingPage-mobile" ng-show="!user.username">
+                <li><a class="black-text" href="#!/about">About</a></li>
+                <li ng-show="!user_status"><a class="black-text" href="#!/register">Register</a></li>
+                <li ng-show="!user_status"><a class="black-text" href="#!/login">Login</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/home">Projects</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/explore">Explore</a></li>
+                <li ng-show="user_status"><a class="black-text" href="#!/logout">Logout</a></li>
+            </ul>
+
+
           </div><!-- /.navwrapper -->
         </nav>
     </div>
-</div> 
+</div>

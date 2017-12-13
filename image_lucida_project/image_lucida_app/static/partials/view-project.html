@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="fixed-action-btn horizontal"> 
+    <div class="fixed-action-btn horizontal">
         <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/((project_id))/new-folder" data-position="top" data-delay="50" data-tooltip="Create a new folder"><i class="large material-icons">add</i>
         </a>
     </div> <!-- End of Fab -->
@@ -16,7 +16,14 @@
                         <span class="card-title">
                         <h4>((project.title))</h4>
                         </span>
-                        ((project.description))
+                        Description: ((project.description))
+                    </div>
+                </div>
+                <div class="row">
+                    <div ng-repeat="tag in tags" class="col s1">
+                        <div class="chip">
+                            ((tag.fields.tag_name))
+                        </div>
                     </div>
                 </div>
             </div>
