@@ -25,11 +25,9 @@ def get_single_project(request, project_id):
     print(project_id)
     project = get_object_or_404(project_model.Project, pk=project_id)
     tags = project.tags.all()
-    folders = project.folder_set.all()
     project_serialize = serializers.serialize("json", [project,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    folders_serialize = serializers.serialize("json", folders)
     tags_serialize = serializers.serialize("json", tags)
-    project_json = json.dumps({'project': project_serialize, 'folders': folders_serialize, 'tags': tags_serialize})
+    project_json = json.dumps({'project': project_serialize, 'tags': tags_serialize})
     print(project_json)
     return HttpResponse(project_json, content_type="application/json")
 

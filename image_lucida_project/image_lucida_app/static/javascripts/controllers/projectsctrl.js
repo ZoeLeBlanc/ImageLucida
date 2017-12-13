@@ -1,9 +1,5 @@
 "use strict";
 myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window, UserFactory, ProjectsFactory, StatusFactory){
-    // UserFactory.authUser().then( (response)=>{
-    //     console.log(response);
-    //     $rootScope.user_status = response;
-    // });
     $scope.projects = [];
     ProjectsFactory.getProjects().then( (response)=>{
         console.log(response);
@@ -18,6 +14,10 @@ myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window
         }
         console.log($scope.projects);
     });
+    $scope.clickProject = (projectId) => {
+        $rootScope.$broadcast('clickProject', `${projectId}`);
+    };
+
     $scope.duplicateProject = (projectId) =>{
         ProjectsFactory.duplicateProject(projectId).then( (response)=>{
             $window.location.reload();

@@ -55,11 +55,11 @@ myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, Use
         console.log($scope.editing);
         if ($scope.editing === true){
             ProjectsFactory.updateProject($scope.createProject).then( (response)=>{
-            $location.path('#!/projects/');
+            $location.path('#!/home/');
             });
         } else {
           ProjectsFactory.newProject($scope.createProject).then( (response)=>{
-            $location.path('#!/projects/');
+            $location.path('#!/home/');
         });
         }
 

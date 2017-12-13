@@ -28,7 +28,7 @@ def transform_upload_file(request):
     coords_obj = coordinates_view.calculate_coordinates(int(rows), int(cols))
     rando_numb = uuid.uuid4()
     new_file_name = 'image_lucida_app/media/transformed_' + file_name.split('.')[0] + str(rando_numb)+ '.jpg'
-    file.transformed=True
+    # file.transformed=True
     file.save()
     new_file = io.imsave(new_file_name,new_file),
     open_file = open(new_file_name, 'rb')
@@ -134,8 +134,8 @@ def get_single_transform_file(request, transform_file_id):
     texts_serialize = serializers.serialize("json", list(texts))
     images_serialize = serializers.serialize("json", list(images))
 
-    transform_file_serialize = serializers.serialize("json", [transform_file,])
-
+    transform_file_serialize = serializers.serialize("json", [transform_file,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+    print(transform_file_serialize)
     transform_file_json = json.dumps({
         'transform_file':transform_file_serialize,
         'archival_source':archival_source_serialize,
@@ -254,3 +254,22 @@ def remove_tag_transform_file(request):
         tag_transform_file.delete()
         response = {'success': 'true'}
         return HttpResponse(response, content_type='application/json')
+
+def get_files(request, folder_id):
+    try:
+        transformed_files = get_list_or_404(transformfile_model.Transform_File, folder_id=folder_id)
+        print(transformed_files)
+        transformed_list = []
+        for file in transformed_files:
+            file_list = []
+            file_list.extend({file.transform_file_name, file.file_url})
+            transformed_list.append(file_list)
+        files_json = serializers.serialize("json", transformed_files)
+        print(files_json)
+        response = json.dumps({'files':files_json, 'list':transformed_list})
+        return HttpResponse(response, content_type='application/json')
+    except:
+        response = json.dumps({
+            "error": "No files."
+        })
+        return HttpResponse(response, content_type="application/json")

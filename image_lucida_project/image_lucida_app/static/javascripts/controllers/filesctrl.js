@@ -1,42 +1,39 @@
 "use strict";
-myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory, FoldersFactory){
-    // FOLDer SECTION
-    let folder_id = $routeParams.folder_id;
-    $scope.folder = {};
+myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routeParams, $window, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory, FoldersFactory){
+
     $scope.transforming = false;
     $scope.transformed_files = {};
     $scope.tags = {};
     $scope.clickedImage = false;
-    // $scope.selectedImage = "";
-    let folder = {};
-    let untransformed_list = [];
+    $scope.files = [];
     let transformed_list = [];
-    FoldersFactory.getSingleFolder(folder_id).then( (response)=>{
-        console.log(response);
-        folder = JSON.parse(response.folder);
-        $scope.folder = folder[0].fields;
-        $scope.folder.id = folder[0].pk;
-        $scope.transformed_files = JSON.parse(response.transformed_files);
-        let transformed_list = response.transformed_list;
-        $scope.tags = JSON.parse(response.tags);
-        angular.forEach($scope.transformed_files, (obj, index)=>{
-            obj.fields.id = obj.pk;
-            angular.forEach(transformed_list, (item, index)=>{
-                if(obj.fields.transform_file_name === item.file_name){
-                    console.log(item);
-                    obj.fields.url = item.file_url;
-                    obj.fields.tags = item.file_tags;
-                    if (obj.fields.tags.length > 0){
-                        obj.fields.tags = JSON.parse(obj.fields.tags);
-                    }
-                }
-            });
-            console.log(obj);
+    $scope.$on('clickFolder', (event,data)=>{
+        console.log("data", data);
+        $rootScope.folder_id = data;
+        TransformFileFactory.getFiles($rootScope.folder_id).then( (response)=>{
+            if (response.error === "No files."){
+                $scope.files = [];
+            } else {
+                let transformed_list = response.transformed_list;
+                angular.forEach(response, (file, index)=>{
+                    file.fields.id = file.pk;
+                    angular.forEach(transformed_list, (item, index)=>{
+                        if(file.fields.transform_file_name === item.file_name){
+                            console.log(item);
+                            file.fields.url = item.file_url;
+                            file.fields.tags = item.file_tags;
+                            $scope.files.push(file.fields);
+                        }
+                    });
+                });
+            }
+            console.log($scope.files);
         });
     });
+
     $scope.showImage = (file_id) =>{
         angular.forEach($scope.transformed_files, (file, index)=>{
-            
+
             console.log("file_id", file_id);
             if (file.pk === file_id){
                 $scope.selectedImage = '';
@@ -91,10 +88,10 @@ myApp.controller("ViewFolderCtrl", function($scope, $location, $routeParams, $wi
                 }
             }
         });
-        
+
     };
     $scope.unassignImage = (image_id)=>{
         console.log(image_id);
     };
-    
+
 });
