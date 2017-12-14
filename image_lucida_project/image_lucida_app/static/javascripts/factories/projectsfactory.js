@@ -21,9 +21,8 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 data: {
                     'title':projectData.title,
                     'description':projectData.description,
-                    'tags':projectData.tags,
-                    'status':projectData.status,
-                    'private':projectData.private
+                    // 'status':projectData.status,
+                    // 'private':projectData.private
                 }
             }).then((res)=>{
                 return res.data;
@@ -36,9 +35,8 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 data: {
                     'title':projectData.title,
                     'description':projectData.description,
-                    'tags':projectData.tags,
-                    'status':projectData.status,
-                    'private':projectData.private,
+                    // 'status':projectData.status,
+                    // 'private':projectData.private,
                     'project_id':projectData.id
                 }
             }).then((res)=>{
@@ -57,21 +55,21 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 return res.data;
             });
         },
-        tagProject: (project_id, tag_name)=>{
-            return $http({
-                url:`${rootUrl}/tag_project/`,
-                method: 'POST',
-                data: {
-                    'project_id': project_id,
-                    'tag_name':tag_name
-                }
-            }).then((res)=>{
-                return res.data;
-            }, (res)=>{
-                if(res.status > 0){
-                    return res.status;
-                }
-            });
-        },  
+        // tagProject: (project_id, tag_name)=>{
+        //     return $http({
+        //         url:`${rootUrl}/tag_project/`,
+        //         method: 'POST',
+        //         data: {
+        //             'project_id': project_id,
+        //             'tag_name':tag_name
+        //         }
+        //     }).then((res)=>{
+        //         return res.data;
+        //     }, (res)=>{
+        //         if(res.status > 0){
+        //             return res.status;
+        //         }
+        //     });
+        // },
     };
 });

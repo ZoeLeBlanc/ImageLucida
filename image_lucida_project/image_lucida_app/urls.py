@@ -17,7 +17,6 @@ urlpatterns = [
     url(r'^get_single_project/(?P<project_id>[0-9])/$', project_view.get_single_project, name= 'get_single_project'),
     url(r'^create_project/', project_view.create_project, name= 'create_project'),
     url(r'^update_project/', project_view.update_project, name= 'update_project'),
-    url(r'^tag_project/', project_view.tag_project, name= 'tag_project'),
     url(r'^delete_project/', project_view.delete_project, name= 'delete_project'),
     url(r'^duplicate_project/(?P<project_id>[0-9])/$', project_view.duplicate_project, name= 'duplicate_project'),
     # folder urls

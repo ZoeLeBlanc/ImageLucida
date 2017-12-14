@@ -6,7 +6,7 @@
         </div>
         <div class="divider"></div>
         <div class="row col s10 offset-s1">
-            <div class="right-align">
+            <!-- <div class="right-align">
                 <label>Public/Private Settings</label>
                 <div class="switch">
                     <label>
@@ -16,7 +16,7 @@
                       Private
                     </label>
                 </div>
-            </div>
+            </div> -->
             <label>Project Title</label>
             <div class="row">
                 <input class="input-field col s10 offset-s1" type="text" placeholder="Project Title" ng-model="createProject.title" required autofocus>
@@ -25,10 +25,10 @@
             <div class="row">
                 <input class="input-field col s10 offset-s1" type="text" placeholder="Project Description" ng-model="createProject.description" required>
             </div>
-            <label>Project Tags</label>
+            <!-- <label>Project Tags</label>
             <div class="row" id="tagsDiv">
-            </div>
-            <label>Project Status</label>
+            </div> -->
+            <!-- <label>Project Status</label>
             <form class="row" action="#" id="statusDiv">
                 <div class="col s3 offset-s1 m2 offset-m1 l1 offset-l1" ng-repeat="item in statuses">
                     <div ng-repeat="(key, status) in item">
@@ -36,7 +36,7 @@
                     <label for="((status))">((status))</label>
                     </div>
                 </div>
-            </form>
+            </form> -->
             <div class="row" ng-show="!editing">
                  <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewProject(createProject)">CREATE PROJECT</a></h5>
             </div>
