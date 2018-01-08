@@ -1,0 +1,11 @@
+<div ng-controller="SourceCtrl">
+    <div input-field>
+        <h5>Source</h5>
+        <select ng-model="selectedSource" material-select watch ng-change='clickSource(selectedSource)'>
+            <option value="">Please select
+            </option>
+            <option ng-repeat="source in sources" value="((source.id))">((source.source_name)) <i>((source.publication_location))</i>
+            </option>
+        </select>
+    </div>
+</div>

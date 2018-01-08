@@ -4,19 +4,19 @@
         <a href="javascript:void(0);" ng-click="go_back()" >Go Back To Folder</a>
     </h6>
     </div>
-    <div class="fixed-action-btn horizontal"> 
-        <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/manual-segment/((active_id))" data-position="top" data-delay="50" data-tooltip="Need to manually segment image?"><i class="large material-icons">info</i>
+    <div class="fixed-action-btn horizontal">
+        <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/manual-segment/((file_id))" data-position="top" data-delay="50" data-tooltip="Need to manually segment image?"><i class="large material-icons">info</i>
         </a>
     </div> <!-- End of Fab -->
     <div class="row">
         <div class="col s6">
-            <img class="responsive-img" src="((transform_file.url))" />
+            <img class="responsive-img" src="((file.file_url))" />
         </div>
         <div class="col s6">
             <div class="card">
                 <div class="card-content">
                     <div class="row">
-                        <span class="card-title">((transform_file.transform_file_name))</span>
+                        <span class="card-title">((file.file_name))</span>
                     </div>
                     <div class="divider"></div>
                     <ul class="collapsible" data-collapsible="accordion">
@@ -25,10 +25,10 @@
                             <div class="collapsible-body">
                                 <div class="row">
                                     <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
-                                        <p id="unedited">((transform_file.tesseract_text_annotation))</p>
+                                        <p id="unedited">((file.tesseract_text))</p>
                                     </div>
                                     <div class="flow-text" style="overflow:scroll; height:70vh;" ng-show="editing">
-                                        <p id="edited-tesseract" contenteditable="true">((transform_file.tesseract_text_annotation))</p>
+                                        <p id="edited-tesseract" contenteditable="true">((file.tesseract_text))</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -42,10 +42,10 @@
                             <div class="collapsible-body">
                                 <div class="row">
                                     <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
-                                        <p id="unedited" class="edit-textarea">((transform_file.google_vision_text_annotation))</p>
+                                        <p id="unedited" class="edit-textarea">((file.google_vision_text))</p>
                                     </div>
                                     <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:70vh;">
-                                        <p id="edited-googlevision" contenteditable="true">((transform_file.google_vision_text_annotation))</p>
+                                        <p id="edited-googlevision" contenteditable="true">((file.google_vision_text))</p>
                                     </div>
                                 </div>
                                 <div class="row">

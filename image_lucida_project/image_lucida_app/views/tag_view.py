@@ -16,7 +16,7 @@ def get_tags(request):
 
 def create_new_tag(request):
     data = json.loads(request.body.decode())
-    tag_name = data['tag_name']
+    tag_name = data['tag_name'].replace(" ", "_")
     tag = tag_model.Tag.objects.get_or_create(
         tag_name=tag_name
         )

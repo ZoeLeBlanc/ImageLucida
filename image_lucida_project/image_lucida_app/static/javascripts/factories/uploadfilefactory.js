@@ -2,14 +2,8 @@
 angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
     const rootUrl = 'http://localhost:8000';
     return {
-        getUntransformedFiles: () => {
-            return $http.get(`${rootUrl}/get_untransformed_files/`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
-        getSingleUploadedFile: (project_id) => {
-            return $http.get(`${rootUrl}/get_single_project/${project_id}/`)
+        getUploadedFiles: () => {
+            return $http.get(`${rootUrl}/get_upload_files/`)
             .then( (res)=>{
                 return res.data;
             });
@@ -26,7 +20,7 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
                 url:`${rootUrl}/upload_file/`,
                 method: 'POST',
                 data: fd,
-                headers: { 
+                headers: {
                     'Content-Type': undefined
                 },
                 transformRequest: angular.identity
@@ -39,13 +33,13 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
                 }
             });
         },
-        deleteUploadFile: (untransformed_file_id) => {
-            console.log(untransformed_file_id);
+        deleteUploadFile: (upload_file_id) => {
+            console.log(upload_file_id);
             return $http({
                 url:`${rootUrl}/delete_uploaded_file/`,
                 method: 'DELETE',
                 data: {
-                    'untransformed_file_id':untransformed_file_id
+                    'upload_file_id':upload_file_id
                 }
             }).then( (res)=>{
                 console.log(JSON.parse(res));
@@ -56,12 +50,12 @@ angular.module('ImageLucidaApp').factory("UploadFileFactory", ($http)=>{
                 }
             });
         },
-        duplicateUploadFile: (untransformed_file_id) => {
+        duplicateUploadFile: (upload_file_id) => {
             return $http({
-                url:`${rootUrl}/duplicate_untransformed_file/`,
+                url:`${rootUrl}/duplicate_upload_file/`,
                 method: 'POST',
                 data: {
-                    'untransformed_file_id':untransformed_file_id
+                    'upload_file_id':upload_file_id
                 }
             }).then( (res)=>{
                 console.log(JSON.parse(res));

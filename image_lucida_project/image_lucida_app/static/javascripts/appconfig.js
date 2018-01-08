@@ -57,8 +57,8 @@ angular.module('ImageLucidaApp').config([
                 resolve: {user_auth}
             })
             .when('/projects/transform/', {
-                controller: 'TransformFileCtrl',
-                templateUrl: '/static/partials/transform-file.html',
+                controller: 'NewFileCtrl',
+                templateUrl: '/static/partials/new-file.html',
                 resolve: {user_auth}
             })
             .when('/projects/:id/new-folder', {
@@ -69,6 +69,26 @@ angular.module('ImageLucidaApp').config([
             .when('/projects/:id/edit-folder/:folder_id', {
                 controller: 'NewFolderCtrl',
                 templateUrl: '/static/partials/new-folder.html',
+                resolve: {user_auth}
+            })
+            .when('/new-bucket', {
+                controller: 'NewBucketCtrl',
+                templateUrl: '/static/partials/new-bucket.html',
+                resolve: {user_auth}
+            })
+            .when('/edit-bucket/:bucket_id', {
+                controller: 'NewBucketCtrl',
+                templateUrl: '/static/partials/new-bucket.html',
+                resolve: {user_auth}
+            })
+            .when('/new-source', {
+                controller: 'NewSourceCtrl',
+                templateUrl: '/static/partials/new-source.html',
+                resolve: {user_auth}
+            })
+            .when('/edit-source/:source_id', {
+                controller: 'NewSourceCtrl',
+                templateUrl: '/static/partials/new-source.html',
                 resolve: {user_auth}
             })
             .when('/projects/process-text/:active_id', {

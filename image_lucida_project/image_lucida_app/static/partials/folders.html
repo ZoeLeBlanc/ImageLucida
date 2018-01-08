@@ -1,14 +1,11 @@
-<div class="col s12" style="overflow:scroll; height: 70vh;" ng-controller="FoldersCtrl">
-    <h4>Folders</h4>
-    <div class="collection" ng-repeat="(index,folder) in folders">
-        <li class="collection-item" style="list-style-type:none;">
-            <div><b>((folder.title))</b>: <i>((folder.description))</i>
-                <a class="secondary-content" ng-href="#!/projects/((project_id))/edit-folder/((folder.id))"><i class="material-icons">mode_edit</i></a>
-                <a class="secondary-content" href="" ng-click="duplicateFolder(folder.id)"><i class="material-icons">add</i></a>
-                <a class="secondary-content" href="" ng-click="deleteFolder(folder.id)"><i class="material-icons">close</i></a>
-                <a class="secondary-content" href="" ng-click="clickFolder(folder.id)" title=""><i class="material-icons">arrow_forward</i></a>
-            </div>
-        </li>
-
+<div ng-controller="FoldersCtrl">
+    <h5>Folder</h5>
+    <div input-field>
+        <select ng-model="selectedFolder" ng-change="clickFolder(selectedFolder)" material-select watch>
+            <option value="">Please select
+            </option>
+            <option ng-repeat="folder in folders" value="((folder.id))">((folder.title))
+            </option>
+        </select>
     </div>
 </div>

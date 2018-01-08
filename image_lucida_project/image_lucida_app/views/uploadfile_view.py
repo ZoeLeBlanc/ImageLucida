@@ -32,16 +32,17 @@ def upload_file(request):
             response = json.dumps({'form':'not saved'})
         return HttpResponse(response, content_type='application/json')
 
-def get_untransformed_files(request):
+def get_upload_files(request):
+    
     try:
-        untransformed_files = get_list_or_404(uploadfile_model.Upload_File, user=request.user.pk, transformed=False)
-        untransformed_list = []
-        for file in untransformed_files:
+        upload_files = get_list_or_404(uploadfile_model.Upload_File, user=request.user.pk,transformed=False)
+        upload_list = []
+        for file in upload_files:
             file_list = []
             file_list.extend({file.upload_file_name, file.file_url})
-            untransformed_list.append(file_list)
-        files_json = serializers.serialize("json", untransformed_files)
-        response = json.dumps({'untransformed_files':files_json, 'untransformed_list':untransformed_list})
+            upload_list.append(file_list)
+        files_json = serializers.serialize("json", upload_files)
+        response = json.dumps({'upload_files':files_json, 'upload_list':upload_list})
         return HttpResponse(response, content_type='application/json')
     except:
         response = json.dumps({
@@ -54,21 +55,21 @@ def delete_uploaded_file(request):
     print("is this printing first?")
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
-        untransformed_file_id = data['untransformed_file_id']
-        untransformed_file = get_object_or_404(uploadfile_model.Upload_File, pk=untransformed_file_id)
-        print(untransformed_file)
-        untransformed_file.delete()
+        upload_file_id = data['upload_file_id']
+        upload_file = get_object_or_404(uploadfile_model.Upload_File, pk=upload_file_id)
+        print(upload_file)
+        upload_file.delete()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")
 
-def duplicate_untransformed_file(request):
+def duplicate_upload_file(request):
     """Method to delete an uploaded file"""
     if request.method=='POST':
         data = json.loads(request.body.decode())
-        untransformed_file_id = data['untransformed_file_id']
-        untransformed_file = get_object_or_404(uploadfile_model.Upload_File, pk=untransformed_file_id)
-        print(untransformed_file)
-        untransformed_file.pk = None
-        untransformed_file.save()
+        upload_file_id = data['upload_file_id']
+        upload_file = get_object_or_404(uploadfile_model.Upload_File, pk=upload_file_id)
+        print(upload_file)
+        upload_file.pk = None
+        upload_file.save()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")

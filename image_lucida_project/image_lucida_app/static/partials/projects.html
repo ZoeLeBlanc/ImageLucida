@@ -1,14 +1,11 @@
-<div class="col s12" style="overflow:scroll; height: 70vh;" ng-controller="ProjectsCtrl">
-    <h4>Projects</h4>
-    <div class="collection" ng-repeat="(index,project) in projects">
-        <li class="collection-item" style="list-style-type:none;">
-            <div><b>((project.title))</b>: <i>((project.description))</i>
-                <a class="secondary-content" ng-href="#!/projects/edit/((project.id))"><i class="material-icons">mode_edit</i></a>
-                <a class="secondary-content" href="" ng-click="duplicateProject($index)"><i class="material-icons">add</i></a>
-                <a class="secondary-content" href="" ng-click="deleteProject(project.id)"><i class="material-icons">close</i></a>
-                <a class="secondary-content" href="" ng-click="clickProject(project.id)" title=""><i class="material-icons">arrow_forward</i></a>
-            </div>
-        </li>
-
+<div ng-controller="ProjectsCtrl">
+    <h5>Project</h5>
+    <div input-field>
+        <select ng-model="selectedProject"   ng-change='clickProject(selectedProject)' material-select watch>
+            <option value="">Please select
+            </option>
+            <option ng-repeat="project in projects" value="((project.id))">((project.title))
+            </option>
+        </select>
     </div>
 </div>

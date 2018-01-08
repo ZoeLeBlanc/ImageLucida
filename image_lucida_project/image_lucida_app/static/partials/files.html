@@ -1,10 +1,14 @@
-<div class="col s12" style="overflow:scroll; height: 70vh;" ng-controller="FilesCtrl">
-    <h4>Files</h4>
-    <div class="collection" ng-repeat="(index,file) in transformed_files">
-        <li class="collection-item avatar" style="list-style-type:none;">
-            <img src="((file.fields.url))" alt="" class="circle">
-            <span class="title">((file.fields.transform_file))</span>
-            <a href="" class="secondary-content" ng-click="showImage(file.pk)" ><i class="material-icons">arrow_forward</i></a>
-        </li>
+<div class="col s12" ng-controller="FilesCtrl">
+    <div style="overflow:scroll; height: 70vh;">
+        <h4>Files</h4>
+        <div class="collection" ng-repeat="(index,file) in files">
+            <li class="collection-item avatar" style="list-style-type:none;">
+                <img src="((file.url))" alt="" class="circle">
+                <span class="title">((file.file_name))</span>
+                <a href="" class="secondary-content" ng-click="showImage(file.id)" ><i class="material-icons">arrow_forward</i></a>
+            </li>
+        </div>
+
     </div>
+
 </div>

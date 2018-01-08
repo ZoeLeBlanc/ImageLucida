@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="card col s10 offset-s1">
+        <div class="row">
+            <h4 ng-show="!editing" class="center-align">Create New Source</h4>
+            <h4 ng-show="editing" class="center-align">Edit Source</h4>
+        </div>
+        <div class="divider"></div>
+        <div class="row col s10 offset-s1">
+            <label>Source Title</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Source Title" ng-model="createSource.source_name" required autofocus>
+            </div>
+            <label>Source Type</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Publication Location" ng-model="createSource.publication_location" required autofocus>
+            </div>
+            <div class="row" ng-show="!editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewSource(createSource)">CREATE SOURCE</a></h5>
+            </div>
+            <div class="row" ng-show="editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewSource(createSource)">EDIT SOURCE</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="deleteSource()">DELETE SOURCE</a></h5>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,10 @@
 "use strict";
 myApp.controller("FoldersCtrl", function($scope, $rootScope, $location, $routeParams, $window, FoldersFactory){
+    console.log($rootScope.folder_id);
     $scope.folders = [];
-    $rootScope.$on('clickProject', (event, data)=>{
-        $rootScope.project_id = data;
-        FoldersFactory.getFolders($rootScope.project_id).then( (response)=>{
+    var getFolders = (projectId) => {
+        $scope.folders = [];
+        FoldersFactory.getFolders(projectId).then( (response)=>{
             if (response.error === "No folders."){
                 $scope.folders = [];
             } else {
@@ -14,19 +15,22 @@ myApp.controller("FoldersCtrl", function($scope, $rootScope, $location, $routePa
             }
             console.log($scope.folders);
         });
+    };
+
+    $rootScope.$on('clickProject', (event, data)=>{
+        $rootScope.project_id = data;
+        getFolders(data);
     });
+    if ($rootScope.folder_id !== undefined){
+        getFolders($rootScope.project_id);
+        $scope.selectedFolder = $rootScope.folder_id;
+    }
     $scope.clickFolder = (folderId) => {
-        $rootScope.$broadcast('clickFolder', `${folderId}`);
+        if (folderId.length>0){
+            $rootScope.$broadcast('clickFolder', `${folderId}`);
+        } else {
+            $rootScope.folder_id = '';
+        }
     };
-    $scope.duplicateFolder = (folderId) =>{
-        FoldersFactory.duplicateFolder(folderId).then( (response)=>{
-            $window.location.reload();
-        });
-    };
-    $scope.deleteFolder = (folderId)=>{
-        FoldersFactory.deleteFolder(folderId).then( (response)=>{
-            console.log(response);
-            $window.location.reload();
-        });
-    };
+
 });
