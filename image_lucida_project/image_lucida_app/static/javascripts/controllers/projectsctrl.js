@@ -1,7 +1,8 @@
 "use strict";
-myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window, UserFactory, ProjectsFactory, StatusFactory){
+myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window, UserFactory, ProjectsFactory){
     $scope.projects = [];
     ProjectsFactory.getProjects().then( (response)=>{
+        $scope.projects = [];
         console.log(response);
         if (response.error === "No projects."){
             $scope.projects = [];
@@ -13,19 +14,17 @@ myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window
             });
         }
         console.log($scope.projects);
+        $('select').material_select();
     });
+    if ($rootScope.project_id !== undefined){
+        $scope.selectedProject = $rootScope.project_id;
+    }
     $scope.clickProject = (projectId) => {
-        $rootScope.$broadcast('clickProject', `${projectId}`);
+        if (projectId.length>0){
+            $rootScope.$broadcast('clickProject', `${projectId}`);
+        } else {
+            $rootScope.project_id = '';
+        }
     };
 
-    $scope.duplicateProject = (projectId) =>{
-        ProjectsFactory.duplicateProject(projectId).then( (response)=>{
-            $window.location.reload();
-        });
-    };
-    $scope.deleteProject = (projectId)=>{
-        ProjectsFactory.deleteProject(projectId).then( (response)=>{
-            $window.location.reload();
-        });
-    };
 });

@@ -13,10 +13,10 @@ class Upload_File(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    upload_file_name = models.CharField(max_length=200, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1, null=True)
+    upload_file_name = models.CharField(max_length=200, blank=True, null=True)
     upload_file = models.ImageField(upload_to='upload-files/')
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
     upload_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     transformed = models.BooleanField(default=False)
     height = models.IntegerField(null=True, default=0)

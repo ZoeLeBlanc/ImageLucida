@@ -14,30 +14,13 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 return res.data;
             });
         },
-        newProject: (projectData) =>{
+        cuProject: (projectData) =>{
             return $http({
-                url:`${rootUrl}/create_project/`,
+                url:`${rootUrl}/cu_project/`,
                 method: 'POST',
                 data: {
                     'title':projectData.title,
                     'description':projectData.description,
-                    // 'status':projectData.status,
-                    // 'private':projectData.private
-                }
-            }).then((res)=>{
-                return res.data;
-            });
-        },
-        updateProject: (projectData) =>{
-            return $http({
-                url:`${rootUrl}/update_project/`,
-                method: 'POST',
-                data: {
-                    'title':projectData.title,
-                    'description':projectData.description,
-                    // 'status':projectData.status,
-                    // 'private':projectData.private,
-                    'project_id':projectData.id
                 }
             }).then((res)=>{
                 return res.data;
@@ -49,27 +32,5 @@ angular.module('ImageLucidaApp').factory("ProjectsFactory", ($http)=>{
                 return res.data;
             });
         },
-        duplicateProject: (project_id) => {
-            return $http.get(`${rootUrl}/duplicate_project/${project_id}`)
-            .then( (res)=>{
-                return res.data;
-            });
-        },
-        // tagProject: (project_id, tag_name)=>{
-        //     return $http({
-        //         url:`${rootUrl}/tag_project/`,
-        //         method: 'POST',
-        //         data: {
-        //             'project_id': project_id,
-        //             'tag_name':tag_name
-        //         }
-        //     }).then((res)=>{
-        //         return res.data;
-        //     }, (res)=>{
-        //         if(res.status > 0){
-        //             return res.status;
-        //         }
-        //     });
-        // },
     };
 });

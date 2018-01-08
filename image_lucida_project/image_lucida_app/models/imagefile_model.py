@@ -15,14 +15,14 @@ class Image_File(models.Model):
     Author: Zoe LeBlanc
     '''
     file_item = models.ForeignKey(file_model.File, null=True, on_delete=models.CASCADE, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
     image_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     image_file = models.ImageField(upload_to=UniqueFileName('image-files/'), null=True)
-    image_file_name =models.CharField(max_length=200, blank=True)
+    image_file_name =models.CharField( blank=True, null=True, max_length=2000)
     tags = models.ManyToManyField('Tag', through='Image_File_Tag')
     tesseract_processed = models.BooleanField(default=False)
     google_vision_processed = models.BooleanField(default=False)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_updated = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return '%s' % (self.id)

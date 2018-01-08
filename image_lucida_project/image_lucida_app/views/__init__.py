@@ -1,1 +1,1 @@
-__all__ = ['index_view', 'user_view', 'project_view', 'status_view', 'uploadfile_view', 'coordinates_view', 'transformfile_view', 'archivalsource_view', 'issue_view', 'textannotation_view', 'tag_view', 'imageannotation_view', 'folder_view']
+__all__ = ['index_view', 'user_view', 'project_view', 'bucket_view', 'uploadfile_view', 'coordinates_view', 'file_view', 'source_view', 'group_view', 'textfile_view', 'tag_view', 'imagefile_view', 'folder_view']

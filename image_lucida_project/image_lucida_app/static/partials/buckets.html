@@ -1,0 +1,11 @@
+<div ng-controller="BucketsCtrl">
+    <h5>Bucket</h5>
+    <div input-field>
+        <select ng-model="selectedBucket" material-select watch ng-change='clickBucket(selectedBucket)'>
+            <option value="">Please select
+            </option>
+            <option ng-repeat="bucket in buckets" value="((bucket.id))">((bucket.bucket_name))<i>((bucket.bucket_type))</i>
+            </option>
+        </select>
+    </div>
+</div>

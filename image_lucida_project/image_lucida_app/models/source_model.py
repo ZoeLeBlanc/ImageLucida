@@ -13,12 +13,12 @@ class Source(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    source_name = models.TextField(blank=True)
-    publication_location = models.CharField(max_length=500, blank=True)
+    source_name = models.TextField(blank=True, unique=True, null=True)
+    publication_location = models.CharField(max_length=500, blank=True, null=True)
     bucket = models.ForeignKey(bucket_model.Bucket, null=True, on_delete=models.CASCADE, blank=True)
 
     def natural_key(self):
-        return (self.source_name, self.publication_location)
+        return (self.source_name, self.publication_location, self.bucket)
 
     def __str__(self):
-        return '%s %s %s' % (self.source_name, self.publication_location)
+        return '%s %s %s' % (self.source_name, self.publication_location, self.bucket)

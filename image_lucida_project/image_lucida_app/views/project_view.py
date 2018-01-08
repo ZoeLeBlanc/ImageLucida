@@ -22,33 +22,21 @@ def get_single_project(request, project_id):
     """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
     project = get_object_or_404(project_model.Project, pk=project_id)
     project_serialize = serializers.serialize("json", [project,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    project_json = json.dumps({'project': project_serialize)
+    project_json = json.dumps({'project': project_serialize})
     return HttpResponse(project_json, content_type="application/json")
 
-
-def create_project(request):
+def cu_project(request):
     """Method view to register new user"""
-    data = json.loads(request.body.decode())
-    user = User.objects.get_or_create(username=request.user)
-    project = project_model.Project.objects.get_or_create(
-        user = user[0],
-        title = data['title'],
-        description = data['description'],
-        )
-    response = serializers.serialize("json", [project[0], ])
-    return HttpResponse(response, content_type='application/json')
-
-def update_project(request):
-    """Method to update a project"""
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username=request.user)
     project = project_model.Project.objects.update_or_create(
         user = user[0],
-        title = data['title'],
+        title = data['title'].replace(" ", "_"),
         description = data['description'],
         )
     response = serializers.serialize("json", [project[0], ])
     return HttpResponse(response, content_type='application/json')
+
 
 def delete_project(request, project_id):
     """Method view to logout user"""

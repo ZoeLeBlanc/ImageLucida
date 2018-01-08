@@ -28,29 +28,16 @@ def get_folders(request, project_id):
         })
         return HttpResponse(response, content_type="application/json")
 
-def create_folder(request):
+def cu_folder(request):
     data = json.loads(request.body.decode())
     project = project_model.Project.objects.get_or_create(pk=data['project_id'])
-    folder = folder_model.Folder.objects.get_or_create(
-        project = project[0],
-        title = data['title'],
-        description = data['description']
-        )
-    response = serializers.serialize("json", [folder[0], ])
-    return HttpResponse(response, content_type='application/json')
-
-def update_folder(request):
-    """Method to update a folder"""
-    data = json.loads(request.body.decode())
-    project = project_model.Project.objects.get_or_create(project_pk=data['project_id'])
     folder = folder_model.Folder.objects.update_or_create(
         project = project[0],
-        title = data['title'],
+        title = data['title'].replace(" ", "_"),
         description = data['description']
         )
     response = serializers.serialize("json", [folder[0], ])
     return HttpResponse(response, content_type='application/json')
-
 
 def delete_folder(request):
     """Method to delete a folder"""

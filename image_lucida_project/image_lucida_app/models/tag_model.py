@@ -12,8 +12,8 @@ class Tag(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    tag_name = models.CharField(max_length=500, blank=True, unique=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+    tag_name = models.CharField(max_length=500, blank=True, unique=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     def natural_key(self):
         return (self.tag_name)

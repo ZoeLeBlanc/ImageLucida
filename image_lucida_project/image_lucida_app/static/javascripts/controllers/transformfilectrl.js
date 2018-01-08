@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, TransformFileFactory, ArchivalSourceFactory, IssueFactory, TextAnnotationFactory){
+myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, $window, UserFactory, ProjectsFactory, UploadFileFactory, FileFactory, SourceFactory, GroupFactory, TextFileFactory){
     //Values
     $scope.transforming = false;
     $scope.untransformed_files = {};
@@ -34,8 +34,8 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
                     });
                 });
             }
-            TransformFileFactory.getTransformedFiles().then((response)=>{
-                if (response.error === "No transformed files."){
+            FileFactory.getUnassignedFiles().then((response)=>{
+                if (response.error === "No files."){
                     $scope.allTabContentLoaded = true;
                     $scope.showTabs = true;
                 } else {
@@ -180,7 +180,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         let upload_file_name = active_img[0].attributes[0].value;
         let coords = valuesToArray(four_points);
         console.log(coords, upload_file_name);
-        // TransformFileFactory.setTransformation(upload_file_id, upload_file_name, coords, height, width).then( (response)=>{
+        // FileFactory.createFile(upload_file_id, upload_file_name, coords, height, width).then( (response)=>{
         //     console.log(response);
         //     Materialize.toast('Transformation Saved', 1000);
         //     $scope.transforming = false;
@@ -194,7 +194,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         let active_img_id = $('#transformed_list').find('.active')[0].text;
         let active_img = $('#transformed-image'+active_img_id+'').find('img');
         let img_id = active_img[0].id;
-        TransformFileFactory.deleteTransformFile(img_id).then( (response)=>{
+        FileFactory.deleteFile(img_id).then( (response)=>{
             console.log(response);
             Materialize.toast('Image Deleted', 1000);
             $window.location.reload();
@@ -204,7 +204,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         let active_img_id = $('#transformed_list').find('.active')[0].text;
         let active_img = $('#transformed-image'+active_img_id+'').find('img');
         let img_id = active_img[0].id;
-        TransformFileFactory.duplicateTransformFile(img_id).then( (response)=>{
+        FileFactory.duplicateFile(img_id).then( (response)=>{
             console.log(response);
             Materialize.toast('Image Duplicated', 1000);
             $window.location.reload();
@@ -214,7 +214,7 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         let active_img_id = $('#transformed_list').find('.active')[0].text;
         let active_img = $('#transformed-image'+active_img_id+'').find('img');
         let img_id = active_img[0].id;
-        TransformFileFactory.untransformFile(img_id).then( (response)=>{
+        FileFactory.untransformFile(img_id).then( (response)=>{
             console.log(response);
             Materialize.toast('Image Untransformed', 1000);
             $window.location.reload();
@@ -260,10 +260,10 @@ myApp.controller("TransformFileCtrl", function($scope, $location, $routeParams, 
         let transform_file_name = active_file[0].attributes[0].value;
         let transform_file_id = active_file[0].id;
         console.log($scope.info);
-        TransformFileFactory.assignTransformFile(transform_file_id, project_id, folder_id, $scope.info.coverPage, $scope.info.pageNumber).then((response)=>{
-            console.log("response", response);
-            Materialize.toast('File Error', 1000);
-        });
+        // FileFactory.assignTransformFile(transform_file_id, project_id, folder_id, $scope.info.coverPage, $scope.info.pageNumber).then((response)=>{
+        //     console.log("response", response);
+        //     Materialize.toast('File Error', 1000);
+        // });
     };
    $scope.addMetaData = ()=>{
         let active_img_id = $('#transformed_list').find('.active')[0].text;

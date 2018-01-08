@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from . import coordinates_model, file_model, tag_model, imagefile_model
 from image_lucida_app.helpers import UniqueFileName
 
@@ -17,10 +18,12 @@ class Text_File(models.Model):
     image_file = models.ForeignKey(imagefile_model.Image_File, null=True, on_delete=models.CASCADE, blank=True)
     file_item = models.ForeignKey(file_model.File, null=True, on_delete=models.CASCADE, blank=True)
     text_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    tesseract_text = models.TextField(blank=True)
-    google_vision_text = models.TextField(blank=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    tesseract_text = models.TextField(blank=True, null=True)
+    google_vision_text = models.TextField(blank=True, null=True)
+    date_updated = models.DateTimeField(auto_now=True, null=True)
+    tesseract_response=JSONField(null=True)
+    google_vision_response=JSONField(null=True)
 
     def __str__(self):
         return '%s' % (self.id)

@@ -1,4 +1,5 @@
 from django.db import models
+from . import folder_model
 
 class Bucket(models.Model):
     ''' The Bucket class is a model that defines which data is available in the Bucket table so a database can be created from it.
@@ -11,12 +12,13 @@ class Bucket(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    bucket_name = models.CharField(max_length=500, blank=True)
-    bucket_type = models.CharField(max_length=500, blank=True, unique=True)
+    bucket_name = models.CharField( blank=True, unique=True, null=True, max_length=2000)
+    bucket_type = models.CharField(max_length=500, blank=True, unique=True, null=True)
+    folder = models.ForeignKey(folder_model.Folder, null=True, on_delete=models.CASCADE, blank=True)
 
 
     def natural_key(self):
-        return (self.bucket_name, self.bucket_type)
+        return (self.bucket_name, self.bucket_type, self.folder)
 
     def __str__(self):
-        return '%s' % (self.bucket_name, self.bucket_type)
+        return '%s %s %s' % (self.bucket_name, self.bucket_type, self.folder)

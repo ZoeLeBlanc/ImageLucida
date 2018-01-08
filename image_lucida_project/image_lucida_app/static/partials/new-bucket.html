@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="card col s10 offset-s1">
+        <div class="row">
+            <h4 ng-show="!editing" class="center-align">Create New Bucket</h4>
+            <h4 ng-show="editing" class="center-align">Edit Bucket</h4>
+        </div>
+        <div class="divider"></div>
+        <div class="row col s10 offset-s1">
+            <label>Bucket Title</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Bucket Title" ng-model="createBucket.bucket_name" required autofocus>
+            </div>
+            <label>Bucket Type</label>
+            <div class="row">
+                <input class="input-field col s10 offset-s1" type="text" placeholder="Bucket Type" ng-model="createBucket.bucket_type" required autofocus>
+            </div>
+            <div class="row" ng-show="!editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewBucket(createBucket)">CREATE BUCKET</a></h5>
+            </div>
+            <div class="row" ng-show="editing">
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewBucket(createBucket)">EDIT BUCKET</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="deleteBucket()">DELETE BUCKET</a></h5>
+            </div>
+        </div>
+    </div>
+</div>

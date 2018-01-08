@@ -13,11 +13,11 @@ class Folder(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    project = models.ForeignKey(project_model.Project, on_delete=models.CASCADE, default=1)
-    title = models.CharField(max_length=200, blank=True)
-    description = models.CharField(max_length=500, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
+    project = models.ForeignKey(project_model.Project, on_delete=models.CASCADE, default=1, null=True)
+    title = models.CharField(unique=True, null=True, max_length=2000)
+    description = models.CharField(max_length=500, blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    date_updated = models.DateField(auto_now=True, null=True)
 
     def __str__(self):
         return '%s' % (self.title)

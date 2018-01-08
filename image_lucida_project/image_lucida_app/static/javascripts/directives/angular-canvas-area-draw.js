@@ -7,7 +7,10 @@ myApp.directive('canvasAreaDraw', function () {
             enabled: '=',
             palette: '=',
             points: '=',
-            active: '='
+            active: '=',
+            id: '=',
+            value: '=',
+            class: '='
         },
         controller: function () {
             this.dotLineLength = function(x, y, x0, y0, x1, y1, o) {
@@ -66,19 +69,21 @@ myApp.directive('canvasAreaDraw', function () {
             console.log($canvas);
             image = new Image();
             console.log("image", image.height);
+            console.log(scope);
             scope.resize = function() {
                 $canvas.attr('height', image.height).attr('width', image.width);
                 $canvas.attr('height', $canvas[0].offsetHeight).attr('width', $canvas[0].offsetWidth);
                 scope.draw();
             };
-            $(image).load(scope.resize);
+            $(image).on('load', scope.resize);
             image.src = settings.imageUrl;
             if (image.loaded) scope.resize();
             $canvas.css({background: 'url('+image.src+')'});
             $canvas.css({backgroundSize: 'contain'});
             $canvas.css({'max-width': '100%'});
             $canvas.css({'height': 'auto'});
-            $canvas.attr('id', 'canvasImage');
+            $canvas.attr('id', scope.id);
+            $canvas.attr('value', scope.value);
             // $canvas.addClass('responsive-img');
 
             $(element).append($canvas);

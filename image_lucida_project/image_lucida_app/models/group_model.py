@@ -13,8 +13,8 @@ class Group(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    group_name = models.TextField(blank=True)
-    date_published = models.CharField(max_length=500, blank=True)
+    group_name = models.TextField(blank=True, null=True)
+    date_published = models.CharField(max_length=500, blank=True, null=True)
     source = models.ForeignKey(source_model.Source, null=True, on_delete=models.CASCADE, blank=True)
 
     def natural_key(self):
