@@ -16,7 +16,7 @@ class File(models.Model):
     '''
     upload_file = models.ForeignKey(uploadfile_model.Upload_File, null=True, on_delete=models.CASCADE, blank=True)
     file_name = models.CharField(max_length=200, blank=True, null=True)
-    file_item = models.ImageField(upload_to='files/')
+    file_item = models.ImageField(upload_to='files/', max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     page_number = models.IntegerField(null=True, default=0)

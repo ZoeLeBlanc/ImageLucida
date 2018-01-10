@@ -13,7 +13,7 @@ import cv2
 import numpy as np
 from skimage import io
 import uuid
-from tesserocr import PyTessBaseAPI
+from tesserocr import PyTessBaseAPI, RIL
 from google.cloud import vision
 from google.cloud.vision import types
 import google.auth
@@ -21,7 +21,9 @@ import google.auth
 def process_text(request):
     data = json.loads(request.body.decode())
     process_type = data['process_type']
-    file_item = file_model.File.objects.get(pk=data['file_id'])
+    file_id=data['file_id']
+    print(file_id)
+    file_item = file_model.File.objects.get(pk=file_id)
     text_file = textfile_model.Text_File.objects.create(
             file_item=file_item,
         )
@@ -36,23 +38,24 @@ def segment_text(text_file_id, process_type, file_id, segment_type):
         file_item = file_model.File.objects.get(pk=file_id)
         uri = file_item.file_url
         file_name = file_item.file_name
-        response = analyze_text(file_item, uri, process_type, file_name)
+        response = analyze_text(file_item, uri, process_type, file_name, text_file)
         return response
     if segment_type == 'image_file':
         image_file = imagefile_model.Image_File.objects.get(pk=file_id)
         uri = image_file.file_url
         image_file_name = image_file.image_file_name
-        response = analyze_text(image_file, uri, process_type, file_name, text_anno)
+        response = analyze_text(image_file, uri, process_type, file_name, text_file)
         return response
 
-def analyze_text(file, uri, process_type, file_name, text_file):
+def analyze_text(file_item, uri, process_type, file_name, text_file):
     print(process_type)
     print(file_item.google_vision_processed)
     if process_type == 'tesseract':
         with PyTessBaseAPI() as api:
             api.SetImageFile(file_name)
             boxes = api.GetComponentImages(RIL.TEXTLINE, True)
-            text_file_text = api.GetUTF8Text(file_name)
+            text_file_text = api.GetUTF8Text()
+            print(text_file_text)
             text_file.tesseract_text = text_file_text
 
             tesseract_response = {}
@@ -103,12 +106,12 @@ def update_text_file(request):
     data = json.loads(request.body.decode())
     new_text = data['new_text']
     process_type = data['process_type']
-    text_file = get_object_or_404(textfile_model.Text_File, pk=data['text_file_id'])
+    text_file = textfile_model.Text_File.objects.get(pk=data['text_file_id'])
     if process_type == 'googlevision':
         text_file.google_vision_text = new_text
         text_file.save()
     if process_type == 'tesseract':
-        text_annotation.tesseract_text = new_text
+        text_file.tesseract_text = new_text
         text_file.save()
     text_file_serialize = serializers.serialize("json", [text_file, ])
     response = json.dumps({

@@ -91,17 +91,17 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/new-source.html',
                 resolve: {user_auth}
             })
-            .when('/projects/process-text/:active_id', {
+            .when('/projects/process-text/', {
                 controller: 'ProcessTextCtrl',
                 templateUrl: '/static/partials/process-text.html',
                 resolve: {user_auth}
             })
-            .when('/projects/process-image/:active_id', {
-                controller: 'ProcessImageCtrl',
-                templateUrl: '/static/partials/process-image.html',
+            .when('/projects/auto-segment/', {
+                controller: 'AutoSegmentImageCtrl',
+                templateUrl: '/static/partials/auto-segment.html',
                 resolve: {user_auth}
             })
-            .when('/projects/manual-segment/:active_id', {
+            .when('/projects/manual-segment/', {
                 controller: 'ManualSegmentImageCtrl',
                 templateUrl: '/static/partials/manual-segment-image.html',
                 resolve: {user_auth}

@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'imagelucidadb',
-        'USER': 'zoe',
-        'PASSWORD': 'asdfasdf',
+        'USER': os.environ['IMAGE_LUCIDA_USER'],
+        'PASSWORD': os.environ['IMAGE_LUCIDA_PASSWORD'],
         'HOST': 'localhost',
         'PORT': '',
 

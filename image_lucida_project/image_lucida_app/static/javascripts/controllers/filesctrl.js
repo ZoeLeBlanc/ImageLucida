@@ -70,13 +70,8 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
         getGroupFiles(data);
     });
     $scope.showImage = (file_id) => {
-        if (file_id.length>0){
-            $rootScope.file_id = file_id;
-            $rootScope.$broadcast('clickFile', `${file_id}`);
-        } else {
-            $rootScope.file_id='';
-        }
-
+        $rootScope.file_id = file_id;
+        $rootScope.$broadcast('clickFile', `${file_id}`);
     };
     if ($rootScope.group_id !== undefined){
         getGroupFiles($rootScope.group_id);

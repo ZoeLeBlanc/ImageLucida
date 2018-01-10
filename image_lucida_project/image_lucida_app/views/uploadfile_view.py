@@ -33,7 +33,7 @@ def upload_file(request):
         return HttpResponse(response, content_type='application/json')
 
 def get_upload_files(request):
-    
+
     try:
         upload_files = get_list_or_404(uploadfile_model.Upload_File, user=request.user.pk,transformed=False)
         upload_list = []
@@ -56,10 +56,14 @@ def delete_uploaded_file(request):
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         upload_file_id = data['upload_file_id']
-        upload_file = get_object_or_404(uploadfile_model.Upload_File, pk=upload_file_id)
-        print(upload_file)
-        upload_file.delete()
-        response = {'success':True}
+
+        try:
+            upload_file = get_object_or_404(uploadfile_model.Upload_File, pk=upload_file_id)
+            print(upload_file)
+            upload_file.delete()
+            response = {'success':True}
+        except:
+            response ={'success':False}
         return HttpResponse(response, content_type="application/json")
 
 def duplicate_upload_file(request):

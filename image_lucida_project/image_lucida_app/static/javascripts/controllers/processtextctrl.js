@@ -1,7 +1,6 @@
 "use strict";
 myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $routeParams, $window, TextFileFactory, FileFactory){
     $scope.editing = false;
-    let text_file_id;
     $scope.file = {};
     FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
         console.log(response);
@@ -10,39 +9,36 @@ myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $rou
         $scope.file.file_url = response.file_url;
         $scope.file.id = file[0].pk;
         let texts = response.texts_serialize;
-        angular.forEach(texts, (text, index)=>{
-            $scope.file.google_vision_text_annotation = text.fields.google_vision_text_annotation;
-            $scope.file.tesseract_text_annotation = text.fields.tesseract_text_annotation;
+        if (texts.length > 0 ){
+            angular.forEach(JSON.parse(texts), (text, index)=>{
+                console.log(text);
+                $scope.file.google_vision_text = text.fields.google_vision_text;
+                $scope.file.google_vision_text_id = text.pk;
+                $scope.file.tesseract_text = text.fields.tesseract_text;
+                $scope.file.tesseract_text_id = text.pk;
 
-        });
-
+            });
+        }
         console.log($scope.file);
     });
 
-    $scope.editTesseractText = ()=>{
-        $scope.editing = true;
+    $scope.editText = ()=>{
+        $scope.editing = !$scope.editing;
     };
-    $scope.saveTesseractEdits = (text_file_id)=>{
-        console.log($scope.tesseract);
+    $scope.saveTesseractEdits = ()=>{
         let new_text = $('#edited-tesseract')[0].textContent;
-        TextFileFactory.updateTextFile(text_file_id, new_text, 'tesseract').then( (response)=>{
+        TextFileFactory.updateTextFile($scope.file.tesseract_text_id, new_text, 'tesseract').then( (response)=>{
             console.log(response);
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false;
-            $window.location.reload();
         });
     };
-     $scope.editGoogleVisionText = ()=>{
-        $scope.editing = true;
-    };
-    $scope.saveGoogleVisionEdits = (text_file_id)=>{
-        console.log($scope.tesseract);
+    $scope.saveGoogleVisionEdits = ()=>{
         let new_text = $('#edited-googlevision')[0].textContent;
-        TextFileFactory.updateTextFile(text_file_id, new_text, 'googlevision').then( (response)=>{
+        TextFileFactory.updateTextFile($scope.file.google_vision_text_id, new_text, 'googlevision').then( (response)=>{
             console.log(response);
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false;
-            // $window.location.reload();
         });
     };
     $scope.go_back = function() {
@@ -52,13 +48,18 @@ myApp.controller("ProcessTextCtrl", function($scope, $rootScope, $location, $rou
     $scope.processGoogleVision = ()=>{
         let process_type = 'googlevision';
         TextFileFactory.processText($rootScope.file_id, process_type).then( (response)=>{
+            $scope.file.google_vision_text = response[0].google_vision_text;
+            $scope.file.google_vision_text_id = response[0].pk;
             Materialize.toast('Text Processed', 1000);
             console.log(response);
         });
     };
     $scope.processTesseract = ()=>{
         let process_type = 'tesseract';
+        console.log($scope.file.id, process_type);
         TextFileFactory.processText($scope.file.id, process_type).then( (response)=>{
+            $scope.file.tesseract_text = response[0].tesseract_text;
+            $scope.file.tesseract_text_id = response[0].pk;
             Materialize.toast('Text Processed', 1000);
             console.log(response);
         });

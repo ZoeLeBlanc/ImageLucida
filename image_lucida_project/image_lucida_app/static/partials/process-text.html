@@ -21,36 +21,28 @@
                     <div class="divider"></div>
                     <ul class="collapsible" data-collapsible="accordion">
                         <li>
-                            <div class="collapsible-header">Tesseract OCR Text</div>
+                            <div class="collapsible-header">Tesseract OCR Text<a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveTesseractEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
                             <div class="collapsible-body">
                                 <div class="row">
                                     <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
-                                        <p id="unedited">((file.tesseract_text))</p>
+                                        <p id="unedited" style="white-space:pre;">((file.tesseract_text))</p>
                                     </div>
                                     <div class="flow-text" style="overflow:scroll; height:70vh;" ng-show="editing">
-                                        <p id="edited-tesseract" contenteditable="true">((file.tesseract_text))</p>
+                                        <p id="edited-tesseract" contenteditable="true" style="white-space:pre;">((file.tesseract_text))</p>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editTesseractText()">Edit Text</button>
-                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveTesseractEdits()">Save Edits</button>
                                 </div>
                             </div>
                         </li>
                         <li>
-                            <div class="collapsible-header">Google Vision API Text</div>
+                            <div class="collapsible-header">Google Vision API Text <a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveGoogleVisionEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
                             <div class="collapsible-body">
                                 <div class="row">
                                     <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
-                                        <p id="unedited" class="edit-textarea">((file.google_vision_text))</p>
+                                        <p id="unedited" class="edit-textarea" style="white-space:pre;">((file.google_vision_text))</p>
                                     </div>
                                     <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:70vh;">
-                                        <p id="edited-googlevision" contenteditable="true">((file.google_vision_text))</p>
+                                        <p id="edited-googlevision" contenteditable="true" style="white-space:pre;">((file.google_vision_text))</p>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <button ng-show="!editing" class="waves-effect waves-light btn col s8" ng-click="editGoogleVisionText()">Edit Text</button>
-                                    <button ng-show="editing" class="waves-effect waves-light btn col s8" ng-click="saveGoogleVisionEdits()">Save Edits</button>
                                 </div>
                             </div>
                         </li>

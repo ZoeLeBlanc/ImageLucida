@@ -40,7 +40,7 @@ def create_file(request):
 
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,
@@ -54,7 +54,7 @@ def create_file(request):
             file_coordinates=coords_obj,
         )
     else:
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,

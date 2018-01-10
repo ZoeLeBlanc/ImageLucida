@@ -1,0 +1,29 @@
+<di class="row">
+    <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+        </div>
+   </div>
+
+    <div class="row">
+        <div ng-repeat="(index,image) in images">
+            <div class="card col s3 offset-s1" id="((image.id))">
+                <div class="card-image" >
+                    <img src="((image.image_file_url))" class="responsive-img">
+                </div>
+                <div class="card-action">
+                    <a href="" ng-click="deleteImageFile(image.id)"> Delete (not yet built) </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

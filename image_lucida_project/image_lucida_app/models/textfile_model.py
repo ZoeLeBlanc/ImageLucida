@@ -17,7 +17,6 @@ class Text_File(models.Model):
     '''
     image_file = models.ForeignKey(imagefile_model.Image_File, null=True, on_delete=models.CASCADE, blank=True)
     file_item = models.ForeignKey(file_model.File, null=True, on_delete=models.CASCADE, blank=True)
-    text_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     tesseract_text = models.TextField(blank=True, null=True)
     google_vision_text = models.TextField(blank=True, null=True)

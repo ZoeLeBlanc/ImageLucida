@@ -57,7 +57,7 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
         },
         autoImageSegmentation: (file_id)=>{
             return $http({
-                url:`${rootUrl}/auto_segment_image_annotation/`,
+                url:`${rootUrl}/auto_segment_image_file/`,
                 method: 'POST',
                 data: {
                     'file_id': file_id
