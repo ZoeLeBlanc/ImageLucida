@@ -101,6 +101,9 @@
                                             <form ng-submit="tagImage(selectedImage.id)">
                                                 Tags: <input ng-model="((selectedImage.tags))" value="((selectedImage.tags))" id="tags((selectedImage.id))" />
                                             </form>
+                                            <form ng-submit="orderImage(selectedImage.id)">
+                                                Image Order: <input ng-model="((selectedImage.image_order))" value="((selectedImage.image_order))" id="image_order((selectedImage.id))" />
+                                            </form>
                                         </div>
                                     </li>
                                     <li>

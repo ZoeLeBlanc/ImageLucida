@@ -10,15 +10,16 @@
             <div class="row">
                 <input class="input-field col s10 offset-s1" type="text" placeholder="Bucket Title" ng-model="createBucket.bucket_name" required autofocus>
             </div>
-            <label>Bucket Type</label>
             <div class="row">
-                <input class="input-field col s10 offset-s1" type="text" placeholder="Bucket Type" ng-model="createBucket.bucket_type" required autofocus>
+                <form ng-submit="createNewBucket()">
+                    <input class="input-field col s10 offset-s1" type="text" placeholder="Bucket Description" ng-model="createBucket.bucket_description" required autofocus>
+                </form>
             </div>
             <div class="row" ng-show="!editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewBucket(createBucket)">CREATE BUCKET</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewBucket()">CREATE BUCKET</a></h5>
             </div>
             <div class="row" ng-show="editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewBucket(createBucket)">EDIT BUCKET</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewBucket()">EDIT BUCKET</a></h5>
                  <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="deleteBucket()">DELETE BUCKET</a></h5>
             </div>
         </div>

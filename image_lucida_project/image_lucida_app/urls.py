@@ -63,6 +63,7 @@ urlpatterns = [
     url(r'^tag_images/', imagefile_view.tag_images, name='tag_images'),
     url(r'^image_process_text/', imagefile_view.image_process_text, name='image_process_text'),
     url(r'^auto_segment_image_file/', imagefile_view.auto_segment_image_file, name='auto_segment_image_file'),
+    url(r'^order_image/', imagefile_view.order_image, name= 'order_image'),
     url(r'^delete_image_file/', imagefile_view.delete_image_file, name= 'delete_image_file'),
     url(r'^manual_segmentation/', imagefile_view.manual_segmentation, name= 'manual_segmentation'),
     url(r'^get_single_image_file/(?P<image_file_id>\d+)/$', imagefile_view.get_single_image_file, name= 'get_single_image_file'),

@@ -17,12 +17,15 @@ myApp.controller("NewSourceCtrl", function($scope, $rootScope, $location, $route
         $scope.createSource.bucket_id = $rootScope.bucket_id;
         console.log($scope.createSource);
         SourceFactory.cuSource($scope.createSource).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Source Created', 300);
+            $rootScope.$broadcast('newSource', '');
+            $location.url('/home');
         });
     };
     $scope.deleteSource = ()=>{
         SourceFactory.deleteSource($routeParams.source_id).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Source Deleted', 300);
+            $location.url('/home');
         });
     };
 });

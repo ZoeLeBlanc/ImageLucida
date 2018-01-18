@@ -45,7 +45,7 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
             UploadFileFactory.uploadFile(file.file, file_width, file_height).then( (response)=>{
                 if (response.form != 'not saved'){
                     Materialize.toast('Images Uploaded', 1000);
-                    $location.path('#!/home/');
+                    $location.url('/home');
                 } else {
                     $scope.error_message = "File did not upload.";
                 }

@@ -142,6 +142,14 @@ def tag_images(request):
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
 
+def order_image(request):
+    data = json.loads(request.body.decode())
+    image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
+    image_file.image_order = data['image_order']
+    image_file.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
 def delete_image_file(request):
     if request.method=='DELETE':
         data = json.loads(request.body.decode())

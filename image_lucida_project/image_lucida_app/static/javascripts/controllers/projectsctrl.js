@@ -31,6 +31,9 @@ myApp.controller("ProjectsCtrl", function($scope, $rootScope, $location, $window
             $rootScope.project_id = '';
         }
     };
+    $rootScope.$on('newProject', (event, data)=>{
+        getProjects();
+    });
     $rootScope.$on('selectedProject', (event, data)=>{
         console.log('selectedProject', data);
         $rootScope.selectedProject = '';

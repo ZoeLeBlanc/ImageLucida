@@ -64,11 +64,20 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         });
         let tags = $('#tags'+image_file_id).val().split(',');
         tags.map( (tag)=> {
-            ImageFileFactory.tagImageFile(image_file_id, tag).then((response)=>{
+            ImageFileFactory.tagImageFile(image_file_id, tag.toLowerCase()).then((response)=>{
                 console.log(response);
             });
         });
 
+    };
+    $scope.orderImage = function(image_file_id){
+        let image = $scope.images.filter((image)=>{
+            return image.id === image_file_id;
+        });
+        let image_order = $('#image_order'+image_file_id).val();
+        ImageFileFactory.orderImage(image_file_id, parseInt(image_order)).then((response)=>{
+            console.log(response);
+        });
     };
     $scope.undo = function(){
         $scope.points[$scope.activePolygon].splice(-1, 1);

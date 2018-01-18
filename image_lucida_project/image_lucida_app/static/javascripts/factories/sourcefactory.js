@@ -20,7 +20,7 @@ angular.module('ImageLucidaApp').factory("SourceFactory", ($http)=>{
                 method: 'POST',
                 data: {
                     'source_name':sourceData.source_name,
-                    'publication_location':sourceData.publication_location,
+                    'description':sourceData.description,
                     'bucket_id':sourceData.bucket_id
                 }
             }).then((res)=>{

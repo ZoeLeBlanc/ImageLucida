@@ -9,6 +9,7 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         $scope.file.file_url = response.file_url;
         $scope.file.id = file[0].pk;
         let texts = response.texts_serialize;
+        let tags = response.tags_serialize;
         if (texts.length > 0 ){
             angular.forEach(JSON.parse(texts), (text, index)=>{
                 console.log(text);
@@ -19,7 +20,21 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
 
             });
         }
+        if (tags.length > 0){
+            let all_tags = '';
+            angular.forEach(JSON.parse(tags), (item, index)=>{
+                all_tags += item.fields.tag_name +', ';
+            });
+            $scope.file.tags = all_tags;
+        }
         console.log($scope.file);
+        var $window = $(window),
+            $imageInfo = $('#textInfo'),
+            elTop = $imageInfo.offset().top;
+
+         $window.scroll(function() {
+              $imageInfo.toggleClass('sticky', $window.scrollTop() > elTop);
+         });
     });
 
     $scope.editText = ()=>{
@@ -40,9 +55,6 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false;
         });
-    };
-    $scope.go_back = function() {
-        $window.history.back();
     };
     //TEXT PROCESS
     $scope.processGoogleVision = ()=>{
@@ -69,5 +81,14 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
             }
 
         });
+    };
+    $scope.tagFile = function(){
+        $scope.file.tags.split(',').map( (tag)=> {
+            FileFactory.tagFile($scope.file.id, tag.toLowerCase()).then((response)=>{
+                Materialize.toast('Tag Added', 200);
+                console.log(response);
+            });
+        });
+
     };
 });

@@ -28,6 +28,8 @@ def create_file(request):
     print("file width", width)
     page_number=data['page_number']
     date_published=data['date_published']
+    if len(date_published)>0:
+        date_published=' '
     project = project_model.Project.objects.get(pk=data['project_id'])
     folder = folder_model.Folder.objects.get(pk=data['folder_id'])
     source = source_model.Source.objects.get(pk=data['source_id'])
@@ -42,7 +44,7 @@ def create_file(request):
     )
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,
@@ -56,7 +58,7 @@ def create_file(request):
             file_coordinates=coords_obj,
         )
     else:
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,
@@ -68,15 +70,6 @@ def create_file(request):
             file_coordinates=coords_obj,
             date_published=date_published,
         )
-    if len(data['tags'])>0:
-        for item in data['tags']:
-            tag = tag_model.Tag.objects.get_or_create(
-                tag_name=item['tag'],
-                )
-            file_model.File_Tag.objects.get_or_create(
-                file_item=file_item,
-                tag=tag[0]
-                )
     new_file = new_file.save(new_file_name)
     open_file = open(new_file_name, 'rb')
     new_file = File(open_file)
