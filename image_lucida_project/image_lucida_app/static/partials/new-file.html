@@ -1,13 +1,6 @@
-<di class="row">
-    <div class="row">
-        <h6>
-            <a href="javascript:void(0);" ng-click="go_back()" >Go Back </a>
-        </h6>
-    </div>
+<div class="row">
     <div class="row">
         <h5>Uploaded Files</h5>
-    </div>
-    <div class="row">
         <div class="row" id="upload">
             <div class="row" ng-if="showTabs">
                 <ul class="tabs" tabs id="upload_list" reload="allTabContentLoaded">
@@ -85,7 +78,6 @@
                                 <input class="input-field col s5 offset-s1" type="text" placeholder="Page Number" ng-model="file.page_number" autofocus>
                                 <label>File Tags</label>
                                 <div class="row" id="tagsDiv">
-                                    <!-- <div class="chips"></div> -->
                                 </div>
                             </div>
                             <div class="row" ng-show="selection">

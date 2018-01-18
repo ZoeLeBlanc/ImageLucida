@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     jshint: {
       files: ['../javascripts/**/*.js'],
       options: {
-        predef: [ "document", "console", "$", "myApp", "angular", "FileReader", "FormData", "URL", "Materialize", "Image"],
+        predef: [ "document", "console", "$", "myApp", "angular", "FileReader", "FormData", "URL", "Materialize", "Image", "window"],
         esnext: true,
         globalstrict: true,
         globals: {"myApp":true}
@@ -31,11 +31,11 @@ module.exports = function(grunt) {
       },
       sassy: {
         files: ['../sass/**/*.scss'],
-        tasks: ['sass']        
+        tasks: ['sass']
       }
     }
   });
-  
+
   grunt.registerTask('default', ['sass', 'jshint', 'watch']);
   grunt.registerTask('lint', ['jshint']);
 };

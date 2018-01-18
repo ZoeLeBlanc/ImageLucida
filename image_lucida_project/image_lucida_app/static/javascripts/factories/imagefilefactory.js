@@ -34,7 +34,7 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                 }
             });
         },
-        manualSegmentation: (file_id, multi_coords, ocr, process_type, height, width)=>{
+        manualSegmentation: (file_id, multi_coords, ocr, process_type, height, width, index)=>{
             console.log(process_type);
             return $http({
                 url:`${rootUrl}/manual_segmentation/`,
@@ -45,7 +45,8 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                     'ocr':ocr,
                     'process_type':process_type,
                     'height':height,
-                    'width':width
+                    'width':width,
+                    'index': index,
                 }
             }).then((res)=>{
                 return res.data;
@@ -57,7 +58,7 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
         },
         autoImageSegmentation: (file_id)=>{
             return $http({
-                url:`${rootUrl}/auto_segment_image_annotation/`,
+                url:`${rootUrl}/auto_segment_image_file/`,
                 method: 'POST',
                 data: {
                     'file_id': file_id
@@ -74,6 +75,22 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
             return $http.get(`${rootUrl}/get_single_image_file/${image_file_id}/`)
             .then( (res)=>{
                 return res.data;
+            });
+        },
+        processImageText: (image_file_id, process_type) =>{
+            return $http({
+                url:`${rootUrl}/image_process_text/`,
+                method: 'POST',
+                data: {
+                    'image_file_id': image_file_id,
+                    'process_type':process_type
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
             });
         },
     };

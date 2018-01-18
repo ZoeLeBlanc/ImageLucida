@@ -21,6 +21,7 @@ myApp.controller("FoldersCtrl", function($scope, $rootScope, $location, $routePa
         $rootScope.project_id = data;
         getFolders(data);
     });
+    
     if ($rootScope.folder_id !== undefined){
         getFolders($rootScope.project_id);
         $scope.selectedFolder = $rootScope.folder_id;

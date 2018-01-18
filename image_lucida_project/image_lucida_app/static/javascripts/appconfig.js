@@ -91,19 +91,14 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/new-source.html',
                 resolve: {user_auth}
             })
-            .when('/projects/process-text/:active_id', {
-                controller: 'ProcessTextCtrl',
-                templateUrl: '/static/partials/process-text.html',
+            .when('/projects/view-texts/', {
+                controller: 'ViewTextsCtrl',
+                templateUrl: '/static/partials/view-texts.html',
                 resolve: {user_auth}
             })
-            .when('/projects/process-image/:active_id', {
-                controller: 'ProcessImageCtrl',
-                templateUrl: '/static/partials/process-image.html',
-                resolve: {user_auth}
-            })
-            .when('/projects/manual-segment/:active_id', {
-                controller: 'ManualSegmentImageCtrl',
-                templateUrl: '/static/partials/manual-segment-image.html',
+            .when('/projects/view-images/', {
+                controller: 'ViewImagesCtrl',
+                templateUrl: '/static/partials/view-images.html',
                 resolve: {user_auth}
             })
             .when('/projects/view-annotations/:active_id', {

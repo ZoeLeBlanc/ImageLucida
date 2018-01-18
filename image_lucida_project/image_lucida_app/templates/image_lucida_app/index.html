@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     <link href="{% static 'lib/bower_components/angular-xeditable/dist/css/xeditable.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'lib/node_modules/slick-carousel/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/node_modules/slick-carousel/slick/slick-theme.css' %}">
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
   </head>
   <body ng-app='ImageLucidaApp'>
@@ -24,7 +27,8 @@
     <script type="text/javascript" src="{% static 'lib/bower_components/angular/angular.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js" crossorigin="anonymous"></script>
 
-
+    <script src="{% static 'lib/node_modules/slick-carousel/slick/slick.js' %}"></script>
+    <script src="{% static 'lib/node_modules/angular-slick-carousel/dist/angular-slick.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'lib/bower_components/angular-materialize/src/angular-materialize.js' %}"></script>
     <script type="text/javascript" src="{% static 'lib/bower_components/angular-route/angular-route.min.js' %}"></script>
     <script src="{% static 'lib/bower_components/angular-xeditable/dist/js/xeditable.js' %}"></script>
@@ -69,12 +73,7 @@
     <script type="text/javascript" src="{% static 'javascripts/controllers/groupctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/filesctrl.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascripts/controllers/uploadfilectrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/transformfilectrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/processtextctrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/processimagectrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/viewannotationsctrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/manualsegmentimagectrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/metadatactrl.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/controllers/unassignctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/viewimagesctrl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/controllers/viewtextsctrl.js' %}"></script>
   </body>
 </html>

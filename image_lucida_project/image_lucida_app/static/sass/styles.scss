@@ -4,3 +4,8 @@
 .tabs {
     display: flex;
 }
+
+#imageInfo.sticky {
+     position: fixed;
+     top: 0;
+}

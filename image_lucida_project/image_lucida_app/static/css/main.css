@@ -14,3 +14,9 @@ textarea {
 #sidenav-overlay {
     z-index: 1;
 }
+
+#imageInfo.sticky,#segmentInfo.sticky {
+     position: fixed;
+     top: 64px;
+     padding-right: 22.5px;
+  }

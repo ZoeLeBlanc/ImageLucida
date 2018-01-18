@@ -37,12 +37,10 @@ urlpatterns = [
     # file urls
     url(r'^create_file/', file_view.create_file, name= 'create_file'),
     url(r'^get_single_file/(?P<file_id>\d+)/$', file_view.get_single_file, name= 'get_single_file'),
-    url(r'^get_unassigned_files/', file_view.get_unassigned_files, name= 'get_unassigned_files'),
     url(r'^get_source_files/(?P<source_id>\d+)/$', file_view.get_source_files, name= 'get_source_files'),
     url(r'^get_group_files/(?P<group_id>\d+)/$', file_view.get_group_files, name= 'get_group_files'),
     url(r'^delete_file/', file_view.delete_file, name= 'delete_file'),
     url(r'^update_file/', file_view.update_file, name= 'update_file'),
-    url(r'^untransform_file/', file_view.untransform_file, name= 'untransform_file'),
     url(r'^tag_file/', file_view.tag_file, name= 'tag_file'),
     url(r'^remove_tag_file/', file_view.remove_tag_file, name= 'remove_tag_file'),
     # source urls
@@ -63,6 +61,7 @@ urlpatterns = [
     url(r'^delete_text_file/', textfile_view.delete_text_file, name= 'delete_text_file'),
     # image file urls
     url(r'^tag_images/', imagefile_view.tag_images, name='tag_images'),
+    url(r'^image_process_text/', imagefile_view.image_process_text, name='image_process_text'),
     url(r'^auto_segment_image_file/', imagefile_view.auto_segment_image_file, name='auto_segment_image_file'),
     url(r'^delete_image_file/', imagefile_view.delete_image_file, name= 'delete_image_file'),
     url(r'^manual_segmentation/', imagefile_view.manual_segmentation, name= 'manual_segmentation'),
