@@ -29,9 +29,8 @@ myApp.controller("SingleFileCtrl", function($scope, $rootScope, $location, $rout
             <div class="card col s12">
                 <div class="card-content">
                     <div class="row">
-                        <span class="card-title">${file.file_name}</span>
+                        <span class="card-title" style="word-wrap:break-word;">${file.file_name}</span>
                     </div>
-                    <div class="divider"></div>
                     <ul class="collapsible" data-collapsible="accordion">
                         <li>
                             <div class="collapsible-header">
@@ -59,9 +58,8 @@ myApp.controller("SingleFileCtrl", function($scope, $rootScope, $location, $rout
                             </div>
                             <div class="collapsible-body">
                                 <div class="card-action">
-                                <a href="#!/projects/process-text/">OCR Text</a>
-                                <a href="#!/projects/auto-segment/">Auto Segment Image</a>
-                                <a href="#!/projects/manual-segment/")">Manually Segment Image</a>
+                                <a href="#!/projects/view-texts/">View Text</a>
+                                <a href="#!/projects/view-images/">View Images</a>
                                 </div>
                             </div>
                         </li>
@@ -78,6 +76,13 @@ myApp.controller("SingleFileCtrl", function($scope, $rootScope, $location, $rout
             $('.materialboxed').materialbox();
             $('.collapsible').collapsible();
         });
+        var $window = $(window),
+            $imageInfo = $('#imageInfo'),
+            elTop = $imageInfo.offset().top;
+
+         $window.scroll(function() {
+              $imageInfo.toggleClass('sticky', $window.scrollTop() > elTop);
+         });
     };
     $scope.$on('clickFile', (event,data)=>{
         if (data.length >0) {

@@ -17,6 +17,8 @@ from tesserocr import PyTessBaseAPI, RIL
 from google.cloud import vision
 from google.cloud.vision import types
 import google.auth
+from protobuf_to_dict import protobuf_to_dict
+from google.protobuf.json_format import MessageToJson
 
 def process_text(request):
     data = json.loads(request.body.decode())
@@ -24,11 +26,11 @@ def process_text(request):
     file_id=data['file_id']
     print(file_id)
     file_item = file_model.File.objects.get(pk=file_id)
-    text_file = textfile_model.Text_File.objects.create(
+    text_file = textfile_model.Text_File.objects.get_or_create(
             file_item=file_item,
         )
     segment_type = 'full_page'
-    print(text_file)
+    text_file = text_file[0]
     response = segment_text(text_file.pk, process_type, file_id, segment_type)
     return HttpResponse(response, content_type='application/json')
 
@@ -44,7 +46,7 @@ def segment_text(text_file_id, process_type, file_id, segment_type):
         image_file = imagefile_model.Image_File.objects.get(pk=file_id)
         uri = image_file.file_url
         image_file_name = image_file.image_file_name
-        response = analyze_text(image_file, uri, process_type, file_name, text_file)
+        response = analyze_text(image_file, uri, process_type, image_file_name, text_file)
         return response
 
 def analyze_text(file_item, uri, process_type, file_name, text_file):
@@ -74,20 +76,27 @@ def analyze_text(file_item, uri, process_type, file_name, text_file):
         return serializers.serialize("json", [text_file, ])
     if process_type == 'googlevision':
         credentials, project = google.auth.default()
-        vision_client = vision.Client()
+        vision_client = vision.ImageAnnotatorClient()
         image = types.Image()
         image.source.image_uri = uri
-        # image = vision_client.Image(source_uri=uri)
-        response = client.text_detection(image=image)
+        response = vision_client.text_detection(image=image)
         texts = response.text_annotations
-        # texts = image.detect_text()
         text_list = " "
-        for text in texts:
-            word = text.description + " "
-            text_list += word
-        print(text_list)
-        text_file.google_vision_text_file = text_list
-        text_file.google_vision_response = texts
+        text_data = {}
+        for index, text in enumerate(texts):
+            if index == 0:
+                word = text.description + " "
+                text_list += word
+            else :
+                text_coords = []
+                for vertice in text.bounding_poly.vertices:
+                    dict_text = {}
+                    dict_text['x'] = vertice.x
+                    dict_text['y'] = vertice.y
+                    text_coords.append(dict_text)
+                text_data[text.description] = text_coords
+        text_file.google_vision_text = text_list
+        text_file.google_vision_response = text_data
         text_file.save()
         if file_item.google_vision_processed == False:
             file_item.google_vision_processed = True
@@ -105,10 +114,14 @@ def get_single_text_file(request, text_file_id):
 def update_text_file(request):
     data = json.loads(request.body.decode())
     new_text = data['new_text']
+    print(new_text)
     process_type = data['process_type']
+    print(process_type)
     text_file = textfile_model.Text_File.objects.get(pk=data['text_file_id'])
-    if process_type == 'googlevision':
+    if process_type == 'google_vision':
+        print("initial", text_file.google_vision_text)
         text_file.google_vision_text = new_text
+        print("afterwards", text_file.google_vision_text)
         text_file.save()
     if process_type == 'tesseract':
         text_file.tesseract_text = new_text

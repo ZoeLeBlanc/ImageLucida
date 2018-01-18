@@ -14,33 +14,35 @@ import numpy as np
 from skimage import io
 import uuid
 from PIL import Image
+import os
 
 def create_file(request):
     data = json.loads(request.body.decode())
+    coords = data['multi_coords']
     upload_file_id = data['upload_file_id']
     upload_file_name = data['upload_file_name']
     upload_file = uploadfile_model.Upload_File.objects.get(pk=upload_file_id)
-    coords = data['multi_coords']
     height = data['height']
+    print("file height", height)
     width = data['width']
+    print("file width", width)
+    page_number=data['page_number']
+    date_published=data['date_published']
+    project = project_model.Project.objects.get(pk=data['project_id'])
+    folder = folder_model.Folder.objects.get(pk=data['folder_id'])
+    source = source_model.Source.objects.get(pk=data['source_id'])
+    bucket = bucket_model.Bucket.objects.get(pk=data['bucket_id'])
     upload_file_url = upload_file.file_url
-    im = coordinates_view.crop_shapes(upload_file_url, coords, height, width)
-    array_image = Image.fromarray(np.uint8(im))
+    image = coordinates_view.crop_shapes(upload_file_url, coords, height, width)
+    array_image = Image.fromarray(np.uint8(image))
     bounded_image = array_image.getbbox()
     new_file = array_image.crop(bounded_image)
     coords_obj = coordinates_model.Coordinates.objects.create(
         multi_coords=json.dumps(coords)
     )
-    project = project_model.Project.objects.get(pk=data['project_id'])
-    folder = folder_model.Folder.objects.get(pk=data['folder_id'])
-    source = source_model.Source.objects.get(pk=data['source_id'])
-    bucket = bucket_model.Bucket.objects.get(pk=data['bucket_id'])
-    page_number=data['page_number']
-    date_published=data['date_published']
-
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
-        new_file_name = project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,
@@ -54,7 +56,7 @@ def create_file(request):
             file_coordinates=coords_obj,
         )
     else:
-        new_file_name = project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + str(page_number) + '.jpg'
         file_item = file_model.File.objects.create(
             upload_file=upload_file,
             file_name=new_file_name,
@@ -80,9 +82,9 @@ def create_file(request):
     new_file = File(open_file)
     file_item.file_item.save(new_file_name, new_file, save=True)
     file_item.save()
+    # os.remove(file_item.file_name)
     upload_file.transformed=True
     upload_file.save()
-    print(file_item)
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
 
@@ -95,6 +97,7 @@ def get_single_file(request, file_id):
     if len(texts)>0:
         texts_serialize = serializers.serialize("json", list(texts))
     images = file_item.image_file_set.all()
+    print(images)
     images_serialize = {}
     images_data = {}
     if len(images) > 0:
@@ -113,6 +116,7 @@ def get_single_file(request, file_id):
                 images_list['image_tags'] =[]
                 images_data[index] = images_list
         images_serialize = serializers.serialize("json", list(images))
+        print(images_serialize)
     tags = file_item.tags.all()
     tags_serialize = {}
     if len(tags)>0:
@@ -129,25 +133,6 @@ def get_single_file(request, file_id):
         'tags_serialize':tags_serialize
         })
     return HttpResponse(file_json, content_type="application/json")
-
-def get_unassigned_files(request):
-    try:
-        files = get_list_or_404(file_model.File, user=request.user.pk, assigned=False)
-        print(files)
-        files_list = []
-        for file_item in files:
-            file_list = []
-            file_list.extend({file_item.file_name, file_item.file_url})
-            files_list.append(file_list)
-        files_json = serializers.serialize("json", files)
-        print(files_json)
-        response = json.dumps({'files':files_json, 'files_list':files_list})
-        return HttpResponse(response, content_type='application/json')
-    except:
-        response = json.dumps({
-            "error": "No files."
-        })
-        return HttpResponse(response, content_type="application/json")
 
 def get_source_files(request, source_id):
     print("source_id", source_id)
@@ -195,6 +180,7 @@ def delete_file(request):
         file_id = data['file_id']
         file_item = get_object_or_404(file_model.File, pk=file_id)
         print(file_item)
+        file_item.file_item.delete(save=False)
         file_item.delete()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")

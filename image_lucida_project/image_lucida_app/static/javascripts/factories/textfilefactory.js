@@ -25,7 +25,7 @@ angular.module('ImageLucidaApp').factory("TextFileFactory", ($http)=>{
             });
         },
         updateTextFile: (text_file_id, new_text, process_type)=>{
-            console.log(new_text);
+            console.log(new_text, process_type);
             return $http({
                 url:`${rootUrl}/update_text_file/`,
                 method: 'POST',

@@ -55,7 +55,6 @@ myApp.directive('canvasAreaDraw', function () {
             var $canvas, ctx, image;
 
             settings.imageUrl = scope.imageUrl;
-            console.log(settings);
             if(!scope.points) {
                 scope.points = [[]];
             }
@@ -66,10 +65,7 @@ myApp.directive('canvasAreaDraw', function () {
 
             $canvas = $('<canvas>');
             ctx = $canvas[0].getContext('2d');
-            console.log($canvas);
             image = new Image();
-            console.log("image", image.height);
-            console.log(scope);
             scope.resize = function() {
                 $canvas.attr('height', image.height).attr('width', image.width);
                 $canvas.attr('height', $canvas[0].offsetHeight).attr('width', $canvas[0].offsetWidth);
@@ -224,17 +220,17 @@ myApp.directive('canvasAreaDraw', function () {
 
             scope.record = function() {
                 scope.$apply();
-                console.log("recording?");
             };
 
             scope.$watch('points', function (newVal, oldVal) {
+                console.log(scope.active);
                 scope.draw();
-                console.log("drawing?");
             }, true);
 
             scope.$watch('active', function (newVal, oldVal) {
-                if (newVal != oldVal) scope.draw();
-            });
+                console.log(scope.active);
+                if (newVal !== oldVal) scope.draw();
+            }, true);
 
             $canvas.on('mousedown', scope.mousedown);
             $canvas.on('contextmenu', scope.rightclick);
