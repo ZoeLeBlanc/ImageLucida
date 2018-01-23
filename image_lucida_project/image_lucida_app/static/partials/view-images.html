@@ -1,4 +1,19 @@
 <div class="row">
+    <div id="preloader" class="preloader-background">
+        <div class="preloader-wrapper big center-align active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <ul class="tabs" tabs >
             <li class="tab col s6" >
@@ -58,23 +73,9 @@
     </div>
     <div id="auto_segment">
         <div class="row">
-            <div class="preloader-wrapper big active">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col s3" style="overflow:scroll; height: 70vh;">
-                    <div class="collection" ng-repeat="image in images track by $index">
+                    <div class="collection" ng-repeat="image in images | orderBy: 'image_file_name' track by $index">
                         <li class="collection-item avatar" style="list-style-type:none;">
                             <img src="((image.image_file_url))" alt="" class="circle">
                             <span class="title flow-text" style="word-break:break-word;">((image.image_file_name))</span>
@@ -100,6 +101,9 @@
                                         <div class="collapsible-body">
                                             <form ng-submit="tagImage(selectedImage.id)">
                                                 Tags: <input ng-model="((selectedImage.tags))" value="((selectedImage.tags))" id="tags((selectedImage.id))" />
+                                            </form>
+                                            <form ng-submit="orderImage(selectedImage.id)">
+                                                Image Order: <input ng-model="((selectedImage.image_order))" value="((selectedImage.image_order))" id="image_order((selectedImage.id))" />
                                             </form>
                                         </div>
                                     </li>

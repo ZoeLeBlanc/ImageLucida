@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core import serializers
 import json
 
+
 def get_buckets(request, folder_id):
     buckets_list = bucket_model.Bucket.objects.filter(folder_id=folder_id)
     if len(buckets_list) > 0:
@@ -32,7 +33,7 @@ def cu_bucket(request):
     folder = folder_model.Folder.objects.get_or_create(pk=data['folder_id'])
     bucket = bucket_model.Bucket.objects.update_or_create(
         bucket_name = data['bucket_name'].replace(" ", "_"),
-        bucket_type = data['bucket_type'].replace(" ", "_"),
+        description = data['bucket_description'].replace(" ", "_"),
         folder=folder[0]
         )
     response = serializers.serialize("json", [bucket[0], ])

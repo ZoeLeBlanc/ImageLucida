@@ -1,25 +1,41 @@
 <div class="row">
-    <div class="row">
-    <h6>
-        <a href="javascript:void(0);" ng-click="go_back()" >Go Back To Folder</a>
-    </h6>
+    <div id="preloader" class="preloader-background">
+        <div class="preloader-wrapper big center-align active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="fixed-action-btn horizontal">
-        <a tooltipped class="btn-floating btn-large indigo accent-1" ng-href="#!/projects/manual-segment/((file_id))" data-position="top" data-delay="50" data-tooltip="Need to manually segment image?"><i class="large material-icons">info</i>
-        </a>
-    </div> <!-- End of Fab -->
     <div class="row">
         <div class="col s6">
             <img class="responsive-img" src="((file.file_url))" />
         </div>
         <div class="col s6">
-            <div class="card">
+            <div class="card" id="textInfo">
                 <div class="card-content">
                     <div class="row">
-                        <span class="card-title">((file.file_name))</span>
+                        <span class="card-title" style="word-wrap:break-word;">((file.file_name))</span>
                     </div>
                     <div class="divider"></div>
                     <ul class="collapsible" data-collapsible="accordion">
+                        <li>
+                            <div class="collapsible-header">
+                                Meta-Data
+                            </div>
+                            <div class="collapsible-body">
+                                <form ng-submit="tagFile()">
+                                    Tags: <input ng-model="((file.tags))" value="((file.tags))" />
+                                </form>
+                            </div>
+                        </li>
                         <li>
                             <div class="collapsible-header">Tesseract OCR Text<a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveTesseractEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
                             <div class="collapsible-body">

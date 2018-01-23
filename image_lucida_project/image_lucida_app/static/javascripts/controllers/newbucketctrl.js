@@ -16,12 +16,15 @@ myApp.controller("NewBucketCtrl", function($scope, $rootScope, $location, $route
     $scope.createNewBucket = ()=>{
         $scope.createBucket.folder_id = $rootScope.folder_id;
         BucketsFactory.cuBucket($scope.createBucket).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Bucket Created', 300);
+            $rootScope.$broadcast('newBucket', '');
+            $location.url('/home');
         });
     };
     $scope.deleteBucket = ()=>{
         BucketsFactory.deleteBucket($routeParams.bucket_id).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Bucket Deleted', 300);
+            $location.url('/home');
         });
     };
 });

@@ -15,8 +15,24 @@ textarea {
     z-index: 1;
 }
 
-#imageInfo.sticky,#segmentInfo.sticky {
+#imageInfo.sticky,#segmentInfo.sticky,#textInfo.sticky, #fileInfo.sticky {
      position: fixed;
      top: 64px;
      padding-right: 22.5px;
   }
+ .preloader-background {
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	background-color: rgba(192,192,192,0.3);
+  	position: fixed;
+  	z-index: 100;
+  	top: 0;
+  	left: 0;
+  	right: 0;
+  	bottom: 0;
+  }
+
+  /* .loader {
+
+} */

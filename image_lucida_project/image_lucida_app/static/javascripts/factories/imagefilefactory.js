@@ -93,5 +93,21 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                 }
             });
         },
+        orderImage: (image_file_id, image_order) =>{
+            return $http({
+                url:`${rootUrl}/order_image/`,
+                method: 'POST',
+                data: {
+                    'image_file_id': image_file_id,
+                    'image_order':image_order
+                }
+            }).then((res)=>{
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
     };
 });

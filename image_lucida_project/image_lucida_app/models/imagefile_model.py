@@ -22,6 +22,7 @@ class Image_File(models.Model):
     tesseract_processed = models.BooleanField(default=False)
     google_vision_processed = models.BooleanField(default=False)
     date_updated = models.DateTimeField(auto_now=True, null=True)
+    image_order = models.IntegerField(null=True, default=0)
 
     def __str__(self):
         return '%s' % (self.id)

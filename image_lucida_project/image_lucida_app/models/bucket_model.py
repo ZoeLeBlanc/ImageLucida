@@ -12,13 +12,13 @@ class Bucket(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    bucket_name = models.CharField( blank=True, unique=True, null=True, max_length=2000)
-    bucket_type = models.CharField(max_length=500, blank=True, unique=True, null=True)
+    bucket_name = models.CharField( blank=True, null=True, max_length=2000)
+    description = models.CharField(max_length=500, blank=True, null=True)
     folder = models.ForeignKey(folder_model.Folder, null=True, on_delete=models.CASCADE, blank=True)
 
 
     def natural_key(self):
-        return (self.bucket_name, self.bucket_type, self.folder)
+        return (self.bucket_name, self.description, self.folder)
 
     def __str__(self):
-        return '%s %s %s' % (self.bucket_name, self.bucket_type, self.folder)
+        return '%s %s %s' % (self.bucket_name, self.description, self.folder)

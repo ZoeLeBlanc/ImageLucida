@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, UserFactory, ProjectsFactory){
+myApp.controller("NewProjectCtrl", function($scope, $rootScope, $location, $routeParams, UserFactory, ProjectsFactory){
     let current_location = $location.path();
     $scope.editing = false;
     $scope.createProject ={};
@@ -15,12 +15,15 @@ myApp.controller("NewProjectCtrl", function($scope, $location, $routeParams, Use
     }
     $scope.createNewProject = ()=>{
         ProjectsFactory.cuProject($scope.createProject).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Project Created', 300);
+            $rootScope.$broadcast('newProject', '');
+            $location.url('/home');
         });
     };
     $scope.deleteProject = ()=>{
         ProjectsFactory.deleteProject($routeParams.id).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Project Deleted', 300);
+            $location.url('/home');
         });
     };
 

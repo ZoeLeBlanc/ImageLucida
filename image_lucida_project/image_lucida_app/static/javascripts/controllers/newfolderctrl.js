@@ -16,12 +16,15 @@ myApp.controller("NewFolderCtrl", function($scope, $rootScope, $location, $route
     $scope.createNewFolder = ()=>{
         $scope.createFolder.project_id = $rootScope.project_id;
         FoldersFactory.cuFolder($scope.createFolder).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Folder Created', 300);
+            $rootScope.$broadcast('newFolder', '');
+            $location.url('/home');
         });
     };
     $scope.deleteFolder = ()=>{
         FoldersFactory.deleteFolder($routeParams.folder_id).then( (response)=>{
-            $location.path('#!/home/');
+            Materialize.toast('Folder Deleted', 300);
+            $location.url('/home');
         });
     };
 });

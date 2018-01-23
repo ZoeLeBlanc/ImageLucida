@@ -34,7 +34,7 @@ def cu_source(request):
     source = source_model.Source.objects.update_or_create(
         bucket = bucket[0],
         source_name = data['source_name'].replace(" ", "_"),
-        publication_location = data['publication_location']
+        description = data['description']
         )
     response = serializers.serialize("json", [source[0], ])
     return HttpResponse(response, content_type='application/json')

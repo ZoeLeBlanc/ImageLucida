@@ -7,7 +7,6 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
     $scope.process_type = {};
     $scope.editing = false;
     $scope.clickedImage = false;
-
     var getFile = () => {
         FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
             $scope.images = [];
@@ -42,8 +41,8 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
     };
     getFile();
     ImageFileFactory.autoImageSegmentation($rootScope.file_id).then((response)=>{
-        $('.preloader-wrapper').removeClass('active');
-        $('.preloader-wrapper').addClass('hide');
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         getFile();
         var $window2 = $(window),
             $imageInfo = $('#segmentInfo'),
@@ -59,16 +58,35 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         });
     };
     $scope.tagImage = function(image_file_id){
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let image = $scope.images.filter((image)=>{
             return image.id === image_file_id;
         });
         let tags = $('#tags'+image_file_id).val().split(',');
         tags.map( (tag)=> {
-            ImageFileFactory.tagImageFile(image_file_id, tag).then((response)=>{
+            ImageFileFactory.tagImageFile(image_file_id, tag.toLowerCase()).then((response)=>{
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
+                Materialize.toast('Tag Saved', 200);
                 console.log(response);
             });
         });
 
+    };
+    $scope.orderImage = function(image_file_id){
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        let image = $scope.images.filter((image)=>{
+            return image.id === image_file_id;
+        });
+        let image_order = $('#image_order'+image_file_id).val();
+        ImageFileFactory.orderImage(image_file_id, parseInt(image_order)).then((response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            Materialize.toast('Order Saved', 200);
+            console.log(response);
+        });
     };
     $scope.undo = function(){
         $scope.points[$scope.activePolygon].splice(-1, 1);
@@ -93,6 +111,8 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         $scope.activePolygon = $scope.points.length - 1;
     };
     $scope.savePolygons = function () {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let width = $('canvas')[0].width;
         let height = $('canvas')[0].height;
         let ocr = false;
@@ -116,10 +136,15 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         });
         $q.all(promises).then( (response)=>{
             console.log(response);
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            Materialize.toast('Images Saved', 1000);
             getFile();
         });
     };
     $scope.processGoogleVision = (image_file_id)=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let process_type = 'googlevision';
 
         ImageFileFactory.processImageText(image_file_id, process_type).then( (response)=>{
@@ -131,12 +156,16 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                         return image;
                     }
                 });
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
                 Materialize.toast('Text Processed', 1000);
             }
 
         });
     };
     $scope.processTesseract = (image_file_id)=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let process_type = 'tesseract';
         ImageFileFactory.processImageText(image_file_id, process_type).then( (response)=>{
             if (response.length > 0){
@@ -147,17 +176,23 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                         return image;
                     }
                 });
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
                 Materialize.toast('Text Processed', 1000);
             }
 
         });
     };
     $scope.saveTesseractEdits = (image_file_id)=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let new_text = $(`#edited-tesseract_${image_file_id}`)[0].textContent;
         $scope.images.map((image)=>{
             if (image.id === image_file_id){
                 TextFileFactory.updateTextFile(image.text_file_id, new_text, 'tesseract').then( (response)=>{
                     console.log(response);
+                    $('.preloader-wrapper').toggleClass('active');
+                    $('#preloader').toggleClass('preloader-background');
                     Materialize.toast('Edits Saved', 1000);
                     $scope.editing = false;
                     getFile();
@@ -167,11 +202,15 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
 
     };
     $scope.saveGoogleVisionEdits = (image_file_id)=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let new_text = $(`#edited-googlevision_${image_file_id}`)[0].textContent;
         $scope.images.map((image)=>{
             if (image.id === image_file_id){
                 TextFileFactory.updateTextFile(image.text_file_id, new_text, 'google_vision').then( (response)=>{
                     console.log(response);
+                    $('.preloader-wrapper').toggleClass('active');
+                    $('#preloader').toggleClass('preloader-background');
                     Materialize.toast('Edits Saved', 1000);
                     $scope.editing = false;
                     getFile();

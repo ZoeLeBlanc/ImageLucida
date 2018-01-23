@@ -138,7 +138,7 @@ def segment_images(img):
     labeled = label(clean_border)
     cropped_images = {}
     cropped_coords = {}
-    pad = 20
+    pad = 60
     for region_index, region in enumerate(regionprops(labeled)):
         if region.area < 2000:
             continue

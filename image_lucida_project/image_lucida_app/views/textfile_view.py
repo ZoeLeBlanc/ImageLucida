@@ -50,16 +50,12 @@ def segment_text(text_file_id, process_type, file_id, segment_type):
         return response
 
 def analyze_text(file_item, uri, process_type, file_name, text_file):
-    print(process_type)
-    print(file_item.google_vision_processed)
     if process_type == 'tesseract':
         with PyTessBaseAPI() as api:
             api.SetImageFile(file_name)
             boxes = api.GetComponentImages(RIL.TEXTLINE, True)
             text_file_text = api.GetUTF8Text()
-            print(text_file_text)
             text_file.tesseract_text = text_file_text
-
             tesseract_response = {}
             for i, (im, box, _, _) in enumerate(boxes):
                 ocrResult = api.GetUTF8Text()

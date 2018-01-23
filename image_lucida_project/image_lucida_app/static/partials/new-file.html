@@ -1,90 +1,94 @@
 <div class="row">
+    <div id="preloader" class="preloader-background">
+        <div class="preloader-wrapper big center-align active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <h5>Uploaded Files</h5>
         <div class="row" id="upload">
             <div class="row" ng-if="showTabs">
                 <ul class="tabs" tabs id="upload_list" reload="allTabContentLoaded">
-                    <li class="tab col s1" ng-repeat="(index,file) in upload_files">
-                        <a id="((index))" ng-href="#upload-image((index))">((index))</a>
+                    <li class="tab col s1" ng-repeat="(index,file) in upload_files | orderBy: 'upload_file_name' track by file.id">
+                        <a ng-click="loadData(index)" ng-href="#upload-image((file.id))">((index))</a>
                     </li>
                 </ul>
             </div>
-            <div id="upload-image((index))" class="row" ng-repeat="(index, file) in upload_files">
-                <div class="col s8">
-                    <div canvas-area-draw points="points"
-                        active="activePolygon" image-url="((file.url))"
-                        enabled="enabled" palette="colorArray" ng-if="loaddata"
-                        value="((file.upload_file_name))" id="((file.id))" >
+        </div>
+        <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files |orderBy: 'file_name' track by file.id">
+            <div class="col s8">
+                <div canvas-area-draw points="points"
+                    active="activePolygon" image-url="((file.url))"
+                    enabled="enabled" palette="colorArray" ng-if="loaddata"
+                    value="((file.upload_file_name))" id="((file.id))" >
 
-                    </div>
                 </div>
-                <div class="card col s4">
+            </div>
+            <div class="col s4">
+                <div class="card" id="fileInfo" >
                     <div class="card-content">
                         <div class="row">
                             <span class="card-title">
-                            <h4>Create File</h4>
+                                <a class="waves-effect waves-light btn-flat" ng-click="activeImage(file.id)">Create File</a>
                             </span>
                             <div class="divider">
                             </div>
-                            <h6 ng-show="!transforming&&!switchGroup">Assign File</h6>
-                            <div class="row" ng-show="!transforming&&!switchGroup">
-                                <div class="col s6" id="projects" ng-include="'static/partials/projects.html'">
-
-
+                            <div ng-show="creating">
+                                <h6 ng-show="!transforming&&!switchGroup">Assign File</h6>
+                                <div class="row" ng-show="!transforming&&!switchGroup">
+                                    <div class="col s6" id="projects" ng-include="'static/partials/projects.html'"></div>
+                                    <div class="col s6" id="folders" ng-include="'static/partials/folders.html'"></div>
                                 </div>
-                                <div class="col s6" id="folders" ng-include="'static/partials/folders.html'">
-
-
+                                <div class="row" ng-show="!transforming&&!switchGroup">
+                                    <div class="col s6" id="buckets" ng-include="'static/partials/buckets.html'"></div>
+                                    <div class="col s6" id="sources" ng-include="'static/partials/sources.html'"></div>
                                 </div>
-                            </div>
-                            <div class="row" ng-show="!transforming&&!switchGroup">
-                                <div class="col s6" id="buckets" ng-include="'static/partials/buckets.html'">
-
-
-                                </div>
-                                <div class="col s6" id="sources" ng-include="'static/partials/sources.html'">
-
-
-                                </div>
-                            </div>
-                            <div class="row" ng-show="!transforming">
-                                <div class="right-align">
-                                   <label>Add Group</label>
-                                   <div class="switch">
-                                       <label>
-                                         No
-                                         <input id="groupSwitch" type="checkbox" ng-model="switchGroup" ng-change="addGroup(swswitchGroup)">
-                                         <span class="lever"></span>
-                                         Yes
-                                       </label>
+                                <div class="row" ng-show="!transforming">
+                                    <div class="right-align">
+                                        <label>Add Group</label>
+                                        <div class="switch">
+                                           <label>
+                                             No
+                                             <input id="groupSwitch" type="checkbox" ng-model="switchGroup" ng-change="addGroup(switchGroup)">
+                                             <span class="lever"></span>
+                                             Yes
+                                           </label>
+                                       </div>
                                    </div>
                                </div>
-                            </div>
-                            <div class="row" ng-show="switchGroup&&!transforming">
-                                <div class="col s12" id="groups" ng-include="'static/partials/groups.html'">
-
+                               <div class="row" ng-show="switchGroup&&!transforming">
+                                   <div class="col s12" id="groups" ng-include="'static/partials/groups.html'"></div>
+                               </div>
+                               <div class="row" ng-show="switchGroup&&!transforming">
+                                    <h5>Add new group</h5>
+                                    <input class="input-field col s5" type="text" placeholder="Group Name" ng-model="new_group.group_name" autofocus>
+                                    <input class="input-field col s5 offset-s1" type="text" placeholder="Date Published" ng-model="new_group.date_published" autofocus>
+                                    <button class="waves-effect waves-light btn col s1" ng-click="addNewGroup(new_group)"><i class=" material-icons">add</i></button>
+                                </div>
+                                <div class="row" ng-show="!transforming">
+                                    <h6>File Meta Data</h6>
+                                    <input ng-show="!switchGroup" class="input-field col s10 offset-s1" type="text" placeholder="Date Published" ng-model="file.date_published" autofocus id="date_published" required>
+                                    <form ng-submit="setSelection()">
+                                        <input class="input-field col s10 offset-s1" type="text" placeholder="Page Number"  ng-model="file.page_number" autofocus id="page_number" required>
+                                    </form>
 
                                 </div>
-                            </div>
-                            <div class="row" ng-show="switchGroup&&!transforming">
-                                <h5>Add new group</h5>
-                                <input class="input-field col s5" type="text" placeholder="Group Name" ng-model="new_group.group_name" autofocus>
-                                <input class="input-field col s5 offset-s1" type="text" placeholder="Date Published" ng-model="new_group.date_published" autofocus>
-                                <button class="waves-effect waves-light btn col s1" ng-click="addNewGroup(new_group)"><i class=" material-icons">add</i></button>
-                            </div>
-                            <div class="row" ng-show="!transforming">
-                                <h6>File Meta Data</h6>
-                                <input ng-show="!switchGroup" class="input-field col s5 offset-s1" type="text" placeholder="Date Published" ng-model="file.date_published" autofocus>
-                                <input class="input-field col s5 offset-s1" type="text" placeholder="Page Number" ng-model="file.page_number" autofocus>
-                                <label>File Tags</label>
-                                <div class="row" id="tagsDiv">
-                                </div>
-                            </div>
-                            <div class="row" ng-show="selection">
-                                <h6>Transform File</h6>
                             </div>
                             <div class="row">
                                 <a ng-show="selection&&!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformFile()">Start Transformation</a>
+                                <div ng-show="transforming" class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="saveAsIs()">Save As Is</button>
+                                </div>
                                 <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
                                 </div>
@@ -111,4 +115,5 @@
                 </div>
             </div>
         </div>
+    </div>
 </div>

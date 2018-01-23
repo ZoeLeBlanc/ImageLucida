@@ -10,15 +10,18 @@
             <div class="row">
                 <input class="input-field col s10 offset-s1" type="text" placeholder="Source Title" ng-model="createSource.source_name" required autofocus>
             </div>
-            <label>Source Type</label>
+            <label>Source Description</label>
             <div class="row">
-                <input class="input-field col s10 offset-s1" type="text" placeholder="Publication Location" ng-model="createSource.publication_location" required autofocus>
+                <form ng-submit="createNewSource()">
+                    <input class="input-field col s10 offset-s1" type="text" placeholder="Source Description" ng-model="createSource.description" required autofocus>
+                </form>
+
             </div>
             <div class="row" ng-show="!editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewSource(createSource)">CREATE SOURCE</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewSource()">CREATE SOURCE</a></h5>
             </div>
             <div class="row" ng-show="editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewSource(createSource)">EDIT SOURCE</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewSource()">EDIT SOURCE</a></h5>
                  <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="deleteSource()">DELETE SOURCE</a></h5>
             </div>
         </div>

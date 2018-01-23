@@ -6,17 +6,35 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
     $scope.tags = {};
     $scope.clickedImage = false;
     $scope.files = [];
+    $scope.filterFiles = [];
+    $scope.fileTypes = [
+        {type:'google_vision_processed'},
+        {type:'tesseract_processed'},
+        {type:'auto_image_processed'},
+        {type:'manual_image_processed'},
+        {type:'clear'},
+    ];
+    $scope.searchText = '';
+    $scope.filter = (type, fileFilter)=> {
+        $scope.filterFiles = $scope.files;
+        $scope.filterFiles = $scope.filterFiles.filter( (file)=> {
+            if(type === 'clear'){
+                return file;
+            } else if(file[type] === fileFilter){
+                return file;
+            }
+        });
+        return $scope.filterFiles;
+    };
     let files_list = [];
     var getSourceFiles = (source_id) => {
         FileFactory.getSourceFiles(source_id).then( (response)=>{
-            console.log(response);
             $scope.files = [];
             if (response.error === "No files."){
                 $scope.files = [];
             } else {
                 let files = JSON.parse(response.files);
                 files_list = response.files_list;
-                console.log(files_list);
                 angular.forEach(files, (obj, index)=>{
                     obj.fields.id = obj.pk;
                     if (obj.fields.group_id !== undefined) {
@@ -33,7 +51,7 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
                     $scope.files.push(obj.fields);
                 });
             }
-            console.log($scope.files);
+            $scope.filterFiles = $scope.files;
         });
     };
     $scope.$on('clickSource', (event,data)=>{
@@ -42,7 +60,6 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
     });
     var getGroupFiles = (group_id) => {
         FileFactory.getGroupFiles(group_id).then( (response)=>{
-            console.log(response);
             $scope.files = [];
             if (response.error === "No files."){
                 $scope.files = [];
@@ -62,7 +79,7 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
                     $scope.files.push(obj.fields);
                 });
             }
-            console.log($scope.files);
+            $scope.filterFiles = $scope.files;
         });
     };
     $scope.$on('clickGroup', (event,data)=>{

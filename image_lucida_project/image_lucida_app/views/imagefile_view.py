@@ -38,7 +38,7 @@ def manual_segmentation(request):
     images = file_item.image_file_set.all().count()
     print("images", images)
     image_number = data['index']
-    new_image_file_name =  file_item.file_name.split('.')[0] +'_image_file_'+str(image_number) + '.jpg'
+    new_image_file_name =  file_item.file_name.split('.jpg')[0] +'_image_file_'+str(image_number) + '.jpg'
     new_image_file = new_image_file.save(new_image_file_name)
     open_image = open(new_image_file_name, 'rb')
     newest_image_file = File(open_image)
@@ -139,6 +139,14 @@ def tag_images(request):
         tag =tag[0],
         image_file = image_file
         )
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+def order_image(request):
+    data = json.loads(request.body.decode())
+    image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
+    image_file.image_order = data['image_order']
+    image_file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
 

@@ -16,6 +16,10 @@ myApp.controller("BucketsCtrl", function($scope, $rootScope, $location, $routePa
             console.log("buckets",$scope.buckets);
         });
     };
+    $rootScope.$on('newBucket', (event, data)=>{
+        console.log('newBuckets');
+        getBuckets($rootScope.folder_id);
+    });
     $rootScope.$on('clickFolder', (event, data)=>{
         $rootScope.folder_id = data;
         getBuckets(data);

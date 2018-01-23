@@ -12,13 +12,16 @@
             </div>
             <label>Project Description</label>
             <div class="row">
-                <input class="input-field col s10 offset-s1" type="text" placeholder="Project Description" ng-model="createProject.description" required>
+                <form ng-submit="createNewProject()">
+                    <input class="input-field col s10 offset-s1" type="text" placeholder="Project Description" ng-model="createProject.description" required>
+                </form>
+
             </div>
             <div class="row" ng-show="!editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewProject(createProject)">CREATE PROJECT</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s8 offset-s2" ng-click="createNewProject()">CREATE PROJECT</a></h5>
             </div>
             <div class="row" ng-show="editing">
-                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewProject(createProject)">EDIT PROJECT</a></h5>
+                 <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="createNewProject()">EDIT PROJECT</a></h5>
                  <h5><a class="btn btn-large waves-effect waves-light indigo lighten-1 col s4 offset-s2" ng-click="deleteProject()">DELETE PROJECT</a></h5>
             </div>
         </div>

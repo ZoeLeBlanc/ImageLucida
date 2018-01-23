@@ -30,16 +30,8 @@ myApp.controller("SourceCtrl", function($scope, $rootScope, $location, $routePar
         getSources($rootScope.bucket_id);
         $scope.selectedSource = $rootScope.source_id;
     }
-
-    // $scope.updateSource = (sourceId) =>{
-    //     SourceFactory.updateSource(sourceId).then( (response)=>{
-    //         $window.location.reload();
-    //     });
-    // };
-    // $scope.deleteSource = (sourceId)=>{
-    //     SourceFactory.deleteSource(sourceId).then( (response)=>{
-    //         console.log(response);
-    //         $window.location.reload();
-    //     });
-    // };
+    $rootScope.$on('newSource', (event, data)=>{
+        console.log('newSource');
+        getSources($rootScope.bucket_id);
+    });
 });
