@@ -13,7 +13,7 @@ class Source(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    source_name = models.TextField(blank=True, unique=True, null=True)
+    source_name = models.TextField(blank=True, null=True)
     description = models.CharField(max_length=500, blank=True, null=True)
     bucket = models.ForeignKey(bucket_model.Bucket, null=True, on_delete=models.CASCADE, blank=True)
 

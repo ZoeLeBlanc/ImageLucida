@@ -1,7 +1,11 @@
 "use strict";
 myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $routeParams, $compile, UserFactory, ProjectsFactory, UploadFileFactory){
+    $('.preloader-wrapper').toggleClass('active');
+    $('#preloader').toggleClass('preloader-background');
     $scope.files = [];
     document.getElementById("file-upload").onchange = function (event) {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         angular.forEach(this.files, (file, index)=>{
             var reader = new FileReader();
             reader.onload = function (e) {
@@ -27,10 +31,13 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
             };
             reader.readAsDataURL(file);
         });
-
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
 
     };
     $scope.uploadFiles = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         angular.forEach($scope.files, (file, index)=>{
             let active_img =$(`#file-preview`).find(`img`);
             let final_img = active_img.filter(img => active_img[img].id === file.name);
@@ -45,6 +52,8 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
             UploadFileFactory.uploadFile(file.file, file_width, file_height).then( (response)=>{
                 if (response.form != 'not saved'){
                     Materialize.toast('Images Uploaded', 1000);
+                    $('.preloader-wrapper').toggleClass('active');
+                    $('#preloader').toggleClass('preloader-background');
                     $location.url('/home');
                 } else {
                     $scope.error_message = "File did not upload.";

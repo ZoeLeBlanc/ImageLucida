@@ -1,5 +1,7 @@
 "use strict";
 myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $routeParams, $window, TextFileFactory, FileFactory){
+    $('.preloader-wrapper').toggleClass('active');
+    $('#preloader').toggleClass('preloader-background');
     $scope.editing = false;
     $scope.file = {};
     FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
@@ -41,16 +43,24 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         $scope.editing = !$scope.editing;
     };
     $scope.saveTesseractEdits = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let new_text = $('#edited-tesseract')[0].textContent;
         TextFileFactory.updateTextFile($scope.file.tesseract_text_id, new_text, 'tesseract').then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
             console.log(response);
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false;
         });
     };
     $scope.saveGoogleVisionEdits = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let new_text = $('#edited-googlevision')[0].textContent;
         TextFileFactory.updateTextFile($scope.file.google_vision_text_id, new_text, 'googlevision').then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
             console.log(response);
             Materialize.toast('Edits Saved', 1000);
             $scope.editing = false;
@@ -58,8 +68,12 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
     };
     //TEXT PROCESS
     $scope.processGoogleVision = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let process_type = 'googlevision';
         TextFileFactory.processText($rootScope.file_id, process_type).then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
             if (response.length > 0){
                 $scope.file.google_vision_text = response[0].fields.google_vision_text;
                 $scope.file.google_vision_text_id = response[0].pk;
@@ -70,9 +84,13 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         });
     };
     $scope.processTesseract = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let process_type = 'tesseract';
         console.log($scope.file.id, process_type);
         TextFileFactory.processText($scope.file.id, process_type).then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
             if (response.length>0){
                 $scope.file.tesseract_text = response[0].fields.tesseract_text;
                 $scope.file.tesseract_text_id = response[0].pk;
@@ -83,8 +101,12 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         });
     };
     $scope.tagFile = function(){
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         $scope.file.tags.split(',').map( (tag)=> {
             FileFactory.tagFile($scope.file.id, tag.toLowerCase()).then((response)=>{
+                $('.preloader-wrapper').removeClass('active');
+                $('.preloader-wrapper').addClass('hide');
                 Materialize.toast('Tag Added', 200);
                 console.log(response);
             });

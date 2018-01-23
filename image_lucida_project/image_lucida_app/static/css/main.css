@@ -20,3 +20,19 @@ textarea {
      top: 64px;
      padding-right: 22.5px;
   }
+ .preloader-background {
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	background-color: rgba(192,192,192,0.3);
+  	position: fixed;
+  	z-index: 100;
+  	top: 0;
+  	left: 0;
+  	right: 0;
+  	bottom: 0;
+  }
+
+  /* .loader {
+
+} */

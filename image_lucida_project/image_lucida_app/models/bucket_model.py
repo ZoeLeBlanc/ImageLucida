@@ -12,7 +12,7 @@ class Bucket(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    bucket_name = models.CharField( blank=True, unique=True, null=True, max_length=2000)
+    bucket_name = models.CharField( blank=True, null=True, max_length=2000)
     description = models.CharField(max_length=500, blank=True, null=True)
     folder = models.ForeignKey(folder_model.Folder, null=True, on_delete=models.CASCADE, blank=True)
 

@@ -38,7 +38,7 @@ def manual_segmentation(request):
     images = file_item.image_file_set.all().count()
     print("images", images)
     image_number = data['index']
-    new_image_file_name =  file_item.file_name.split('.')[0] +'_image_file_'+str(image_number) + '.jpg'
+    new_image_file_name =  file_item.file_name.split('.jpg')[0] +'_image_file_'+str(image_number) + '.jpg'
     new_image_file = new_image_file.save(new_image_file_name)
     open_image = open(new_image_file_name, 'rb')
     newest_image_file = File(open_image)

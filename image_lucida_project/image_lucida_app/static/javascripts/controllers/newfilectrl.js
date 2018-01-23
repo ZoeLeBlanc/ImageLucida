@@ -18,6 +18,7 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
     $scope.enabled = true;
     $scope.colorArray = ['#FF0000', '#FFFF00', '#0000FF', '#008000', '#C0C0C0'];
     $scope.imageSrc = '';
+    $scope.fullPage = false;
     $scope.activeImage = (file_id) => {
         $scope.file = $scope.upload_files.filter( (file) => {
             return file.id === parseInt(file_id);
@@ -54,6 +55,8 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
                 });
                 $scope.allTabContentLoaded = true;
                 $scope.showTabs = true;
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
             }
         });
     };
@@ -61,7 +64,6 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
     $scope.startTransformFile = () => {
        $scope.transforming = true;
        $scope.image = $(`#${$scope.file.id}`).find('canvas');
-       console.log($scope.image);
        $scope.imageSrc = $scope.image.src;
    };
     $scope.setSelection = ()=> {
@@ -99,11 +101,14 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
         }
     };
     $scope.add = function (index) {
+        $scope.fullPage = false;
         $scope.enabled = true;
         $scope.points.push([]);
         $scope.activePolygon = $scope.points.length - 1;
     };
     $scope.savePolygons = function () {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let project_id = $rootScope.project_id;
         let folder_id = $rootScope.folder_id;
         let bucket_id = $rootScope.bucket_id;
@@ -127,11 +132,17 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
             group_id = '';
             date_published = $scope.file.date_published !== undefined ?  $scope.file.date_published: date_published;
         }
-        let points = $scope.points.filter( (array)=>{
-            if(array.length>0){
-                return array;
-            }
-        });
+        let points = [];
+        if ($scope.fullPage){
+            points = [ [[0,0], [parseInt($scope.image[0].width), 0],[parseInt($scope.image[0].width),parseInt($scope.image[0].height)], [0, parseInt($scope.image[0].height)]]];
+        } else {
+            points = $scope.points.filter( (array)=>{
+                if(array.length>0){
+                    return array;
+                }
+            });
+        }
+
         var promises = [];
         angular.forEach(points, (array, index)=>{
             let outsideArray = [];
@@ -149,7 +160,15 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
         });
         $q.all(promises).then( (response)=>{
             Materialize.toast('File Saved', 1000);
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
             $location.url('/home');
         });
+
+
+    };
+    $scope.saveAsIs= ()=>{
+        $scope.fullPage = !$scope.fullPage;
+        Materialize.toast('Save As Is', 100);
     };
 });

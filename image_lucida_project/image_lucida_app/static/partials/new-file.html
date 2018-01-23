@@ -1,16 +1,31 @@
 <div class="row">
+    <div id="preloader" class="preloader-background">
+        <div class="preloader-wrapper big center-align active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <h5>Uploaded Files</h5>
         <div class="row" id="upload">
             <div class="row" ng-if="showTabs">
                 <ul class="tabs" tabs id="upload_list" reload="allTabContentLoaded">
-                    <li class="tab col s1" ng-repeat="(index,file) in upload_files track by file.id">
+                    <li class="tab col s1" ng-repeat="(index,file) in upload_files | orderBy: 'upload_file_name' track by file.id">
                         <a ng-click="loadData(index)" ng-href="#upload-image((file.id))">((index))</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files">
+        <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files |orderBy: 'file_name' track by file.id">
             <div class="col s8">
                 <div canvas-area-draw points="points"
                     active="activePolygon" image-url="((file.url))"
@@ -44,7 +59,7 @@
                                         <div class="switch">
                                            <label>
                                              No
-                                             <input id="groupSwitch" type="checkbox" ng-model="switchGroup" ng-change="addGroup(swswitchGroup)">
+                                             <input id="groupSwitch" type="checkbox" ng-model="switchGroup" ng-change="addGroup(switchGroup)">
                                              <span class="lever"></span>
                                              Yes
                                            </label>
@@ -69,11 +84,11 @@
 
                                 </div>
                             </div>
-                            <div class="row" ng-show="selection">
-                                <h6>Transform File</h6>
-                            </div>
                             <div class="row">
                                 <a ng-show="selection&&!transforming" class="waves-effect waves-light btn-flat" ng-click="startTransformFile()">Start Transformation</a>
+                                <div ng-show="transforming" class="row">
+                                    <button class="waves-effect waves-light btn" ng-click="saveAsIs()">Save As Is</button>
+                                </div>
                                 <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
                                 </div>
