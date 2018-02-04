@@ -9,15 +9,15 @@ myApp.controller("SingleFileCtrl", function($scope, $rootScope, $location, $rout
     let files_list = [];
     var getFile = (file_id)=>{
         FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
-            console.log(JSON.parse(response.file));
             let file = JSON.parse(response.file);
+            let base_file = JSON.parse(response.base_file);
             file = file[0].fields;
-            console.log(file.tesseract_processed);
-            let texts = response.texts_serialize;
-            let images = response.images_serialize;
-            let images_data = response.images_data;
+            base_file = base_file[0].fields;
+            file.tesseract_processed = base_file.tesseract_processed;
+            file.google_vision_processed = base_file.google_vision_processed;
+            file.auto_image_processed = base_file.auto_image_processed;
+            file.manual_image_processed = base_file.manual_image_processed;
             let tags = response.tags_serialize;
-            console.log(tags);
             $scope.selectedImage = '';
             $scope.clickedImage = true;
             let date_created = Date.parse(file.date_created);
@@ -68,7 +68,8 @@ myApp.controller("SingleFileCtrl", function($scope, $rootScope, $location, $rout
         </div>`);
 
             if (tags.length > 0){
-                angular.forEach(JSON.parse(tags), (item, index)=>{
+                var arr1 = Object.values(tags);
+                arr1.map( (item)=>{
                     var chip = `<div class="chip">${item.fields.tag_name}</div>`;
                     $('#tags').append(chip);
                 });

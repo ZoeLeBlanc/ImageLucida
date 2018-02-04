@@ -27,7 +27,7 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                 return res.data;
             });
         },
-        createFile: (project_id, folder_id, bucket_id, source_id, group_id, upload_file_id, upload_file_name, multi_coords, height, width, date_published, page_number) =>{
+        createFile: (project_id, folder_id, bucket_id, source_id, group_id, upload_file_id, multi_coords, height, width, date_published, page_number) =>{
             return $http({
                 url:`${rootUrl}/create_file/`,
                 method: 'POST',
@@ -38,7 +38,6 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                     'source_id':source_id,
                     'group_id':group_id,
                     'upload_file_id': upload_file_id,
-                    'upload_file_name': upload_file_name,
                     'multi_coords':multi_coords,
                     'height':height,
                     'width':width,
@@ -46,7 +45,28 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                     'page_number': page_number,
                 }
             }).then((res)=>{
-                console.log(JSON.parse(res));
+                return res.data;
+            }, (res)=>{
+                if(res.status > 0){
+                    return res.status;
+                }
+            });
+        },
+        duplicateFile: (project_id, folder_id, bucket_id, source_id, group_id, file_id, date_published, page_number) =>{
+            return $http({
+                url:`${rootUrl}/duplicate_file/`,
+                method: 'POST',
+                data: {
+                    'project_id':project_id,
+                    'folder_id':folder_id,
+                    'bucket_id':bucket_id,
+                    'source_id':source_id,
+                    'group_id':group_id,
+                    'file_id': file_id,
+                    'date_published': date_published,
+                    'page_number': page_number,
+                }
+            }).then((res)=>{
                 return res.data;
             }, (res)=>{
                 if(res.status > 0){

@@ -143,7 +143,6 @@ def segment_images(img):
         if region.area < 2000:
             continue
         minr, minc, maxr, maxc = region.bbox
-        print("bounding box:", minr, minc, maxr, maxc)
         cropped_coords[region_index] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
         cropped_images[region_index] = im[minr-pad:maxr+pad, minc-pad:maxc+pad]
     return cropped_coords, cropped_images

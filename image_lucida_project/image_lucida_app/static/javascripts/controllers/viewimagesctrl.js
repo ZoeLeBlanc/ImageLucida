@@ -11,6 +11,7 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
             $scope.images = [];
             let file = JSON.parse(response.file);
+            let base_file = JSON.parse(response.base_file);
             $scope.file = file[0].fields;
             $scope.file.file_url = response.file_url;
             $scope.file.id = file[0].pk;
@@ -28,15 +29,12 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 obj.fields.id = obj.pk;
                 angular.forEach(images_data, (item, index)=>{
                     if(obj.fields.image_file_name === item.image_name){
-
-                        obj.fields.image_file_url = item.image_url;
+                        obj.fields.url = item.image_url;
                         obj.fields.tags = item.tags;
-                        console.log(obj);
                     }
                 });
                 $scope.images.push(obj.fields);
             });
-
         });
     };
     getFile();
@@ -128,7 +126,7 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 counter++;
                 let outsideArray = [];
                 outsideArray.push(array);
-                 var promise = ImageFileFactory.manualSegmentation($rootScope.file_id, outsideArray, ocr, process_type, height, width, counter).then((response)=>{
+                var promise = ImageFileFactory.manualSegmentation($rootScope.file_id, outsideArray, ocr, process_type, height, width, counter).then((response)=>{
                     return response;
                  });
                 promises.push(promise);
@@ -229,7 +227,6 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 return image.id === image_file_id;
             });
             image = image[0];
-            console.log(image, response);
             let tags = response.tags;
             let texts = JSON.parse(response.texts);
             image.image_file_url = response.image_file_url;
@@ -249,7 +246,6 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 });
                 image.tags = all_tags;
             }
-
             $scope.selectedImage = image;
             $("#imageArea").html('');
             $("#imageArea").append(`<img class="materialboxed responsive-img" src="${$scope.selectedImage.image_file_url}"/>`);

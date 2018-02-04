@@ -8,3 +8,4 @@ obj
 media
 ImageLucida/
 *.pyc
+.DS_Store

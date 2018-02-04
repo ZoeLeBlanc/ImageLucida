@@ -116,6 +116,11 @@ angular.module('ImageLucidaApp').config([
                 templateUrl: '/static/partials/unassign.html',
                 resolve: {user_auth}
             })
+            .when('/duplicate/', {
+                controller: 'DuplicateCtrl',
+                templateUrl: '/static/partials/duplicate.html',
+                resolve: {user_auth}
+            })
             .when('/explore/', {
                 controller: 'ExploreCtrl',
                 templateUrl: '/static/partials/explore.html',
