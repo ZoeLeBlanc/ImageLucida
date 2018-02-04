@@ -41,11 +41,12 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
                         $rootScope.group_id = obj.fields.group_id;
                     }
                     angular.forEach(files_list, (item, index)=>{
-                        if(obj.fields.file_name === item[0]){
-                            obj.fields.url = item[1];
-                        }
-                        if(obj.fields.file_name === item[1]){
-                            obj.fields.url = item[0];
+                        if(obj.fields.file_name === item.file_name){
+                            obj.fields.url = item.file_url;
+                            obj.fields.google_vision_processed = item.google_vision_processed;
+                            obj.fields.tesseract_processed = item.tesseract_processed;
+                            obj.fields.auto_image_processed = item.auto_image_processed;
+                            obj.fields.manual_image_processed = item.manual_image_processed;
                         }
                     });
                     $scope.files.push(obj.fields);
@@ -91,6 +92,7 @@ myApp.controller("FilesCtrl", function($scope, $rootScope, $location, $routePara
         $rootScope.$broadcast('clickFile', `${file_id}`);
     };
     if ($rootScope.group_id !== undefined){
+        console.log('group');
         getGroupFiles($rootScope.group_id);
         $scope.selectedGroup = $rootScope.source_id;
     } else if ($rootScope.source_id !== undefined) {

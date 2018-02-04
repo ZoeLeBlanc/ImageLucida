@@ -50,7 +50,7 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
               value: name
             });
             UploadFileFactory.uploadFile(file.file, file_width, file_height).then( (response)=>{
-                if (response.form != 'not saved'){
+                if (response.form !== 'not saved'){
                     Materialize.toast('Images Uploaded', 1000);
                     $('.preloader-wrapper').toggleClass('active');
                     $('#preloader').toggleClass('preloader-background');

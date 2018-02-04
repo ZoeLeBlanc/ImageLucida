@@ -19,13 +19,13 @@
         <div class="row" id="upload">
             <div class="row" ng-if="showTabs">
                 <ul class="tabs" tabs id="upload_list" reload="allTabContentLoaded">
-                    <li class="tab col s1" ng-repeat="(index,file) in upload_files | orderBy: 'upload_file_name' track by file.id">
+                    <li class="tab col s1" ng-repeat="(index,file) in upload_files | orderBy: 'base_file_name' track by file.id">
                         <a ng-click="loadData(index)" ng-href="#upload-image((file.id))">((index))</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files |orderBy: 'file_name' track by file.id">
+        <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files |orderBy: 'base_file_name' track by file.id">
             <div class="col s8">
                 <div canvas-area-draw points="points"
                     active="activePolygon" image-url="((file.url))"

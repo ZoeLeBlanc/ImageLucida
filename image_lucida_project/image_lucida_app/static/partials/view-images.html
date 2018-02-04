@@ -77,7 +77,7 @@
                 <div class="col s3" style="overflow:scroll; height: 70vh;">
                     <div class="collection" ng-repeat="image in images | orderBy: 'image_file_name' track by $index">
                         <li class="collection-item avatar" style="list-style-type:none;">
-                            <img src="((image.image_file_url))" alt="" class="circle">
+                            <img src="((image.url))" alt="" class="circle">
                             <span class="title flow-text" style="word-break:break-word;">((image.image_file_name))</span>
                             <a href="" class="secondary-content" ng-click="showImage(image.id)" ><i class="material-icons">arrow_forward</i></a>
                         </li>
@@ -137,8 +137,8 @@
                             </div>
                             <div class="card-action">
                                 <a href="" ng-click="deleteImageFile(selectedImage.id)"> Delete </a>
-                                <a href="" ng-click="processGoogleVision(selectedImage.id)">Process with Google Vision</a>
                                 <a href="" ng-click="processTesseract(selectedImage.id)">Process with Tesseract</a>
+                                <a href="" ng-click="processGoogleVision(selectedImage.id)">Process with Google Vision</a>
                             </div>
                     </div>
                 </div>

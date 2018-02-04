@@ -44,15 +44,17 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
                 angular.forEach(upload_files, (obj, index)=>{
                     obj.fields.id = obj.pk;
                     angular.forEach(upload_list, (item, index)=>{
-                        if(obj.fields.upload_file_name === item[0]){
+                        console.log(obj, item);
+                        if(obj.fields.base_file_name === item[0]){
                             obj.fields.url = item[1];
                         }
-                        if(obj.fields.upload_file_name === item[1]){
+                        if(obj.fields.base_file_name === item[1]){
                             obj.fields.url = item[0];
                         }
                     });
                     $scope.upload_files.push(obj.fields);
                 });
+                console.log($scope.upload_files);
                 $scope.allTabContentLoaded = true;
                 $scope.showTabs = true;
                 $('.preloader-wrapper').toggleClass('active');
@@ -132,6 +134,7 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
             group_id = '';
             date_published = $scope.file.date_published !== undefined ?  $scope.file.date_published: date_published;
         }
+        console.log(date_published);
         let points = [];
         if ($scope.fullPage){
             points = [ [[0,0], [parseInt($scope.image[0].width), 0],[parseInt($scope.image[0].width),parseInt($scope.image[0].height)], [0, parseInt($scope.image[0].height)]]];
@@ -147,14 +150,8 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
         angular.forEach(points, (array, index)=>{
             let outsideArray = [];
             outsideArray.push(array);
-            var promise = FileFactory.createFile(project_id, folder_id, bucket_id,source_id, group_id,$scope.file.id, $scope.file.upload_file_name, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index])).then( (response)=>{
-                    $scope.transforming = false;
-                    getUploadedFiles();
-                    $scope.activePolygon = 0;
-                    $scope.points = [[]];
-                    $scope.enabled = true;
-                    $scope.colorArray = ['#FF0000', '#FFFF00', '#0000FF', '#008000', '#C0C0C0'];
-                    $scope.imageSrc = '';
+            var promise = FileFactory.createFile(project_id, folder_id, bucket_id,source_id, group_id,$scope.file.id, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index])).then( (response)=>{
+                console.log('saved');
             });
             promises.push(promise);
         });
@@ -162,10 +159,29 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
             Materialize.toast('File Saved', 1000);
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
-            $location.url('/home');
+            let upload_list = [];
+            $scope.transforming = false;
+            $scope.points = [[]];
+            $scope.upload_files = [];
+            $scope.showTabs = false;
+            $scope.allTabContentLoaded = false;
+            $scope.selection=false;
+            $scope.creating=false;
+            $scope.switchGroup = false;
+            $scope.loaddata = true;
+            $scope.file = {};
+            $scope.page_number ='';
+            $scope.date_published='';
+            $scope.activePolygon = 0;
+            $scope.points = [[]];
+            $scope.enabled = true;
+            $scope.colorArray = ['#FF0000', '#FFFF00', '#0000FF', '#008000', '#C0C0C0'];
+            $scope.imageSrc = '';
+            $scope.fullPage = false;
+            getUploadedFiles();
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
         });
-
-
     };
     $scope.saveAsIs= ()=>{
         $scope.fullPage = !$scope.fullPage;

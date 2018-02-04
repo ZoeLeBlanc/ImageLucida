@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^duplicate_upload_file/', uploadfile_view.duplicate_upload_file, name= 'duplicate_upload_file'),
     # file urls
     url(r'^create_file/', file_view.create_file, name= 'create_file'),
+    url(r'^duplicate_file/', file_view.duplicate_file, name= 'duplicate_file'),
     url(r'^get_single_file/(?P<file_id>\d+)/$', file_view.get_single_file, name= 'get_single_file'),
     url(r'^get_source_files/(?P<source_id>\d+)/$', file_view.get_source_files, name= 'get_source_files'),
     url(r'^get_group_files/(?P<group_id>\d+)/$', file_view.get_group_files, name= 'get_group_files'),

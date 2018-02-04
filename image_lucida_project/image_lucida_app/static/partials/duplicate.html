@@ -1,0 +1,59 @@
+<div class="row">
+    <div id="preloader" class="preloader-background">
+        <div class="preloader-wrapper big center-align active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s6">
+        <div class="row" ng-show="fromProject">
+            <h5>Files From Project</h5>
+            <div class="col s6" ng-include="'static/partials/projects.html'"></div>
+            <div class="col s6" id="folders" ng-include="'static/partials/folders.html'"></div>
+            <div class="col s6" id="buckets" ng-include="'static/partials/buckets.html'"></div>
+            <div class="col s6" id="sources" ng-include="'static/partials/sources.html'"></div>
+            <div class="col s12">
+                <button ng-show="selectedFiles" class="waves-effect waves-light btn" ng-click="fromProject()">Select Project To Duplicate Files</button>
+            </div>
+        </div>
+        <div class="row" ng-show="!fromProject">
+            <h5>Files To Project</h5>
+            <div class="col s6" ng-include="'static/partials/projects.html'"></div>
+            <div class="col s6" id="folders" ng-include="'static/partials/folders.html'"></div>
+            <div class="col s6" id="buckets" ng-include="'static/partials/buckets.html'"></div>
+            <div class="col s6" id="sources" ng-include="'static/partials/sources.html'"></div>
+            <div class="col s12">
+                <button ng-show="!fromProject" class="waves-effect waves-light btn" ng-click="duplicateFilesToProject()">Save Files To Project</button>
+            </div>
+        </div>
+    </div>
+    <div class="col s6" ng-show="fromProject">
+            <div class="row center-align">
+            <h4 class="col s4">Files</h4>
+
+            <h6 class="col s4">Total selected: ((duplicateFiles.length))</h6>
+            <button class="col s4 waves-effect waves-light btn-flat" ng-click="unselectFiles"><i class="material-icons">close</i></button>
+        </div>
+
+
+        <div style="overflow:scroll; height: 70vh;">
+            <div class="collection" ng-repeat="file in files | orderBy: 'id' track by file.id">
+                <li class="collection-item avatar" style="list-style-type:none;" id="collection_((file.id))">
+                    <img src="((file.url))" alt="" class="circle">
+                    <span class="title flow-text" style="word-break:break-word;">((file.file_name))</span>
+                    <a href="" class="secondary-content" ng-click="duplicateFile(file.id)" ><i class="material-icons">arrow_forward</i></a>
+                </li>
+            </div>
+
+        </div>
+    </div>
+</div>
