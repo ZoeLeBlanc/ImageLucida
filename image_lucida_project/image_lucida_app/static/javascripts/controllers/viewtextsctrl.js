@@ -19,6 +19,8 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
                 $scope.file.google_vision_text_id = text.pk;
                 $scope.file.tesseract_text = text.fields.tesseract_text;
                 $scope.file.tesseract_text_id = text.pk;
+                $scope.file.translate_text = text.fields.google_translate_text;
+                $scope.file.translate_text_id = text.pk;
 
             });
         }
@@ -58,7 +60,19 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         $('.preloader-wrapper').toggleClass('active');
         $('#preloader').toggleClass('preloader-background');
         let new_text = $('#edited-googlevision')[0].textContent;
-        TextFileFactory.updateTextFile($scope.file.google_vision_text_id, new_text, 'googlevision').then( (response)=>{
+        TextFileFactory.updateTextFile($scope.file.google_vision_text_id, new_text, 'google_vision').then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            console.log(response);
+            Materialize.toast('Edits Saved', 1000);
+            $scope.editing = false;
+        });
+    };
+    $scope.saveTranslateTextEdits = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        let new_text = $('#edited-translatetext')[0].textContent;
+        TextFileFactory.updateTextFile($scope.file.translate_text_id, new_text, 'translate_text').then( (response)=>{
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
             console.log(response);
@@ -94,6 +108,21 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
             if (response.length>0){
                 $scope.file.tesseract_text = response[0].fields.tesseract_text;
                 $scope.file.tesseract_text_id = response[0].pk;
+                Materialize.toast('Text Processed', 1000);
+                console.log(response);
+            }
+
+        });
+    };
+    $scope.processTranslateText = ()=>{
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        TextFileFactory.translateText($scope.file.id).then( (response)=>{
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            if (response.length>0){
+                $scope.file.translate_text = response[0].fields.google_translate_text;
+                $scope.file.translate_text_id = response[0].pk;
                 Materialize.toast('Text Processed', 1000);
                 console.log(response);
             }

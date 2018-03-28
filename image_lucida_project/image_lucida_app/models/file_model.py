@@ -38,8 +38,8 @@ class File_Tag(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='file_tag')
-    file_item = models.ForeignKey(File, null=True, related_name='file_tag')
+    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='file_tag', on_delete=models.CASCADE)
+    file_item = models.ForeignKey(File, null=True, related_name='file_tag', on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s' % (self.id)

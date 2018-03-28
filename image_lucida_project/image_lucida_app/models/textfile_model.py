@@ -23,6 +23,8 @@ class Text_File(models.Model):
     tesseract_response=JSONField(null=True)
     google_vision_response=JSONField(null=True)
     google_vision_document_response=JSONField(null=True)
+    google_translate_text = models.TextField(blank=True, null=True)
+    google_translate_text_response=JSONField(null=True)
 
     def __str__(self):
         return '%s' % (self.id)

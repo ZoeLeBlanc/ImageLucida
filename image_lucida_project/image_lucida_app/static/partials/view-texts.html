@@ -40,10 +40,10 @@
                             <div class="collapsible-header">Tesseract OCR Text<a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveTesseractEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
                             <div class="collapsible-body">
                                 <div class="row">
-                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;white-space:pre-wrap;">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:40vh;white-space:pre-wrap;">
                                         <p id="unedited">((file.tesseract_text))</p>
                                     </div>
-                                    <div class="flow-text" style="overflow:scroll; height:70vh;white-space:pre-wrap;" ng-show="editing">
+                                    <div class="flow-text" style="overflow:scroll; height:40vh;white-space:pre-wrap;" ng-show="editing">
                                         <p id="edited-tesseract" contenteditable="true" >((file.tesseract_text))</p>
                                     </div>
                                 </div>
@@ -53,11 +53,24 @@
                             <div class="collapsible-header">Google Vision API Text <a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveGoogleVisionEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
                             <div class="collapsible-body">
                                 <div class="row">
-                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:70vh;">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:40vh;">
                                         <p id="unedited" class="edit-textarea" style="white-space:pre;">((file.google_vision_text))</p>
                                     </div>
-                                    <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:70vh;">
+                                    <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:40vh;">
                                         <p id="edited-googlevision" contenteditable="true" style="white-space:pre;">((file.google_vision_text))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header">Google Translate API Text <a href="" ng-click="editText()" ng-show="!editing"><i class="material-icons">edit</i></a> <a href="" ng-click="saveTranslateTextEdits()" ng-show="editing"><i class="material-icons">add</i></a></div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:40vh;">
+                                        <p id="unedited" class="edit-textarea" style="white-space:pre-wrap;">((file.translate_text))</p>
+                                    </div>
+                                    <div class="flow-text"  ng-show="editing" style="overflow:scroll; height:40vh;">
+                                        <p id="edited-translatetext" contenteditable="true" style="white-space:pre-wrap;">((file.translate_text))</p>
                                     </div>
                                 </div>
                             </div>
@@ -66,6 +79,7 @@
                 </div>
                 <div class="card-action">
                     <a href="" ng-click="processGoogleVision()">Process with Google Vision</a>
+                    <a href="" ng-click="processTranslateText()">Process with Google Translate</a>
                     <a href="" ng-click="processTesseract()">Process with Tesseract</a>
                 </div>
             </div>

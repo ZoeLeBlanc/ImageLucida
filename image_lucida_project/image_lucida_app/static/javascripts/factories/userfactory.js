@@ -1,11 +1,13 @@
 "use strict";
 myApp.factory("UserFactory", ($q, $http)=>{
     const rootUrl = 'http://localhost:8000';
+    console.log($http.defaults);
     return {
         authUser: () => {
-            return $http.get(`${rootUrl}/auth_user/`)
+            console.log($http.defaults);
+            return $http.get(`${rootUrl}/auth_user/`, {withCredentials:true})
             .then( (res)=>{
-                console.log(res);
+                console.log(res.data, res, res.data.username, $http.defaults);
                 return res.data.username;
             });
         },
@@ -25,13 +27,15 @@ myApp.factory("UserFactory", ($q, $http)=>{
             });
         },
         loginUser: (userData) =>{
+            console.log(userData);
             return $http({
                 url:`${rootUrl}/login_user/`,
                 method: 'POST',
                 data: {
                     'username': userData.username,
                     'password': userData.password,
-                }
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then((res)=>{
                 return res.data;
             });

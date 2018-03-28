@@ -60,6 +60,7 @@ urlpatterns = [
     url(r'^get_single_text_file/(?P<text_file_id>\d+)/$', textfile_view.get_single_text_file, name= 'get_single_text_file'),
     url(r'^update_text_file/', textfile_view.update_text_file, name= 'update_text_file'),
     url(r'^delete_text_file/', textfile_view.delete_text_file, name= 'delete_text_file'),
+    url(r'^translate_text_file/', textfile_view.translate_text_file, name= 'translate_text_file'),
     # image file urls
     url(r'^tag_images/', imagefile_view.tag_images, name='tag_images'),
     url(r'^image_process_text/', imagefile_view.image_process_text, name='image_process_text'),

@@ -3,13 +3,13 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
-from django.core.urlresolvers import reverse
 from django.core import serializers
 import json
 
 def get_projects(request):
+    print(request.user, request.user.pk)
     try:
-        projects = get_list_or_404(project_model.Project, user=request.user.pk)
+        projects = get_list_or_404(project_model.Project, user=1)
         projects_json = serializers.serialize("json", projects, indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
         return HttpResponse(projects_json, content_type="application/json")
     except:
@@ -28,7 +28,7 @@ def get_single_project(request, project_id):
 def cu_project(request):
     """Method view to register new user"""
     data = json.loads(request.body.decode())
-    user = User.objects.get_or_create(username=request.user)
+    user = User.objects.get_or_create(username='z')
     project = project_model.Project.objects.update_or_create(
         user = user[0],
         title = data['title'].replace(" ", "_"),

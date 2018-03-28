@@ -16,9 +16,11 @@ angular.module('ImageLucidaApp').config([
         $interpolateProvider.startSymbol('((');
         $interpolateProvider.endSymbol('))');
 
+        // $httpProvider.defaults.withCredentials = true;
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-
+        $httpProvider.defaults.headers.common["X-CSRFToken"] = window.csrf_token;
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         $routeProvider
             .when('/', {
               controller: 'HomeCtrl',

@@ -16,7 +16,7 @@ class Base_File(models.Model):
     '''
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1, null=True)
     base_file_name = models.CharField(max_length=2000, blank=True, null=True)
-    base_file = models.ImageField(upload_to=UniqueFileName('files/'), max_length=2000)
+    base_file = models.ImageField(upload_to='files/', max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     base_file_coordinates = models.ForeignKey(coordinates_model.Coordinates, null=True, on_delete=models.CASCADE, blank=True)
     transformed = models.BooleanField(default=False)

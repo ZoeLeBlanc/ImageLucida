@@ -1,5 +1,5 @@
 "use strict";
-myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $route, UserFactory){
+myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $route, $cookies, $http, UserFactory){
     $scope.user = {};
     $scope.register = ()=>{
         console.log($scope.user);
@@ -20,9 +20,13 @@ myApp.controller("AuthCtrl", function($scope, $rootScope, $location, $window, $r
             if (response.user !== false) {
                 $rootScope.user_status = true;
                 console.log(response);
+                var ct = $cookies.getAll();
+                console.log($cookies.getAll(),Object.values(ct));
                 $rootScope.username = response[0].fields.username;
                 console.log($rootScope.username);
                 $scope.user = {};
+                // $http.defaults.headers.common['X-CSRFToken'] = Object.values(ct)[0];
+                console.log($http.defaults);
                 // $location.path('/projects');
                 $window.location.replace('#!/projects');
             }

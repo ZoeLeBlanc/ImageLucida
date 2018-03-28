@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from image_lucida_app.forms import *
 from . import coordinates_view, textfile_view
-from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.core.files import File
 import json
@@ -23,6 +22,8 @@ def create_file(request):
     upload_file_id = data['upload_file_id']
     height = data['height']
     width = data['width']
+    google_vision = data['google_vision']
+    print(google_vision)
     page_number=data['page_number']
     if 0 < page_number < 10:
         page_number = '0'+str(page_number)
@@ -47,12 +48,13 @@ def create_file(request):
     coords_obj = coordinates_model.Coordinates.objects.create(
         multi_coords=json.dumps(coords)
     )
-    rando_numb = uuid.uuid4()
-    base_file_name = 'image_lucida_app/media/'+str(rando_numb)+'.jpg'
+    # rando_numb = uuid.uuid4()
+    # base_file_name = 'image_lucida_app/media/'+str(rando_numb)+'.jpg'
     #Save Image, Create File
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
         new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+folder.title.replace(" ", "_")+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         base_file = basefile_model.Base_File.objects.create(
             upload_file=upload_file,
             base_file_name=base_file_name,
@@ -70,6 +72,7 @@ def create_file(request):
         )
     else:
         new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+folder.title.replace(" ", "_")+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         base_file = basefile_model.Base_File.objects.create(
             upload_file=upload_file,
             base_file_name=base_file_name,
@@ -94,12 +97,14 @@ def create_file(request):
     base_file.save()
     upload_file.transformed=True
     upload_file.save()
-    text_file = textfile_model.Text_File.objects.get_or_create(
-            base_file=base_file,
-        )
-    text_file = text_file[0]
-    segment_type = 'full_page'
-    response = textfile_view.segment_text(text_file.pk, 'googlevision', base_file.pk, segment_type)
+    response = {'success': 'true'}
+    if google_vision:
+        text_file = textfile_model.Text_File.objects.get_or_create(
+                base_file=base_file,
+            )
+        text_file = text_file[0]
+        segment_type = 'full_page'
+        response = textfile_view.segment_text(text_file.pk, 'googlevision', base_file.pk, segment_type)
     return HttpResponse(response, content_type='application/json')
 
 def duplicate_file(request):

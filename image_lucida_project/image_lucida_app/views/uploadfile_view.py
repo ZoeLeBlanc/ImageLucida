@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from image_lucida_app.forms import *
 from . import coordinates_view
-from django.core.urlresolvers import reverse
 from django.core import serializers
 import json
 import os
@@ -36,7 +35,7 @@ def upload_file(request):
 
 def get_upload_files(request):
     print('get Upload files')
-    upload_files = basefile_model.Base_File.objects.filter(user=request.user.pk,transformed=False, assigned=False)
+    upload_files = basefile_model.Base_File.objects.filter(user=1,transformed=False, assigned=False)
     print(upload_files)
     if len(upload_files) >0:
         upload_list = []

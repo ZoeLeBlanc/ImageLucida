@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from image_lucida_app.forms import *
 from . import coordinates_view, textfile_view
-from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.core.files import File
 import json
@@ -38,8 +37,8 @@ def manual_segmentation(request):
     images = file_item.image_file_set.all().count()
     image_number = data['index']
     rando_numb = uuid.uuid4()
-    base_file_name = 'image_lucida_app/media/'+str(rando_numb)+'.jpg'
-    new_image_file_name =  file_item.file_name.split('.jpg')[0] +'_image_file_'+str(image_number) + '.jpg'
+    base_file_name = 'image_lucida_app/media/'+base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
+    new_image_file_name =  file_item.file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
     new_image_file = new_image_file.save(base_file_name)
     open_image = open(base_file_name, 'rb')
     newest_image_file = File(open_image)
@@ -103,7 +102,7 @@ def auto_segment_image_file(request):
                     image_number = images + 1
                     new_image_file_name = file_item.file_name.split('.jpg')[0] + '_auto_image_file_'+str(image_number) + '.jpg'
                     rando_numb = uuid.uuid4()
-                    base_file_name = 'image_lucida_app/media/'+str(rando_numb)+'.jpg'
+                    base_file_name = 'image_lucida_app/media/'+base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
                     new_image_file = io.imsave(base_file_name,image),
                     open_image = open(base_file_name, 'rb')
                     newest_base_file = File(open_image)
