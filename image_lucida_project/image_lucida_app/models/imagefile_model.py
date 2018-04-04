@@ -35,8 +35,8 @@ class Image_File_Tag(models.Model):
 
     Author: Zoe LeBlanc
     '''
-    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='image_file_tag')
-    image_file = models.ForeignKey(Image_File, null=True, related_name='image_file_tag')
+    tag = models.ForeignKey(tag_model.Tag, null=True, related_name='image_file_tag', on_delete=models.CASCADE)
+    image_file = models.ForeignKey(Image_File, null=True, related_name='image_file_tag', on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s' % (self.id)

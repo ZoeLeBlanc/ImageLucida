@@ -90,11 +90,21 @@
                                     <button class="waves-effect waves-light btn" ng-click="saveAsIs()">Save As Is</button>
                                 </div>
                                 <div ng-show="transforming" class="row">
+                                  <div class="switch">
+                                     <label>
+                                       <input type="checkbox" ng-model="should_googlevision" value="should_googlevision.vision" ng-change="shouldGV()">
+                                       <span class="lever"></span>
+                                       Select to Google Vision
+                                     </label>
+                                 </div>
+                                </div>
+                                <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
                                 </div>
                                 <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="undo()">Undo</button>
                                 </div>
+
                                 <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="clearAll()">Clear</button>
                                 </div>

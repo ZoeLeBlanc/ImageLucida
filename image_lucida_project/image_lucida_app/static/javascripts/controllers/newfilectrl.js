@@ -16,6 +16,7 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
     $scope.activePolygon = 0;
     $scope.points = [[]];
     $scope.enabled = true;
+    $scope.should_googlevision = {value : false};
     $scope.colorArray = ['#FF0000', '#FFFF00', '#0000FF', '#008000', '#C0C0C0'];
     $scope.imageSrc = '';
     $scope.fullPage = false;
@@ -145,12 +146,12 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
                 }
             });
         }
-
+        console.log('giv',$scope.should_googlevision.value);
         var promises = [];
         angular.forEach(points, (array, index)=>{
             let outsideArray = [];
             outsideArray.push(array);
-            var promise = FileFactory.createFile(project_id, folder_id, bucket_id,source_id, group_id,$scope.file.id, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index])).then( (response)=>{
+            var promise = FileFactory.createFile(project_id, folder_id, bucket_id,source_id, group_id,$scope.file.id, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index]), $scope.should_googlevision.value).then( (response)=>{
                 console.log('saved');
             });
             promises.push(promise);
@@ -175,6 +176,7 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
             $scope.activePolygon = 0;
             $scope.points = [[]];
             $scope.enabled = true;
+            $scope.should_googlevision = false;
             $scope.colorArray = ['#FF0000', '#FFFF00', '#0000FF', '#008000', '#C0C0C0'];
             $scope.imageSrc = '';
             $scope.fullPage = false;
@@ -182,6 +184,11 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
         });
+    };
+    $scope.shouldGV = ()=>{
+        console.log($scope.should_googlevision);
+        $scope.should_googlevision.value = !$scope.should_googlevision.value;
+        console.log($scope.should_googlevision);
     };
     $scope.saveAsIs= ()=>{
         $scope.fullPage = !$scope.fullPage;

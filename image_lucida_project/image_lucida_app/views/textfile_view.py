@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from image_lucida_app.models import *
 from image_lucida_app.forms import *
 from . import coordinates_view
-from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.core.files import File
 import json
@@ -14,7 +13,7 @@ import numpy as np
 import io
 import uuid
 from tesserocr import PyTessBaseAPI, RIL
-from google.cloud import vision
+from google.cloud import vision, translate
 from google.cloud.vision import types
 import google.auth
 from protobuf_to_dict import protobuf_to_dict
@@ -151,6 +150,9 @@ def update_text_file(request):
     if process_type == 'tesseract':
         text_file.tesseract_text = new_text
         text_file.save()
+    if process_type == 'translate_text':
+        text_file.google_translate_text = new_text
+        text_file.save()
     text_file_serialize = serializers.serialize("json", [text_file, ])
     response = json.dumps({
         'text_file':text_file_serialize,
@@ -166,3 +168,20 @@ def delete_text_file(request):
         text_file.delete()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")
+
+def translate_text_file(request):
+    data = json.loads(request.body.decode())
+    file_id=data['file_id']
+    file_item = file_model.File.objects.get(pk=file_id)
+    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    text_files = textfile_model.Text_File.objects.filter(base_file_id=base_file.pk)
+    for tx in text_files:
+        text = tx.google_vision_text
+        translate_client = translate.Client()
+        result = translate_client.translate(text, target_language='en')
+        print(result)
+        tx.google_translate_text = result['translatedText']
+        tx.google_translate_text_response = result
+        tx.save()
+    textfiles_json = serializers.serialize("json", text_files)
+    return HttpResponse(textfiles_json, content_type="application/json")
