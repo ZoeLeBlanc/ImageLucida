@@ -7,7 +7,8 @@ from django.core import serializers
 import json
 
 def get_projects(request):
-    print(request.user, request.user.pk)
+    “””Return all projects for user. Auth currently disabled because of issues with AngularJS cookies and because I’m the only user”””
+
     try:
         projects = get_list_or_404(project_model.Project, user=1)
         projects_json = serializers.serialize("json", projects, indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
