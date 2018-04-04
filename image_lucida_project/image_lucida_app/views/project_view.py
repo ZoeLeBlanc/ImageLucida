@@ -27,7 +27,7 @@ def get_single_project(request, project_id):
     return HttpResponse(project_json, content_type="application/json")
 
 def cu_project(request):
-    """Method view to register new user"""
+    """Create or update a project"""
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username='z')
     project = project_model.Project.objects.update_or_create(
@@ -40,7 +40,7 @@ def cu_project(request):
 
 
 def delete_project(request, project_id):
-    """Method view to logout user"""
+    """Method to delete a project"""
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         project_id = data['project_id']
