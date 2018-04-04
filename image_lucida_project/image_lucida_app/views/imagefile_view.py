@@ -102,7 +102,7 @@ def auto_segment_image_file(request):
                     image_number = images + 1
                     new_image_file_name = file_item.file_name.split('.jpg')[0] + '_auto_image_file_'+str(image_number) + '.jpg'
                     rando_numb = uuid.uuid4()
-                    base_file_name = 'image_lucida_app/media/'+base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
+                    base_file_name =base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
                     new_image_file = io.imsave(base_file_name,image),
                     open_image = open(base_file_name, 'rb')
                     newest_base_file = File(open_image)
