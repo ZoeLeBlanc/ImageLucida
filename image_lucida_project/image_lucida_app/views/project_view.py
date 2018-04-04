@@ -20,7 +20,7 @@ def get_projects(request):
         return HttpResponse(response, content_type="application/json")
 
 def get_single_project(request, project_id):
-    """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
+    """Get single project and related folders"""
     project = get_object_or_404(project_model.Project, pk=project_id)
     project_serialize = serializers.serialize("json", [project,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     project_json = json.dumps({'project': project_serialize})
