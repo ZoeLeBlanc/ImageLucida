@@ -23,6 +23,7 @@ import os
 
 
 def process_text(request):
+    """Method to create a textfile from image """
     data = json.loads(request.body.decode())
     process_type = data['process_type']
     file_id=data['file_id']
@@ -38,6 +39,7 @@ def process_text(request):
     return HttpResponse(response, content_type='application/json')
 
 def segment_text(text_file_id, process_type, file_id, segment_type):
+    """Method to get model data for oct"""
     text_file = textfile_model.Text_File.objects.get(pk=text_file_id)
     base_file = basefile_model.Base_File.objects.get(pk=file_id)
     uri = base_file.file_url
@@ -46,10 +48,18 @@ def segment_text(text_file_id, process_type, file_id, segment_type):
     return response
 
 def analyze_text(file_item, uri, process_type, file_name, text_file, segment_type):
+    """Method to determine type of ocr"""
     filename, headers = urllib.request.urlretrieve(uri, file_name)
     print(filename)
     if process_type == 'tesseract':
-        with PyTessBaseAPI() as api:
+        response = tesseract_ocr(file_name, text_file, file_item)
+    if process_type == 'googlevision':
+        response = googlevision_ocr(segment_type, uri, file_name, text_file, file_item)
+    return response
+        
+def tesseract_ocr(file_name, text_file, file_item):
+    """Method to processs text with tesseract"""
+    with PyTessBaseAPI() as api:
             api.SetImageFile(file_name)
             boxes = api.GetComponentImages(RIL.TEXTLINE, True)
             text_file_text = api.GetUTF8Text()
@@ -68,8 +78,10 @@ def analyze_text(file_item, uri, process_type, file_name, text_file, segment_typ
             file_item.tesseract_processed = True
             file_item.save()
         return serializers.serialize("json", [text_file, ])
-    if process_type == 'googlevision':
-        credentials, project = google.auth.default()
+        
+def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
+    """Method to process with google vision"""
+    credentials, project = google.auth.default()
         vision_client = vision.ImageAnnotatorClient()
         image = types.Image()
         image.source.image_uri = uri

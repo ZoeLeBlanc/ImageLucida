@@ -20,14 +20,14 @@ def get_projects(request):
         return HttpResponse(response, content_type="application/json")
 
 def get_single_project(request, project_id):
-    """Needs to retrieve all folders, untransformed files, transformed files, text annotations and image annotations"""
+    """Get single project and related folders"""
     project = get_object_or_404(project_model.Project, pk=project_id)
     project_serialize = serializers.serialize("json", [project,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     project_json = json.dumps({'project': project_serialize})
     return HttpResponse(project_json, content_type="application/json")
 
 def cu_project(request):
-    """Method view to register new user"""
+    """Create or update a project"""
     data = json.loads(request.body.decode())
     user = User.objects.get_or_create(username='z')
     project = project_model.Project.objects.update_or_create(
@@ -40,7 +40,7 @@ def cu_project(request):
 
 
 def delete_project(request, project_id):
-    """Method view to logout user"""
+    """Method to delete a project"""
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         project_id = data['project_id']
