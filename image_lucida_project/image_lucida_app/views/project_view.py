@@ -8,9 +8,8 @@ import json
 
 def get_projects(request):
     """Return all projects for user. Auth currently disabled because of issues with AngularJS cookies and because I’m the only user"""
-
     try:
-        projects = get_list_or_404(project_model.Project, user=1)
+        projects = get_list_or_404(project_model.Project, user=request.user.pk)
         projects_json = serializers.serialize("json", projects, indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
         return HttpResponse(projects_json, content_type="application/json")
     except:
@@ -29,7 +28,7 @@ def get_single_project(request, project_id):
 def cu_project(request):
     """Create or update a project"""
     data = json.loads(request.body.decode())
-    user = User.objects.get_or_create(username='z')
+    user = User.objects.get_or_create(username=request.user)
     project = project_model.Project.objects.update_or_create(
         user = user[0],
         title = data['title'].replace(" ", "_"),

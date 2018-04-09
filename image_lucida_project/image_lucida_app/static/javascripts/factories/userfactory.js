@@ -4,10 +4,8 @@ myApp.factory("UserFactory", ($q, $http)=>{
     console.log($http.defaults);
     return {
         authUser: () => {
-            console.log($http.defaults);
             return $http.get(`${rootUrl}/auth_user/`, {withCredentials:true})
             .then( (res)=>{
-                console.log(res.data, res, res.data.username, $http.defaults);
                 return res.data.username;
             });
         },
@@ -27,7 +25,6 @@ myApp.factory("UserFactory", ($q, $http)=>{
             });
         },
         loginUser: (userData) =>{
-            console.log(userData);
             return $http({
                 url:`${rootUrl}/login_user/`,
                 method: 'POST',

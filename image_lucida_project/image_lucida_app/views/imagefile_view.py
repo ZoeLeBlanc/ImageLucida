@@ -63,7 +63,8 @@ def manual_segmentation(request):
         text_file = textfile_model.Text_File.objects.get_or_create(
         base_file=new_base_file,
         )
-        textfile_view.segment_text(text_file[0].pk, process_type, base_file.pk)
+        segment_type = 'segment_page'
+        textfile_view.segment_text(text_file[0].pk, process_type, base_file.pk, segment_type)
         response = {'success': 'true'}
     else:
         response = {'success': 'true'}

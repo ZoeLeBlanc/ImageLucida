@@ -15,7 +15,6 @@ def auth_user(request):
         response = json.dumps({"user":True, "username":request.user.username})
     else:
         response = json.dumps({"user":False})
-    response = json.dumps({"user":True, "username":'z'})
     return HttpResponse(response, content_type='application/json')
 
 def register_user(request):
