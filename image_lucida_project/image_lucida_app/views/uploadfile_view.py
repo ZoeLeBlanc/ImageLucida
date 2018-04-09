@@ -16,8 +16,6 @@ def upload_file(request):
     file_width = request.POST.get('base_file_width', False)
     if request.method == 'POST':
         form = Base_File_Form(request.POST, request.FILES)
-        print(form.is_valid())
-        print(form)
         if form.is_valid():
             form.save()
             coor_obj = coordinates_view.calculate_coordinates(int(file_width), int(file_height))
@@ -34,8 +32,7 @@ def upload_file(request):
 
 def get_upload_files(request):
     """Get all uploaded files"""
-    upload_files = basefile_model.Base_File.objects.filter(user=1,transformed=False, assigned=False)
-    print(upload_files)
+    upload_files = basefile_model.Base_File.objects.filter(user=request.user.pk,transformed=False, assigned=False)
     if len(upload_files) >0:
         upload_list = []
         for file_item in upload_files:

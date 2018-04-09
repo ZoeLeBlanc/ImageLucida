@@ -1,17 +1,10 @@
-from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.views.generic.base import TemplateView
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
-from image_lucida_app.models import *
-from image_lucida_app.forms import *
-from django.core import serializers
+from image_lucida_app.models import coordinates_model
 import json
 import cv2
 import numpy as np
 from skimage import filters, segmentation, io
-from sklearn.cluster import KMeans
 from skimage.measure import label, regionprops
-from skimage.color import label2rgb, rgb2gray, gray2rgb
+from skimage.color import rgb2gray
 
 def calculate_coordinates(img_rows, img_cols):
     top_left = [0,0]
