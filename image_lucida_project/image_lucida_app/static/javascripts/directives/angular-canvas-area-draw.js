@@ -223,12 +223,10 @@ myApp.directive('canvasAreaDraw', function () {
             };
 
             scope.$watch('points', function (newVal, oldVal) {
-                console.log(scope.active);
                 scope.draw();
             }, true);
 
             scope.$watch('active', function (newVal, oldVal) {
-                console.log(scope.active);
                 if (newVal !== oldVal) scope.draw();
             }, true);
 

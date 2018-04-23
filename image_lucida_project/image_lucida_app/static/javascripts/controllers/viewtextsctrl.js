@@ -117,7 +117,7 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
     $scope.processTranslateText = ()=>{
         $('.preloader-wrapper').toggleClass('active');
         $('#preloader').toggleClass('preloader-background');
-        TextFileFactory.translateText($scope.file.id).then( (response)=>{
+        TextFileFactory.translateText($scope.file.id, 'full_page').then( (response)=>{
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
             if (response.length>0){

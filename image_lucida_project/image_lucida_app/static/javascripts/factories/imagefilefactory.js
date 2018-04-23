@@ -71,6 +71,22 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                 }
             });
         },
+        getContours: (file_id, dilation) => {
+            return $http({
+                url: `${rootUrl}/get_contours/`,
+                method: 'POST',
+                data: {
+                    'file_id': file_id,
+                    'dilation': dilation
+                }
+            }).then((res) => {
+                return res.data;
+            }, (res) => {
+                if (res.status > 0) {
+                    return res.status;
+                }
+            });
+        },
         getSingleImageFile: (image_file_id) => {
             return $http.get(`${rootUrl}/get_single_image_file/${image_file_id}/`)
             .then( (res)=>{

@@ -28,7 +28,7 @@
     <div id="manual_segment">
         <div class="row" id="file">
             <div class="col s8" >
-                <div canvas-area-draw points="points"
+                <div id="imgCanvas" canvas-area-draw points="points"
                     active="activePolygon" image-url="imageSrc"
                     enabled="enabled" palette="colorArray" ng-if="loaddata">
                 </div>
@@ -41,6 +41,12 @@
                             <h4>Manually Segment Image</h4>
                             </span>
                             <div class="col s10 offset-s1">
+                                <div class="row">
+                                    <form ng-submit="getContours()">
+                                        <input class="input-field col s10 offset-s1" type="text" placeholder="Get contours with specified dilation" ng-model="dilation">
+                                    </form>
+                                </div>
+
                                 <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
                                 </div>
@@ -55,6 +61,14 @@
                                 </div>
                                 <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="savePolygons()">Save</button>
+                                </div>
+                                <div input-field>
+                                    <select ng-model="selectedPolygon" ng-change="clickPolygon(selectedPolygon)" material-select watch>
+                                        <option value="">Please select
+                                        </option>
+                                        <option ng-repeat="(index,point) in points" value="((index))">((index))
+                                        </option>
+                                    </select>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="row">
@@ -133,12 +147,33 @@
                                             </div>
                                         </div>
                                     </li>
+                                    <li>
+                                        <div class="collapsible-header">Google Translate API Text
+                                            <a href="" ng-click="editText()" ng-show="!editing">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                            <a href="" ng-click="saveTranslateTextEdits(selectedImage.id)" ng-show="editing">
+                                                <i class="material-icons">add</i>
+                                            </a>
+                                        </div>
+                                        <div class="collapsible-body">
+                                            <div class="row">
+                                                <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:40vh;">
+                                                    <p id="unedited" class="edit-textarea" style="white-space:pre-wrap;">((selectedImage.translate_text))</p>
+                                                </div>
+                                                <div class="flow-text" ng-show="editing" style="overflow:scroll; height:40vh;">
+                                                    <p id="edited-translatetext_((selectedImage.id))" contenteditable="true" style="white-space:pre-wrap;">((selectedImage.translate_text))</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-action">
                                 <a href="" ng-click="deleteImageFile(selectedImage.id)"> Delete </a>
                                 <a href="" ng-click="processTesseract(selectedImage.id)">Process with Tesseract</a>
                                 <a href="" ng-click="processGoogleVision(selectedImage.id)">Process with Google Vision</a>
+                                <a href="" ng-click="processTranslateText(selectedImage.id)">Process with Google Translate</a>
                             </div>
                     </div>
                 </div>

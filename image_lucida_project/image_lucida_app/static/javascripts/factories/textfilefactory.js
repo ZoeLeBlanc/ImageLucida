@@ -24,12 +24,13 @@ angular.module('ImageLucidaApp').factory("TextFileFactory", ($http)=>{
                 }
             });
         },
-        translateText: (file_id) =>{
+        translateText: (file_id, process_type) =>{
             return $http({
                 url:`${rootUrl}/translate_text_file/`,
                 method: 'POST',
                 data: {
-                    'file_id': file_id
+                    'file_id': file_id,
+                    'process_type': process_type
                 }
             }).then((res)=>{
                 return res.data;
