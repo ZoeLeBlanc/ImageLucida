@@ -19,14 +19,15 @@ import os
 def manual_segmentation(request):
     data = json.loads(request.body.decode())
     file_item = file_model.File.objects.get(pk=data['file_id'])
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file)
-    uri = file_item.file_url
+    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    uri = base_file.file_url
     coords = data['multi_coords']
     ocr = data['ocr']
     process_type = data['process_type']
     height = data['height']
     width = data['width']
     index = data['index']
+    print(index)
     image= coordinates_view.crop_shapes(uri, coords, height, width)
     array_image = Image.fromarray(np.uint8(image))
     bounded_image = array_image.getbbox()
@@ -35,9 +36,9 @@ def manual_segmentation(request):
         multi_coords=json.dumps(coords)
     )
     images = file_item.image_file_set.all().count()
-    image_number = data['index']
+    image_number = index
     rando_numb = uuid.uuid4()
-    base_file_name = 'image_lucida_app/media/'+base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
+    base_file_name = base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
     new_image_file_name =  file_item.file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
     new_image_file = new_image_file.save(base_file_name)
     open_image = open(base_file_name, 'rb')
@@ -54,33 +55,44 @@ def manual_segmentation(request):
         image_file_name=new_image_file_name,
         base_file=new_base_file
     )
-    new_base_file.base_file.save(base_file_name, new_image_file, save=True)
-    new_base_file.manual_image_processed=True
+    new_base_file.base_file.save(base_file_name, newest_image_file, save=True)
+    base_file.manual_image_processed=True
+    base_file.save()
+    new_base_file.assigned = True
     new_base_file.save()
     image_file.save()
-    # os.remove(image_file.image_file_name)
+    
+    response = {'success': 'true'}
+
     if ocr == True:
         text_file = textfile_model.Text_File.objects.get_or_create(
         base_file=new_base_file,
         )
         segment_type = 'segment_page'
-        textfile_view.segment_text(text_file[0].pk, process_type, base_file.pk, segment_type)
-        response = {'success': 'true'}
-    else:
-        response = {'success': 'true'}
+        response = textfile_view.segment_text(text_file[0].pk, process_type, new_base_file.pk, segment_type)
     return HttpResponse(response, content_type='application/json')
 
 def image_process_text(request):
     data = json.loads(request.body.decode())
     image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
     process_type = data['process_type']
-    base_file = basefile_model.Base_File.objects.get(pk=image_file.base_file)
+    base_file = basefile_model.Base_File.objects.get(pk=image_file.base_file.pk)
     text_file = textfile_model.Text_File.objects.get_or_create(
     base_file=base_file,
     )
-    text_file.save()
     segment_type = 'segment_page'
     response = textfile_view.segment_text(text_file[0].pk, process_type, base_file.pk, segment_type)
+    return HttpResponse(response, content_type='application/json')
+
+def get_contours(request):
+    data = json.loads(request.body.decode())
+    file_item = file_model.File.objects.get(pk=data['file_id'])
+    dilation = data['dilation']
+    print(dilation)
+    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    file_url = base_file.file_url
+    contours = coordinates_view.find_contours(file_url, dilation)
+    response = json.dumps({'contours': contours})
     return HttpResponse(response, content_type='application/json')
 
 def auto_segment_image_file(request):

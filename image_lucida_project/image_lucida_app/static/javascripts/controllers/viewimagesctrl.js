@@ -7,6 +7,9 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
     $scope.process_type = {};
     $scope.editing = false;
     $scope.clickedImage = false;
+    $scope.dilation = 10;
+    $('.preloader-wrapper').toggleClass('active');
+    $('#preloader').toggleClass('preloader-background');
     var getFile = () => {
         FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
             $scope.images = [];
@@ -25,31 +28,68 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
             $scope.activePolygon = 0;
             let images = response.images_serialize;
             let images_data = response.images_data;
-            angular.forEach(JSON.parse(images), (obj, index)=>{
-                obj.fields.id = obj.pk;
-                angular.forEach(images_data, (item, index)=>{
-                    if(obj.fields.image_file_name === item.image_name){
-                        obj.fields.url = item.image_url;
-                        obj.fields.tags = item.tags;
-                    }
+            if (Object.keys(images).length > 0 ){
+                angular.forEach(JSON.parse(images), (obj, index) => {
+                    obj.fields.id = obj.pk;
+                    angular.forEach(images_data, (item, index) => {
+                        if (obj.fields.image_file_name === item.image_name) {
+                            obj.fields.url = item.image_url;
+                            obj.fields.tags = item.tags;
+                        }
+                    });
+                    $scope.images.push(obj.fields);
                 });
-                $scope.images.push(obj.fields);
-            });
+            }
+            
         });
     };
     getFile();
-    ImageFileFactory.autoImageSegmentation($rootScope.file_id).then((response)=>{
+    $scope.getContours = () => {
         $('.preloader-wrapper').toggleClass('active');
         $('#preloader').toggleClass('preloader-background');
-        getFile();
-        var $window2 = $(window),
-            $imageInfo = $('#segmentInfo'),
-            elTop = $imageInfo.offset().top;
+        $scope.points = [[]];
+        ImageFileFactory.getContours($rootScope.file_id, parseInt($scope.dilation)).then((response) => {
+            console.log('get_contours', response);
+            console.log($('#imgCanvas')[0].clientHeight, $('#imgCanvas')[0].clientWidth);
+            let n_h = $('#imgCanvas')[0].clientHeight;
+            let n_w = $('#imgCanvas')[0].clientWidth;
 
-         $window2.scroll(function() {
-              $imageInfo.toggleClass('sticky', $window2.scrollTop() > elTop);
-         });
-    });
+            angular.forEach(response.contours, (obj, index) => {
+                let o_h = obj.height;
+                let o_w = obj.width;
+                let aspect_ratio_w = parseInt(o_w) / parseInt(n_w);
+                let aspect_ratio_h = parseInt(o_h) / parseInt(n_h);
+                console.log(aspect_ratio_h, aspect_ratio_w);
+                let point = [];
+                let top_right = [obj.bounding_box.top_right[0] / aspect_ratio_w, obj.bounding_box.top_right[1] / aspect_ratio_h];
+                let top_left = [obj.bounding_box.top_left[0] / aspect_ratio_w, obj.bounding_box.top_left[1] / aspect_ratio_h];
+                let bottom_left = [obj.bounding_box.bottom_left[0] / aspect_ratio_w, obj.bounding_box.bottom_left[1] / aspect_ratio_h];
+                let bottom_right = [obj.bounding_box.bottom_right[0] / aspect_ratio_w, obj.bounding_box.bottom_right[1] / aspect_ratio_h];
+                point.push(top_right);
+                point.push(top_left);
+                point.push(bottom_left);
+                point.push(bottom_right);
+                $scope.points.push(point);
+            });
+            $scope.enabled = true;
+            $scope.activePolygon = $scope.points.length - 1;
+            console.log('points', $scope.points);
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            var $window2 = $(window),
+                $imageInfo = $('#segmentInfo'),
+                elTop = $imageInfo.offset().top;
+
+            $window2.scroll(function () {
+                $imageInfo.toggleClass('sticky', $window2.scrollTop() > elTop);
+            });
+        });
+    };
+
+    $scope.clickPolygon = (selectedPolygon)=>{
+        console.log('selectedPolygon', selectedPolygon, $scope.points[selectedPolygon]);
+        $scope.activePolygon = selectedPolygon;
+    };
     $scope.deleteImageFile = function(image_file_id) {
         ImageFileFactory.deleteImageFile(image_file_id).then((response)=>{
             getFile();
@@ -179,6 +219,42 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 Materialize.toast('Text Processed', 1000);
             }
 
+        });
+    };
+    $scope.processTranslateText = (image_file_id) => {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        TextFileFactory.translateText(image_file_id, 'segment_page').then((response) => {
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            if (response.length > 0) {
+                $scope.images.map((image) => {
+                    if (image.id === image_file_id) {
+                        image.translate_text = response[0].fields.google_translate_text;
+                        image.translate_text_id = response[0].pk;
+                        return image;
+                    }
+                });
+                Materialize.toast('Text Processed', 1000);
+            }
+
+        });
+    };
+    $scope.saveTranslateTextEdits = (image_file_id) => {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        let new_text = $('#edited-translatetext_${image_file_id}')[0].textContent;
+        $scope.images.map((image) => {
+            if (image.id === image_file_id) {
+                TextFileFactory.updateTextFile(image.text_file_id, new_text, 'translate_text').then((response) => {
+                    console.log(response);
+                    $('.preloader-wrapper').toggleClass('active');
+                    $('#preloader').toggleClass('preloader-background');
+                    Materialize.toast('Edits Saved', 1000);
+                    $scope.editing = false;
+                    getFile();
+                });
+            }
         });
     };
     $scope.saveTesseractEdits = (image_file_id)=>{

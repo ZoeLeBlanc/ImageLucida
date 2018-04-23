@@ -53,7 +53,8 @@ def create_file(request):
     #Save Image, Create File
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+folder.title.replace(" ", "_")+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(
+            " ", "_")+'_' + source.source_name.replace(" ", "_")+'_' + group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         base_file = basefile_model.Base_File.objects.create(
             upload_file=upload_file,

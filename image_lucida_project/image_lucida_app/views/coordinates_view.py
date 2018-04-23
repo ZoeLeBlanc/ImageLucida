@@ -2,7 +2,7 @@ from image_lucida_app.models import coordinates_model
 import json
 import cv2
 import numpy as np
-from skimage import filters, segmentation, io
+from skimage import filters, segmentation, io, img_as_ubyte
 from skimage.measure import label, regionprops
 from skimage.color import rgb2gray
 
@@ -138,3 +138,35 @@ def segment_images(img):
         cropped_coords[region_index] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
         cropped_images[region_index] = im[minr-pad:maxr+pad, minc-pad:maxc+pad]
     return cropped_coords, cropped_images
+
+def find_contours(img, dilation):
+    im = io.imread(img)
+    image = rgb2gray(im)
+    cv_image = img_as_ubyte(im)
+    grey_image = img_as_ubyte(image)
+    _, thresh = cv2.threshold(grey_image, 150, 255,
+                              cv2.THRESH_BINARY_INV)  # threshold
+    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    dilated = cv2.dilate(thresh, kernel, iterations=dilation)  # dilate
+    _, contours, hierarchy = cv2.findContours(
+    dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # get contours
+    contours_obj = {}
+    for index, contour in enumerate(contours):
+        # get rectangle bounding contour
+        [x, y, w, h] = cv2.boundingRect(contour)
+        im_h, im_w, _ = cv_image.shape
+        
+        # discard areas that are too large if height is within a range of ten pixels h >= im_h - 10
+        im_h = im_h - 100
+        im_w = im_w - 100
+        if h >= im_h  and w >=im_w:
+            continue
+
+        # discard areas that are too small
+        if h < 50 or w < 50:
+            continue
+
+        contours_obj[index] = {'coords': {'x': x, 'y': y, 'w': w, 'h': h}, 'bounding_box': {
+            'top_left': (x, y), 'top_right': (x+w, y), 'bottom_right': (x+w, y+h), 'bottom_left': (x, y+h)}, 'height': im_h, 'width': im_w}
+    print(contours_obj)
+    return contours_obj
