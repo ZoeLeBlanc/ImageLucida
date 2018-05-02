@@ -34,7 +34,7 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                 }
             });
         },
-        manualSegmentation: (file_id, multi_coords, ocr, process_type, height, width, index)=>{
+        manualSegmentation: (file_id, multi_coords, ocr, process_type, height, width, index, translate)=>{
             console.log(process_type);
             return $http({
                 url:`${rootUrl}/manual_segmentation/`,
@@ -47,6 +47,7 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                     'height':height,
                     'width':width,
                     'index': index,
+                    'translate': translate
                 }
             }).then((res)=>{
                 return res.data;

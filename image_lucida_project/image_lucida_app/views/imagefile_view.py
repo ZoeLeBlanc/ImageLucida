@@ -23,6 +23,7 @@ def manual_segmentation(request):
     uri = base_file.file_url
     coords = data['multi_coords']
     ocr = data['ocr']
+    translate = data['translate']
     process_type = data['process_type']
     height = data['height']
     width = data['width']
@@ -69,7 +70,10 @@ def manual_segmentation(request):
         base_file=new_base_file,
         )
         segment_type = 'segment_page'
+        print('tx', text_file)
         response = textfile_view.segment_text(text_file[0].pk, process_type, new_base_file.pk, segment_type)
+        if translate == True:
+            textfile_view.translate_all_texts(text_file[0].pk, 'ar')
     return HttpResponse(response, content_type='application/json')
 
 def image_process_text(request):
@@ -181,10 +185,20 @@ def delete_image_file(request):
         data = json.loads(request.body.decode())
         try:
             image_file = get_object_or_404(imagefile_model.Image_File, pk=data['image_file_id'])
+            base_file = get_object_or_404(basefile_model.Base_File, pk=image_file.base_file.pk)
+            text_file = textfile_model.Text_File.objects.get(base_file_id=base_file.pk)
             print(image_file)
-            image_file.image_file.delete(save=False)
+            if text_file is not None:
+                text_file.delete()
             image_file.delete()
+            base_file.base_file.delete(save=False)
+            base_file.delete()
+            # print(image_file)
+            
+            print('image_file', image_file)
+
             response = {'success':True}
         except:
+            print('delete failed')
             response = {'success':False}
         return HttpResponse(response, content_type="application/json")

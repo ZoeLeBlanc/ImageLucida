@@ -73,7 +73,6 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
             });
             $scope.enabled = true;
             $scope.activePolygon = $scope.points.length - 1;
-            console.log('points', $scope.points);
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
             var $window2 = $(window),
@@ -87,12 +86,24 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
     };
 
     $scope.clickPolygon = (selectedPolygon)=>{
-        console.log('selectedPolygon', selectedPolygon, $scope.points[selectedPolygon]);
         $scope.activePolygon = selectedPolygon;
     };
     $scope.deleteImageFile = function(image_file_id) {
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         ImageFileFactory.deleteImageFile(image_file_id).then((response)=>{
-            getFile();
+            console.log(response);
+            if (response.success){
+                $scope.images = $scope.images.filter(image => image.id !== image_file_id);
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
+                Materialize.toast('File Deleted', 200);
+            } else {
+                $('.preloader-wrapper').toggleClass('active');
+                $('#preloader').toggleClass('preloader-background');
+                Materialize.toast('File Not Deleted', 200);
+            }
+            
         });
     };
     $scope.tagImage = function(image_file_id){
@@ -155,9 +166,14 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         let height = $('canvas')[0].height;
         let ocr = false;
         let process_type = 'None';
+        let translate = false;
         if ($scope.process_type.googlevision || $scope.process_type.tesseract) {
             ocr = true;
             process_type = Object.keys($scope.process_type)[0];
+        }
+        console.log($scope.process_type.translate_text);
+        if ($scope.process_type.translate_text){
+            translate = true;
         }
         var promises = [];
         let counter = $scope.images.length;
@@ -166,7 +182,7 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 counter++;
                 let outsideArray = [];
                 outsideArray.push(array);
-                var promise = ImageFileFactory.manualSegmentation($rootScope.file_id, outsideArray, ocr, process_type, height, width, counter).then((response)=>{
+                var promise = ImageFileFactory.manualSegmentation($rootScope.file_id, outsideArray, ocr, process_type, height, width, counter, translate).then((response)=>{
                     return response;
                  });
                 promises.push(promise);
@@ -228,10 +244,12 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
             if (response.length > 0) {
+                console.log(response);
                 $scope.images.map((image) => {
                     if (image.id === image_file_id) {
                         image.translate_text = response[0].fields.google_translate_text;
                         image.translate_text_id = response[0].pk;
+                        console.log(image);
                         return image;
                     }
                 });
@@ -246,13 +264,14 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         let new_text = $('#edited-translatetext_${image_file_id}')[0].textContent;
         $scope.images.map((image) => {
             if (image.id === image_file_id) {
-                TextFileFactory.updateTextFile(image.text_file_id, new_text, 'translate_text').then((response) => {
+                console.log(image.translate_text_id);
+                TextFileFactory.updateTextFile(image.google_translate_text_id, new_text, 'translate_text').then((response) => {
                     console.log(response);
                     $('.preloader-wrapper').toggleClass('active');
                     $('#preloader').toggleClass('preloader-background');
                     Materialize.toast('Edits Saved', 1000);
                     $scope.editing = false;
-                    getFile();
+                    image.translate_text = new_text;
                 });
             }
         });
@@ -263,13 +282,13 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         let new_text = $(`#edited-tesseract_${image_file_id}`)[0].textContent;
         $scope.images.map((image)=>{
             if (image.id === image_file_id){
-                TextFileFactory.updateTextFile(image.text_file_id, new_text, 'tesseract').then( (response)=>{
+                TextFileFactory.updateTextFile(image.tesseract_file_id, new_text, 'tesseract').then( (response)=>{
                     console.log(response);
                     $('.preloader-wrapper').toggleClass('active');
                     $('#preloader').toggleClass('preloader-background');
                     Materialize.toast('Edits Saved', 1000);
                     $scope.editing = false;
-                    getFile();
+                    image.tesseract_text = new_text;
                 });
             }
         });
@@ -281,13 +300,13 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
         let new_text = $(`#edited-googlevision_${image_file_id}`)[0].textContent;
         $scope.images.map((image)=>{
             if (image.id === image_file_id){
-                TextFileFactory.updateTextFile(image.text_file_id, new_text, 'google_vision').then( (response)=>{
+                TextFileFactory.updateTextFile(image.google_vision_text_id, new_text, 'google_vision').then( (response)=>{
                     console.log(response);
                     $('.preloader-wrapper').toggleClass('active');
                     $('#preloader').toggleClass('preloader-background');
                     Materialize.toast('Edits Saved', 1000);
                     $scope.editing = false;
-                    getFile();
+                    image.google_translate_text = new_text;
                 });
             }
         });
@@ -310,9 +329,15 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
                 image.text_file_id = texts[0].pk;
                 if (texts[0].fields.google_vision_text !== null){
                     image.google_vision_text = texts[0].fields.google_vision_text;
+                    image.google_vision_text_id = texts[0].pk;
                 }
                 if (texts[0].fields.tesseract_text !== null){
                     image.tesseract_text = texts[0].fields.tesseract_text;
+                    image.tesseract_text_id = texts[0].pk;
+                }
+                if (texts[0].fields.google_translate_text !== null) {
+                    image.google_translate_text = texts[0].fields.google_translate_text;
+                    image.google_translate_text_id = texts[0].pk;
                 }
             }
             if (tags.length > 0){
