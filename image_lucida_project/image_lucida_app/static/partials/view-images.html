@@ -43,20 +43,16 @@
                             <div class="col s10 offset-s1">
                                 <div class="row">
                                     <form ng-submit="getContours()">
-                                        <input class="input-field col s10 offset-s1" type="text" placeholder="Get contours with specified dilation" ng-model="dilation">
+                                        <input class="input-field col s5 offset-s1" type="text" placeholder="Get contours with specified dilation" ng-model="dilation">
                                     </form>
                                 </div>
 
                                 <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>
-                                </div>
-                                <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="undo()">Undo</button>
                                 </div>
                                 <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="clearAll()">Clear</button>
-                                </div>
-                                <div class="row">
                                     <button class="waves-effect waves-light btn" ng-click="removePolygon(activePolygon)">Remove</button>
                                 </div>
                                 <div class="row">
@@ -76,6 +72,8 @@
                                     <label for="Tesseract">Select Tesseract OCR</label>
                                     <input type="checkbox" id="GoogleVision" ng-model="process_type.googlevision"/>
                                     <label for="GoogleVision">Select Google Vision OCR</label>
+                                    <input type="checkbox" id="TranslateText" ng-model="process_type.translate_text" />
+                                    <label for="TranslateText">Select Google Translate</label>
                                 </div>
                             </div>
                         </div>
@@ -159,10 +157,10 @@
                                         <div class="collapsible-body">
                                             <div class="row">
                                                 <div ng-show="!editing" class="flow-text" style="overflow:scroll; height:40vh;">
-                                                    <p id="unedited" class="edit-textarea" style="white-space:pre-wrap;">((selectedImage.translate_text))</p>
+                                                    <p id="unedited" class="edit-textarea" style="white-space:pre-wrap;">((selectedImage.google_translate_text))</p>
                                                 </div>
                                                 <div class="flow-text" ng-show="editing" style="overflow:scroll; height:40vh;">
-                                                    <p id="edited-translatetext_((selectedImage.id))" contenteditable="true" style="white-space:pre-wrap;">((selectedImage.translate_text))</p>
+                                                    <p id="edited-translatetext_((selectedImage.id))" contenteditable="true" style="white-space:pre-wrap;">((selectedImage.google_translate_text))</p>
                                                 </div>
                                             </div>
                                         </div>

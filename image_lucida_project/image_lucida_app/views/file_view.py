@@ -106,6 +106,8 @@ def create_file(request):
         text_file = text_file[0]
         segment_type = 'full_page'
         response = textfile_view.segment_text(text_file.pk, 'googlevision', base_file.pk, segment_type)
+        if data['translate']:
+            textfile_view.translate_all_texts(text_file.pk, 'ar')
     return HttpResponse(response, content_type='application/json')
 
 def duplicate_file(request):
@@ -238,10 +240,13 @@ def delete_file(request):
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         file_id = data['file_id']
-        file_item = get_object_or_404(file_model.File, pk=file_id)
-        print(file_item)
-        file_item.file_item.delete(save=False)
-        file_item.delete()
+        base_file = get_object_or_404(basefile_model.Base_File, pk=file_id)
+        text_file = textfile_model.Text_File.objects.get(base_file_id=base_file.pk)
+        if text_file is not None:
+            text_file.delete()
+        print(base_file)
+        base_file.base_file.delete(save=False)
+        base_file.delete()
         response = {'success':True}
         return HttpResponse(response, content_type="application/json")
 

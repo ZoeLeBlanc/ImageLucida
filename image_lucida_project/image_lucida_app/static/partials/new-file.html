@@ -27,6 +27,9 @@
         </div>
         <div id="upload-image((file.id))" class="row" ng-repeat="(index, file) in upload_files |orderBy: 'base_file_name' track by file.id">
             <div class="col s8">
+                <div class="row">
+                    <h4>((file.base_file_name))</h4>
+                </div>
                 <div canvas-area-draw points="points"
                     active="activePolygon" image-url="((file.url))"
                     enabled="enabled" palette="colorArray" ng-if="loaddata"
@@ -92,11 +95,20 @@
                                 <div ng-show="transforming" class="row">
                                   <div class="switch">
                                      <label>
-                                       <input type="checkbox" ng-model="should_googlevision" value="should_googlevision.vision" ng-change="shouldGV()">
+                                       <input type="checkbox" ng-model="should_googlevision" value="should_googlevision.value" ng-change="shouldGV()">
                                        <span class="lever"></span>
                                        Select to Google Vision
                                      </label>
                                  </div>
+                                </div>
+                                <div ng-show="transforming" class="row">
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox" ng-model="should_translate" value="should_translate.value" ng-change="shouldTranslate()">
+                                            <span class="lever"></span>
+                                            Select to Google Translate
+                                        </label>
+                                    </div>
                                 </div>
                                 <div ng-show="transforming" class="row">
                                     <button class="waves-effect waves-light btn" ng-click="add()">Add new</button>

@@ -16,11 +16,11 @@ textarea {
 }
 
 #imageInfo.sticky,#segmentInfo.sticky,#textInfo.sticky, #fileInfo.sticky {
-     position: fixed;
-     top: 64px;
-     padding-right: 22.5px;
-  }
- .preloader-background {
+    position: fixed;
+    top: 64px;
+    padding-right: 22.5px;
+}
+.preloader-background {
   	display: flex;
   	align-items: center;
   	justify-content: center;
@@ -31,7 +31,7 @@ textarea {
   	left: 0;
   	right: 0;
   	bottom: 0;
-  }
+}
 
   /* .loader {
 

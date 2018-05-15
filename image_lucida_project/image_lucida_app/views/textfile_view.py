@@ -82,7 +82,6 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 	vision_client = vision.ImageAnnotatorClient()
 	image = types.Image()
 	image.source.image_uri = uri
-	print(uri, segment_type, vision_client, image)
 	if segment_type == 'full_page':
 		response = vision_client.document_text_detection(image=image)
 		if response.error:
@@ -90,6 +89,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 				content = image_file.read()
 				image = types.Image(content=content)
 				response = vision_client.document_text_detection(image=image)
+		
 		texts = response.text_annotations
 		text_list = " "
 		text_data = {}
@@ -115,6 +115,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 				content = image_file.read()
 				image = types.Image(content=content)
 				response = vision_client.document_text_detection(image=image)
+		print('full text',response.full_text_annotation)
 		texts = response.text_annotations
 		text_list = " "
 		text_data = {}
@@ -124,6 +125,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 				text_list += word
 			else :
 				text_coords = []
+				# print(text)
 				for vertice in text.bounding_poly.vertices:
 					dict_text = {}
 					dict_text['x'] = vertice.x
@@ -131,6 +133,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 					text_coords.append(dict_text)
 				text_data[text.description] = text_coords
 		text_file.google_vision_text = text_list
+		# print(text_list)
 		text_file.google_vision_response = text_data
 		text_file.save()
 	if file_item.google_vision_processed == False:
@@ -180,6 +183,7 @@ def delete_text_file(request):
 def translate_text_file(request):
 	data = json.loads(request.body.decode())
 	process_type = data['process_type']
+	source_lang = 'ar'
 	if process_type == 'full_page':
 		file_id = data['file_id']
 		file_item = file_model.File.objects.get(pk=file_id)
@@ -192,14 +196,18 @@ def translate_text_file(request):
 		base_file = basefile_model.Base_File.objects.get(pk=image_file.base_file.pk)
 		text_files = textfile_model.Text_File.objects.filter(
 		base_file_id=base_file.pk)
-	
 	for tx in text_files:
-		text = tx.google_vision_text
-		translate_client = translate.Client()
-		result = translate_client.translate(text, target_language='en')
-		print(result)
-		tx.google_translate_text = result['translatedText']
-		tx.google_translate_text_response = result
-		tx.save()
+		translate_all_texts(tx.pk, source_lang)
+	text_files = textfile_model.Text_File.objects.filter(base_file_id=base_file.pk)
 	textfiles_json = serializers.serialize("json", text_files)
 	return HttpResponse(textfiles_json, content_type="application/json")
+
+def translate_all_texts(tx, source_lang):
+	t = textfile_model.Text_File.objects.get(pk=tx)
+	text = t.google_vision_text
+	translate_client = translate.Client()
+	result = translate_client.translate(text, target_language='en', source_language=source_lang)
+	print(result)
+	t.google_translate_text = result['translatedText']
+	t.google_translate_text_response = result
+	t.save()
