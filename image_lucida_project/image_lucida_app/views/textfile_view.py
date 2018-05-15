@@ -82,7 +82,6 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 	vision_client = vision.ImageAnnotatorClient()
 	image = types.Image()
 	image.source.image_uri = uri
-	print(uri, segment_type, vision_client, image)
 	if segment_type == 'full_page':
 		response = vision_client.document_text_detection(image=image)
 		if response.error:
@@ -90,6 +89,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 				content = image_file.read()
 				image = types.Image(content=content)
 				response = vision_client.document_text_detection(image=image)
+		
 		texts = response.text_annotations
 		text_list = " "
 		text_data = {}
@@ -110,12 +110,12 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 		text_file.save()
 	if segment_type == 'segment_page':
 		response = vision_client.document_text_detection(image=image)
-		print('response', response.error, len(response.text_annotations))
 		if response.error:
 			with io.open(file_name, 'rb') as image_file:
 				content = image_file.read()
 				image = types.Image(content=content)
 				response = vision_client.document_text_detection(image=image)
+		print('full text',response.full_text_annotation)
 		texts = response.text_annotations
 		text_list = " "
 		text_data = {}
@@ -125,6 +125,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 				text_list += word
 			else :
 				text_coords = []
+				# print(text)
 				for vertice in text.bounding_poly.vertices:
 					dict_text = {}
 					dict_text['x'] = vertice.x
@@ -132,7 +133,7 @@ def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
 					text_coords.append(dict_text)
 				text_data[text.description] = text_coords
 		text_file.google_vision_text = text_list
-		print(text_list)
+		# print(text_list)
 		text_file.google_vision_response = text_data
 		text_file.save()
 	if file_item.google_vision_processed == False:
