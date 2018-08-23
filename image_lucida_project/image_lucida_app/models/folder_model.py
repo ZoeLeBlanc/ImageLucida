@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from . import project_model
 
 class Folder(models.Model):

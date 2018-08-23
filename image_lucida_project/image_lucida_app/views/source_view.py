@@ -7,6 +7,7 @@ from django.core import serializers
 import json
 
 def get_sources(request, bucket_id):
+    print('bucket_id', bucket_id)
     sources =source_model.Source.objects.filter(bucket_id=bucket_id)
     print(len(sources))
     if len(sources) > 0:

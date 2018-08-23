@@ -1,15 +1,14 @@
-from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.views.generic.base import TemplateView
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
-from image_lucida_app.models import *
-from django.core import serializers
 import json
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.core import serializers
+from image_lucida_app.models import bucket_model, folder_model
 
 
 def get_buckets(request, folder_id):
+    print(request)
     buckets_list = bucket_model.Bucket.objects.filter(folder_id=folder_id)
-    if len(buckets_list) > 0:
+    if buckets_list:
         buckets = serializers.serialize("json", buckets_list)
         return HttpResponse(buckets, content_type="application/json")
     else:
@@ -20,7 +19,7 @@ def get_buckets(request, folder_id):
 
 def get_single_bucket(request, bucket_id):
     """Needs to retrieve single bucket"""
-    print(bucket_id)
+    print(bucket_id, request)
     bucket = get_object_or_404(bucket_model.Bucket, pk=bucket_id)
     bucket_serialize = serializers.serialize("json", [bucket,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     bucket_json = json.dumps({'bucket': bucket_serialize})
@@ -31,8 +30,8 @@ def cu_bucket(request):
     data = json.loads(request.body.decode())
     folder = folder_model.Folder.objects.get_or_create(pk=data['folder_id'])
     bucket = bucket_model.Bucket.objects.update_or_create(
-        bucket_name = data['bucket_name'].replace(" ", "_"),
-        description = data['bucket_description'].replace(" ", "_"),
+        bucket_name=data['bucket_name'].replace(" ", "_"),
+        description=data['bucket_description'].replace(" ", "_"),
         folder=folder[0]
         )
     response = serializers.serialize("json", [bucket[0], ])
@@ -40,7 +39,7 @@ def cu_bucket(request):
 
 def delete_bucket(request):
     """Method to delete a folder"""
-    if request.method=='DELETE':
+    if request.method == 'DELETE':
         data = json.loads(request.body.decode())
         bucket_id = data['bucket_id']
         bucket = get_object_or_404(bucket_model.Bucket, pk=bucket_id)

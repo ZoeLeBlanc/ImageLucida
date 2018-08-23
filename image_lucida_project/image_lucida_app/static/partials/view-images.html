@@ -117,6 +117,13 @@
                                             <form ng-submit="orderImage(selectedImage.id)">
                                                 Image Order: <input ng-model="((selectedImage.image_order))" value="((selectedImage.image_order))" id="image_order((selectedImage.id))" />
                                             </form>
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" ng-model="contains_image" value="contains_image.value" ng-change="containsImage(selectedImage.id)">
+                                                    <span class="lever"></span>
+                                                    Select if image contains photo/cartoon
+                                                </label>
+                                            </div>
                                         </div>
                                     </li>
                                     <li>

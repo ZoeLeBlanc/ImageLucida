@@ -126,5 +126,21 @@ angular.module('ImageLucidaApp').factory("ImageFileFactory", ($http)=>{
                 }
             });
         },
+        containsImage: (image_file_id, contains_image) => {
+            return $http({
+                url: `${rootUrl}/contains_image/`,
+                method: 'POST',
+                data: {
+                    'image_file_id': image_file_id,
+                    'contains_image': contains_image
+                }
+            }).then((res) => {
+                return res.data;
+            }, (res) => {
+                if (res.status > 0) {
+                    return res.status;
+                }
+            });
+        },
     };
 });

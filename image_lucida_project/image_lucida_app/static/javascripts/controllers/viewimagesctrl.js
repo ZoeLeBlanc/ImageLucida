@@ -10,6 +10,8 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
     $scope.dilation = 10;
     $('.preloader-wrapper').toggleClass('active');
     $('#preloader').toggleClass('preloader-background');
+    $scope.contains_image = { value: false };
+    console.log($scope.contains_image);
     var getFile = () => {
         FileFactory.getSingleFile($rootScope.file_id).then( (response)=>{
             $scope.images = [];
@@ -134,6 +136,23 @@ myApp.controller("ViewImagesCtrl", function($scope, $rootScope, $location, $rout
             $('.preloader-wrapper').toggleClass('active');
             $('#preloader').toggleClass('preloader-background');
             Materialize.toast('Order Saved', 200);
+            console.log(response);
+        });
+    };
+    $scope.containsImage = function (image_file_id) {
+        // console.log(image_file_id);
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
+        let image = $scope.images.filter((image) => {
+            return image.id === image_file_id;
+        });
+        
+        console.log($scope.contains_image);
+        ImageFileFactory.containsImage(image_file_id, $scope.contains_image).then((response) => {
+            $('.preloader-wrapper').toggleClass('active');
+            $('#preloader').toggleClass('preloader-background');
+            Materialize.toast('Order Saved', 200);
+            $scope.contains_image = !$scope.contains_image;
             console.log(response);
         });
     };

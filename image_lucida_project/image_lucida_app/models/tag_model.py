@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 class Tag(models.Model):
     ''' The Tag class is a model that defines which data is available in the Tag table so a database can be created from it.
@@ -16,7 +15,7 @@ class Tag(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     def natural_key(self):
-        return (self.tag_name)
+        return self.tag_name
 
     def __str__(self):
         return '%s' % (self.tag_name)
