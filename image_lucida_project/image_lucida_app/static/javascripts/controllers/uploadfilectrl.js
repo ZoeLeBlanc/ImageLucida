@@ -73,8 +73,8 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
 
     };
     $scope.uploadProcessFiles = () => {
-        // $('.preloader-wrapper').toggleClass('active');
-        // $('#preloader').toggleClass('preloader-background');
+        $('.preloader-wrapper').toggleClass('active');
+        $('#preloader').toggleClass('preloader-background');
         let project_id = $rootScope.project_id;
         let folder_id = $rootScope.folder_id;
         let bucket_id = $rootScope.bucket_id;
