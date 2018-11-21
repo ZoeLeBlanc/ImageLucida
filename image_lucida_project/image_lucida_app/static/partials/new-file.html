@@ -93,13 +93,13 @@
                                     <button class="waves-effect waves-light btn" ng-click="saveAsIs()">Save As Is</button>
                                 </div>
                                 <div ng-show="transforming" class="row">
-                                  <div class="switch">
-                                     <label>
-                                       <input type="checkbox" ng-model="should_googlevision" value="should_googlevision.value" ng-change="shouldGV()">
-                                       <span class="lever"></span>
-                                       Select to Google Vision
-                                     </label>
-                                 </div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox" ng-model="should_googlevision" value="should_googlevision.value" ng-change="shouldGV()">
+                                            <span class="lever"></span>
+                                            Select to Google Vision
+                                        </label>
+                                    </div>
                                 </div>
                                 <div ng-show="transforming" class="row">
                                     <div class="switch">
@@ -107,6 +107,15 @@
                                             <input type="checkbox" ng-model="should_translate" value="should_translate.value" ng-change="shouldTranslate()">
                                             <span class="lever"></span>
                                             Select to Google Translate
+                                        </label>
+                                    </div>
+                                </div>
+                                <div ng-show="transforming" class="row">
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox" ng-model="contains_image" value="contains_image.value" ng-change="containsImage()">
+                                            <span class="lever"></span>
+                                            Select if contains Image
                                         </label>
                                     </div>
                                 </div>
@@ -129,8 +138,8 @@
                                 <div class="divider"></div>
                             </div>
                             <div class="col s10 offset-s1">
-                                <a class="waves-effect waves-light btn-flat" ng-click="deleteUploadedFile()">Delete File</a>
-                                <a class="waves-effect waves-light btn-flat" ng-click="duplicateUploadedFile()">Duplicate File</a>
+                                <a class="waves-effect waves-light btn-flat" ng-click="deleteUploadedFile(file.id)">Delete File</a>
+                                <a class="waves-effect waves-light btn-flat" ng-click="duplicateUploadedFile(file.id)">Duplicate File</a>
                             </div>
                         </div>
                     </div>

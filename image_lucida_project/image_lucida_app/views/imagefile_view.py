@@ -19,7 +19,7 @@ import os
 def manual_segmentation(request):
     data = json.loads(request.body.decode())
     file_item = file_model.File.objects.get(pk=data['file_id'])
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
     uri = base_file.file_url
     coords = data['multi_coords']
     ocr = data['ocr']
@@ -28,7 +28,6 @@ def manual_segmentation(request):
     height = data['height']
     width = data['width']
     index = data['index']
-    print(index)
     image= coordinates_view.crop_shapes(uri, coords, height, width)
     array_image = Image.fromarray(np.uint8(image))
     bounded_image = array_image.getbbox()
@@ -36,7 +35,7 @@ def manual_segmentation(request):
     coords_obj = coordinates_model.Coordinates.objects.create(
         multi_coords=json.dumps(coords)
     )
-    images = file_item.image_file_set.all().count()
+    images = file_item.imagefile_set.all().count()
     image_number = index
     rando_numb = uuid.uuid4()
     base_file_name = base_file.base_file_name.split('.jpg')[0] +'_imagefile_'+str(image_number) + '.jpg'
@@ -44,17 +43,17 @@ def manual_segmentation(request):
     new_image_file = new_image_file.save(base_file_name)
     open_image = open(base_file_name, 'rb')
     newest_image_file = File(open_image)
-    new_base_file = basefile_model.Base_File.objects.create(
+    new_base_file = basefile_model.BaseFile.objects.create(
         transformed_file=base_file,
         base_file_name=base_file_name,
         height=height,
         width=width,
         base_file_coordinates=coords_obj,
     )
-    image_file = imagefile_model.Image_File.objects.create(
+    image_file = imagefile_model.ImageFile.objects.create(
         file_item=file_item,
         image_file_name=new_image_file_name,
-        base_file=new_base_file
+        base_file=new_base_file,
     )
     new_base_file.base_file.save(base_file_name, newest_image_file, save=True)
     base_file.manual_image_processed=True
@@ -66,11 +65,10 @@ def manual_segmentation(request):
     response = {'success': 'true'}
 
     if ocr == True:
-        text_file = textfile_model.Text_File.objects.get_or_create(
+        text_file = textfile_model.TextFile.objects.get_or_create(
         base_file=new_base_file,
         )
         segment_type = 'segment_page'
-        print('tx', text_file)
         response = textfile_view.segment_text(text_file[0].pk, process_type, new_base_file.pk, segment_type)
         if translate == True:
             textfile_view.translate_all_texts(text_file[0].pk, 'ar')
@@ -78,10 +76,10 @@ def manual_segmentation(request):
 
 def image_process_text(request):
     data = json.loads(request.body.decode())
-    image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
+    image_file = imagefile_model.ImageFile.objects.get(pk=data['image_file_id'])
     process_type = data['process_type']
-    base_file = basefile_model.Base_File.objects.get(pk=image_file.base_file.pk)
-    text_file = textfile_model.Text_File.objects.get_or_create(
+    base_file = basefile_model.BaseFile.objects.get(pk=image_file.base_file.pk)
+    text_file = textfile_model.TextFile.objects.get_or_create(
     base_file=base_file,
     )
     segment_type = 'segment_page'
@@ -92,8 +90,7 @@ def get_contours(request):
     data = json.loads(request.body.decode())
     file_item = file_model.File.objects.get(pk=data['file_id'])
     dilation = data['dilation']
-    print(dilation)
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
     file_url = base_file.file_url
     contours = coordinates_view.find_contours(file_url, dilation)
     response = json.dumps({'contours': contours})
@@ -102,7 +99,7 @@ def get_contours(request):
 def auto_segment_image_file(request):
     data = json.loads(request.body.decode())
     file_item = file_model.File.objects.get(pk=data['file_id'])
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
     if base_file.auto_image_processed == False :
         data = base_file.file_url
         new_image_files = coordinates_view.segment_images(data)
@@ -115,7 +112,7 @@ def auto_segment_image_file(request):
                     coords_obj = coordinates_model.Coordinates.objects.get_or_create(
                     multi_coords=json.dumps(pts.tolist())
                     )
-                    images = file_item.image_file_set.all().count()
+                    images = file_item.imagefile_set.all().count()
                     image_number = images + 1
                     new_image_file_name = file_item.file_name.split('.jpg')[0] + '_auto_image_file_'+str(image_number) + '.jpg'
                     rando_numb = uuid.uuid4()
@@ -123,15 +120,15 @@ def auto_segment_image_file(request):
                     new_image_file = io.imsave(base_file_name,image),
                     open_image = open(base_file_name, 'rb')
                     newest_base_file = File(open_image)
-                    new_base_file = basefile_model.Base_File.objects.create(
+                    new_base_file = basefile_model.BaseFile.objects.create(
                         transformed_file=base_file,
                         base_file_name=base_file_name,
                         base_file_coordinates=coords_obj[0],
                     )
-                    image_file = imagefile_model.Image_File.objects.create(
+                    image_file = imagefile_model.ImageFile.objects.create(
                         base_file=new_base_file,
                         file_item=file_item,
-                        image_file_name=new_image_file_name,
+                        image_file_name=new_image_file_name
                     )
 
                     new_base_file.base_file.save(base_file_name, newest_base_file, save=True)
@@ -144,13 +141,12 @@ def auto_segment_image_file(request):
         response = {'success': True}
     else :
         response = {'success': False}
-        print(response)
     return HttpResponse(response, content_type='application/json')
 
 def get_single_image_file(request, image_file_id):
-    image_file = get_object_or_404(imagefile_model.Image_File, pk=image_file_id)
-    base_file = basefile_model.Base_File.objects.get(pk=image_file.base_file.pk)
-    texts = base_file.text_file_set.all()
+    image_file = get_object_or_404(imagefile_model.ImageFile, pk=image_file_id)
+    base_file = basefile_model.BaseFile.objects.get(pk=image_file.base_file.pk)
+    texts = base_file.textfile_set.all()
     image_serialize = serializers.serialize("json", [image_file,], indent=2, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     texts_serialize = serializers.serialize("json", list(texts))
     tags = image_file.tags.all()
@@ -164,7 +160,7 @@ def get_single_image_file(request, image_file_id):
 def tag_images(request):
     data = json.loads(request.body.decode())
     tag = tag_model.Tag.objects.get_or_create(tag_name=data['tag_name'])
-    image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
+    image_file = imagefile_model.ImageFile.objects.get(pk=data['image_file_id'])
     tag_image_file = imagefile_model.Image_File_Tag.objects.get_or_create(
         tag =tag[0],
         image_file = image_file
@@ -174,8 +170,18 @@ def tag_images(request):
 
 def order_image(request):
     data = json.loads(request.body.decode())
-    image_file = imagefile_model.Image_File.objects.get(pk=data['image_file_id'])
+    image_file = imagefile_model.ImageFile.objects.get(pk=data['image_file_id'])
     image_file.image_order = data['image_order']
+    image_file.save()
+    response = {'success': 'true'}
+    return HttpResponse(response, content_type='application/json')
+
+
+def contains_image(request):
+    data = json.loads(request.body.decode())
+    image_file = imagefile_model.ImageFile.objects.get(
+        pk=data['image_file_id'])
+    image_file.contains_image = data['contains_image']
     image_file.save()
     response = {'success': 'true'}
     return HttpResponse(response, content_type='application/json')
@@ -184,18 +190,14 @@ def delete_image_file(request):
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         try:
-            image_file = get_object_or_404(imagefile_model.Image_File, pk=data['image_file_id'])
-            base_file = get_object_or_404(basefile_model.Base_File, pk=image_file.base_file.pk)
-            text_file = textfile_model.Text_File.objects.get(base_file_id=base_file.pk)
-            print(image_file)
+            image_file = get_object_or_404(imagefile_model.ImageFile, pk=data['image_file_id'])
+            base_file = get_object_or_404(basefile_model.BaseFile, pk=image_file.base_file.pk)
+            text_file = textfile_model.TextFile.objects.get(base_file_id=base_file.pk)
             if text_file is not None:
                 text_file.delete()
             image_file.delete()
             base_file.base_file.delete(save=False)
             base_file.delete()
-            # print(image_file)
-            
-            print('image_file', image_file)
 
             response = {'success':True}
         except:

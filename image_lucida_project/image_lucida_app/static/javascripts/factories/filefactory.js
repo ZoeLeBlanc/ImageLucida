@@ -27,7 +27,7 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                 return res.data;
             });
         },
-        createFile: (project_id, folder_id, bucket_id, source_id, group_id, upload_file_id, multi_coords, height, width, date_published, page_number, google_vision, translate) =>{
+        createFile: (project_id, folder_id, bucket_id, source_id, group_id, upload_file_id, multi_coords, height, width, date_published, page_number, google_vision, translate, contains_image) =>{
             return $http({
                 url:`${rootUrl}/create_file/`,
                 method: 'POST',
@@ -44,7 +44,8 @@ angular.module('ImageLucidaApp').factory("FileFactory", ($http)=>{
                     'date_published': date_published,
                     'page_number': page_number,
                     'google_vision':google_vision,
-                    'translate': translate
+                    'translate': translate,
+                    'contains_image':contains_image,
                 }
             }).then((res)=>{
                 return res.data;

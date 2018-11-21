@@ -1,10 +1,10 @@
-from image_lucida_app.models import coordinates_model
 import json
 import cv2
 import numpy as np
 from skimage import filters, segmentation, io, img_as_ubyte
 from skimage.measure import label, regionprops
 from skimage.color import rgb2gray
+from image_lucida_app.models import coordinates_model
 
 def calculate_coordinates(img_rows, img_cols):
     top_left = [0,0]
@@ -25,7 +25,6 @@ def calculate_coordinates(img_rows, img_cols):
             bottom_left=json.dumps(bottom_left),
             bottom_right=json.dumps(bottom_right)
             )
-    print(coor_obj)
     return coor_obj
 
 def order_points(pts):
@@ -33,24 +32,22 @@ def order_points(pts):
     # such that the first entry in the list is the top-left,
     # the second entry is the top-right, the third is the
     # bottom-right, and the fourth is the bottom-left
-    print(pts)
-    rect = np.zeros((4, 2), dtype = "float32")
+    rect = np.zeros((4, 2), dtype="float32")
 
     # the top-left point will have the smallest sum, whereas
     # the bottom-right point will have the largest sum
-    s = pts.sum(axis = 1)
-    rect[0] = pts[np.argmin(s)]
-    rect[2] = pts[np.argmax(s)]
+    sum_points = pts.sum(axis=1)
+    rect[0] = pts[np.argmin(sum_points)]
+    rect[2] = pts[np.argmax(sum_points)]
 
     # now, compute the difference between the points, the
     # top-right point will have the smallest difference,
     # whereas the bottom-left will have the largest difference
-    diff = np.diff(pts, axis = 1)
+    diff = np.diff(pts, axis=1)
     rect[1] = pts[np.argmin(diff)]
     rect[3] = pts[np.argmax(diff)]
 
     # return the ordered coordinates
-    print(rect)
     return rect
 
 def four_point_transform(image, points):
@@ -60,24 +57,22 @@ def four_point_transform(image, points):
     # it into OpenCV format
     # image = io.imread(img)
     # print(image.shape)
-    pts = np.array(points, dtype = "float32")
+    pts = np.array(points, dtype="float32")
     rect = order_points(pts)
-    (tl, tr, br, bl) = rect
+    (t_l, t_r, b_r, b_l) = rect
 
     # compute the width of the new image, which will be the
     # maximum distance between bottom-right and bottom-left
     # x-coordiates or the top-right and top-left x-coordinates
-    widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
-    widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
-    maxWidth = max(int(widthA), int(widthB))
-    print(maxWidth);
+    width_a = np.sqrt(((b_r[0] - b_l[0]) ** 2) + ((b_r[1] - b_l[1]) ** 2))
+    width_b = np.sqrt(((t_r[0] - t_l[0]) ** 2) + ((t_r[1] - t_l[1]) ** 2))
+    max_width = max(int(width_a), int(width_b))
     # compute the height of the new image, which will be the
     # maximum distance between the top-right and bottom-right
     # y-coordinates or the top-left and bottom-left y-coordinates
-    heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
-    heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
-    maxHeight = max(int(heightA), int(heightB))
-    print(maxHeight);
+    height_a = np.sqrt(((t_r[0] - b_r[0]) ** 2) + ((t_r[1] - b_r[1]) ** 2))
+    height_b = np.sqrt(((t_l[0] - b_l[0]) ** 2) + ((t_l[1] - b_l[1]) ** 2))
+    max_height = max(int(height_a), int(height_b))
     # now that we have the dimensions of the new image, construct
     # the set of destination points to obtain a "birds eye view",
     # (i.e. top-down view) of the image, again specifying points
@@ -85,15 +80,12 @@ def four_point_transform(image, points):
     # order
     dst = np.array([
         [0, 0],
-        [maxWidth - 1, 0],
-        [maxWidth - 1, maxHeight - 1],
-        [0, maxHeight - 1]], dtype = "float32")
-    print(dst)
+        [max_width - 1, 0],
+        [max_width - 1, max_height - 1],
+        [0, max_height - 1]], dtype="float32")
     # compute the perspective transform matrix and then apply it
-    M = cv2.getPerspectiveTransform(rect, dst)
-    print(M)
-    warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-    print(warped.shape)
+    transform = cv2.getPerspectiveTransform(rect, dst)
+    warped = cv2.warpPerspective(image, transform, (max_width, max_height))
     return warped
 
 def crop_shapes(img, points, new_height, new_width):
@@ -102,8 +94,6 @@ def crop_shapes(img, points, new_height, new_width):
     height, width, channel = image.shape
     aspect_ratio_height = height / new_height
     aspect_ratio_width = width / new_width
-    print("height", height, new_height)
-    print("width", width, new_width)
     initial_corners = np.array(points, dtype=np.int32)
     new_array = []
     for array in initial_corners:
@@ -122,8 +112,8 @@ def crop_shapes(img, points, new_height, new_width):
     return final_image
 
 def segment_images(img):
-    im = io.imread(img)
-    image = rgb2gray(im)
+    i_m = io.imread(img)
+    image = rgb2gray(i_m)
     val = filters.threshold_otsu(image)
     mask = image < val
     clean_border = segmentation.clear_border(mask)
@@ -136,20 +126,20 @@ def segment_images(img):
             continue
         minr, minc, maxr, maxc = region.bbox
         cropped_coords[region_index] = {(minr-pad, minc-pad),(minr-pad, maxc-pad),(maxr+pad, maxc+pad),(maxr+pad, minc+pad) }
-        cropped_images[region_index] = im[minr-pad:maxr+pad, minc-pad:maxc+pad]
+        cropped_images[region_index] = i_m[minr-pad:maxr+pad, minc-pad:maxc+pad]
     return cropped_coords, cropped_images
 
 def find_contours(img, dilation):
-    im = io.imread(img)
-    image = rgb2gray(im)
-    cv_image = img_as_ubyte(im)
+    i_m = io.imread(img)
+    image = rgb2gray(i_m)
+    cv_image = img_as_ubyte(i_m)
     grey_image = img_as_ubyte(image)
     _, thresh = cv2.threshold(grey_image, 150, 255,
                               cv2.THRESH_BINARY_INV)  # threshold
     kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
     dilated = cv2.dilate(thresh, kernel, iterations=dilation)  # dilate
-    _, contours, hierarchy = cv2.findContours(
-    dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # get contours
+    _, contours, _ = cv2.findContours(
+        dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # get contours
     contours_obj = {}
     for index, contour in enumerate(contours):
         # get rectangle bounding contour
@@ -168,5 +158,4 @@ def find_contours(img, dilation):
 
         contours_obj[index] = {'coords': {'x': x, 'y': y, 'w': w, 'h': h}, 'bounding_box': {
             'top_left': (x, y), 'top_right': (x+w, y), 'bottom_right': (x+w, y+h), 'bottom_left': (x, y+h)}, 'height': im_h, 'width': im_w}
-    print(contours_obj)
     return contours_obj

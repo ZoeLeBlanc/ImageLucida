@@ -22,8 +22,8 @@ def create_file(request):
     upload_file_id = data['upload_file_id']
     height = data['height']
     width = data['width']
+    contains_image = data['contains_image']
     google_vision = data['google_vision']
-    print(google_vision)
     page_number=data['page_number']
     if 0 < page_number < 10:
         page_number = '0'+str(page_number)
@@ -35,7 +35,7 @@ def create_file(request):
     folder = folder_model.Folder.objects.get(pk=data['folder_id'])
     source = source_model.Source.objects.get(pk=data['source_id'])
     bucket = bucket_model.Bucket.objects.get(pk=data['bucket_id'])
-    upload_file = basefile_model.Base_File.objects.get(pk=upload_file_id)
+    upload_file = basefile_model.BaseFile.objects.get(pk=upload_file_id)
     # Set attributes
     if len(date_published)== 0:
         date_published=''
@@ -54,9 +54,9 @@ def create_file(request):
     if len(data['group_id']) > 0:
         group = group_model.Group.objects.get(pk=data['group_id'])
         new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(
-            " ", "_")+'_' + source.source_name.replace(" ", "_")+'_' + group.group_name.replace(" ", "_")+'_' + date_published.replace(" ", "_")+'_' + page_number + '.jpg'
-        base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ date_published.replace(" ", "_")+'_' + page_number + '.jpg'
-        base_file = basefile_model.Base_File.objects.create(
+            " ", "_")+'_' + source.source_name.replace(" ", "_")+'_' + group.group_name.replace(" ", "_")+'_' + page_number + '.jpg'
+        base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ page_number + '.jpg'
+        base_file = basefile_model.BaseFile.objects.create(
             upload_file=upload_file,
             base_file_name=base_file_name,
             height=height,
@@ -70,11 +70,12 @@ def create_file(request):
             page_number=page_number,
             group=group,
             source=source,
+            contains_image=contains_image,
         )
     else:
-        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+folder.title.replace(" ", "_")+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
+        new_file_name = 'image_lucida_app/media/'+project.title.replace(" ", "_")+'_'+folder.title.replace(" ", "_")+'_'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_' +date_published.replace(" ", "_")+'_' + page_number + '.jpg'
         base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' +source.source_name.replace(" ", "_")+'_'+ date_published.replace(" ", "_")+'_' + page_number + '.jpg'
-        base_file = basefile_model.Base_File.objects.create(
+        base_file = basefile_model.BaseFile.objects.create(
             upload_file=upload_file,
             base_file_name=base_file_name,
             height=height,
@@ -87,11 +88,11 @@ def create_file(request):
             date_published=date_published,
             page_number=page_number,
             source=source,
+            contains_image=contains_image,
         )
     file_item.save()
     new_file = new_file.save(base_file_name)
-    open_file = open(base_file_name, 'rb')
-    new_file = File(open_file)
+    new_file = File(open(base_file_name, 'rb'))
     base_file.base_file.save(base_file_name, new_file, save=True)
     os.remove(base_file_name)
     base_file.assigned=True
@@ -100,7 +101,7 @@ def create_file(request):
     upload_file.save()
     response = {'success': 'true'}
     if google_vision:
-        text_file = textfile_model.Text_File.objects.get_or_create(
+        text_file = textfile_model.TextFile.objects.get_or_create(
                 base_file=base_file,
             )
         text_file = text_file[0]
@@ -112,13 +113,12 @@ def create_file(request):
 
 def duplicate_file(request):
     data = json.loads(request.body.decode())
-    print(data)
     project = project_model.Project.objects.get(pk=data['project_id'])
     folder = folder_model.Folder.objects.get(pk=data['folder_id'])
     source = source_model.Source.objects.get(pk=data['source_id'])
     bucket = bucket_model.Bucket.objects.get(pk=data['bucket_id'])
     file_item = file_model.File.objects.get(pk=data['file_id'])
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+    base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
     page_number=data['page_number']
     if 0 < page_number < 10:
         page_number = '0'+str(page_number)
@@ -153,20 +153,19 @@ def duplicate_file(request):
 
 def get_single_file(request, file_id):
     file_item = file_model.File.objects.get(pk=file_id)
-    base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
-    texts = base_file.text_file_set.all()
+    base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
+    texts = base_file.textfile_set.all()
     texts_serialize = {}
     if len(texts)>0:
         texts_serialize = serializers.serialize("json", list(texts))
-    images = file_item.image_file_set.all()
-    print(images)
+    images = file_item.imagefile_set.all()
     images_serialize = {}
     images_data = {}
     if len(images) > 0:
         for index,image in enumerate(images):
             images_list = {}
             tags = image.tags.all()
-            basefile = basefile_model.Base_File.objects.get(pk=image.base_file.pk)
+            basefile = basefile_model.BaseFile.objects.get(pk=image.base_file.pk)
             if tags.exists():
                 tags_serialized = serializers.serialize("json", tags)
                 images_list['image_name'] = image.image_file_name
@@ -179,7 +178,6 @@ def get_single_file(request, file_id):
                 images_list['image_tags'] =[]
                 images_data[index] = images_list
         images_serialize = serializers.serialize("json", list(images))
-        print(images_serialize)
     tags = file_item.tags.all()
     tags_serialize = {}
     if len(tags)>0:
@@ -202,12 +200,9 @@ def get_source_files(request, source_id):
     if len(files) > 0:
         files_list = []
         for index,file_item in enumerate(files):
-            print(file_item.base_file.pk)
-            base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+            base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
             base_file_data = {'file_name':file_item.file_name, 'file_url':base_file.file_url, 'google_vision_processed':base_file.google_vision_processed, 'tesseract_processed': base_file.tesseract_processed, 'auto_image_processed':base_file.auto_image_processed, 'manual_image_processed':base_file.manual_image_processed}
             files_list.append(base_file_data)
-            print(files_list)
-        print(files_list)
         files = serializers.serialize("json", files)
         response = json.dumps({'files':files, 'files_list':files_list})
         return HttpResponse(response, content_type="application/json")
@@ -223,7 +218,7 @@ def get_group_files(request, group_id):
         files_list = []
         for file_item in files:
             file_list = []
-            base_file = basefile_model.Base_File.objects.get(pk=file_item.base_file.pk)
+            base_file = basefile_model.BaseFile.objects.get(pk=file_item.base_file.pk)
             file_list.extend({file_item.file_name, base_file.file_url})
             files_list.append(file_list)
         files = serializers.serialize("json", files)
@@ -240,11 +235,10 @@ def delete_file(request):
     if request.method=='DELETE':
         data = json.loads(request.body.decode())
         file_id = data['file_id']
-        base_file = get_object_or_404(basefile_model.Base_File, pk=file_id)
-        text_file = textfile_model.Text_File.objects.get(base_file_id=base_file.pk)
+        base_file = get_object_or_404(basefile_model.BaseFile, pk=file_id)
+        text_file = textfile_model.TextFile.objects.get(base_file_id=base_file.pk)
         if text_file is not None:
             text_file.delete()
-        print(base_file)
         base_file.base_file.delete(save=False)
         base_file.delete()
         response = {'success':True}
@@ -264,7 +258,7 @@ def tag_file(request):
     data = json.loads(request.body.decode())
     tag = tag_model.Tag.objects.get_or_create( tag_name=data['tag_name'])
     file_item = get_object_or_404(file_model.File, pk=data['file_id'])
-    tag_file = file_model.File_Tag.objects.get_or_create(
+    tag_file = file_model.FileTag.objects.get_or_create(
         tag =tag[0],
         file_item = file_item
         )
@@ -276,7 +270,7 @@ def remove_tag_file(request):
         data = json.loads(request.body.decode())
         tag = tag_model.Tag.objects.get_or_create( tag_name=data['tag_name'])
         file_item = get_object_or_404(file_model.File, pk=data['file_id'])
-        tag_file = file_model.File_Tag.objects.get(
+        tag_file = file_model.FileTag.objects.get(
             tag =tag[0],
             file_item = file_item
             )

@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from . import coordinates_model
-from image_lucida_app.helpers import UniqueFileName
 
-class Base_File(models.Model):
+class BaseFile(models.Model):
     ''' The Base File class is a model that defines which data is available in the Base File table so a database can be created from it.
 
     Method List:
@@ -24,8 +23,8 @@ class Base_File(models.Model):
     height = models.IntegerField(null=True, default=0)
     width = models.IntegerField(null=True, default=0)
     date_updated = models.DateTimeField(auto_now=True, null=True)
-    upload_file =models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name="base_upload_file")
-    transformed_file =models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name="base_transformed_file")
+    upload_file = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name="base_upload_file")
+    transformed_file = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name="base_transformed_file")
     tesseract_processed = models.BooleanField(default=False)
     google_vision_processed = models.BooleanField(default=False)
     auto_image_processed = models.BooleanField(default=False)

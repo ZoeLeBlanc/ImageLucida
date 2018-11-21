@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def auth_user(request):
     """Method to authorize user. Currently disabled"""
+    print('user', request.COOKIES, request.user)
     if request.user.is_authenticated:
         response = json.dumps({"user":True, "username":request.user.username})
     else:
@@ -40,6 +41,7 @@ def login_user(request):
         username = username,
         password = password
         )
+    print('login', user)
     if user is not None:
         login(request = request, user = user)
         user_json = serializers.serialize("json", [user, ])
