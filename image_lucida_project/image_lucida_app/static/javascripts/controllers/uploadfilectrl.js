@@ -35,7 +35,7 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
                 var temp = $compile(html)($scope);
                 $("#file-preview").append(temp);
                 $(`#${index}`).append(img);
-                $scope.images[index]= {'index': index, 'contains_image': false, 'translate_text': false, 'ocr_text': false};
+                $scope.images[index]= {'index': index, 'contains_image': true, 'translate_text': false, 'ocr_text': true};
             };
             reader.readAsDataURL(file);
             console.log($scope.images);
@@ -111,22 +111,23 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
     $scope.containsImage = (img_id) => {
         $scope.images.map( id => {
             if (id.index == img_id){
-                id.contains_image = true;
+                id.contains_image = !id.contains_image;
             }
         });
+        console.log($scope.images);
     };
     $scope.ocrText = (img_id) => {
         $scope.images.map(id => {
             if (id.index == img_id) {
-                id.ocr_text = true;
+                id.ocr_text = !id.ocr_text;
             }
         });
     };
     $scope.translateText = (img_id) => {
         $scope.images.map(id => {
             if (id.index == img_id) {
-                id.translate_text = true;
-                id.ocr_text = true;
+                id.translate_text = !id.translate_text;
+                id.ocr_text = !id.ocr_text;
             }
         });
     };
