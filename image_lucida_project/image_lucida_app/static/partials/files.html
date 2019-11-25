@@ -18,7 +18,7 @@
     </div>
     <div style="overflow:scroll; height: 70vh;" class="col s8">
         <h4>Files</h4>
-        <div class="collection" ng-repeat="file in filterFiles | filter: {file_name: searchText} | orderBy: 'file_name' track by file.id">
+        <div class="collection" ng-repeat="file in filterFiles | filter: {file_name: searchText} | orderBy: 'page_number' track by file.id">
             <li class="collection-item avatar" style="list-style-type:none;">
                 <img src="((file.url))" alt="" class="circle">
                 <span class="title flow-text" style="word-break:break-word;">((file.file_name))</span>

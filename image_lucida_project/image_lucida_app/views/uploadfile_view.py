@@ -1,17 +1,15 @@
-from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.views.generic.base import TemplateView
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.files import File
-from image_lucida_app.models import *
-from image_lucida_app.forms import *
-from . import coordinates_view, textfile_view
-from django.core import serializers
 import json
-import os
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.core.files import File
+from django.core import serializers
 from PIL import Image
 from skimage import io
 import numpy as np
+from image_lucida_app.models import *
+from image_lucida_app.forms import *
+from . import coordinates_view, textfile_view
+
 
 def upload_file(request):
     """Method to upload file to AWS"""
@@ -76,7 +74,7 @@ def upload_process_file(request):
                 " ", "_")+'_' + source.source_name.replace(" ", "_")+ '__' + page_number + '.jpg'
             base_file_name = 'image_lucida_app/media/'+bucket.bucket_name.replace(" ", "_")+'_' + source.source_name.replace(
             " ", "_")+'__' + page_number + '.jpg'
-            print(base_file_name)
+            print(base_file_name, source)
             image = io.imread(upload_file.file_url)
             array_image = Image.fromarray(np.uint8(image))
             bounded_image = array_image.getbbox()

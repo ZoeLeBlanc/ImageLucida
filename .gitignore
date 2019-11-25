@@ -10,3 +10,4 @@ ImageLucida/
 *.pyc
 .DS_Store
 .vscode
+*.gz
