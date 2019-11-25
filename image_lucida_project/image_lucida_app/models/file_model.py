@@ -13,7 +13,7 @@ class File(models.Model):
     Author: Zoe LeBlanc
     '''
     base_file = models.ForeignKey(basefile_model.BaseFile, null=True, on_delete=models.CASCADE, blank=True)
-    file_name = models.CharField(max_length=200, blank=True, null=True)
+    file_name = models.CharField(max_length=1000, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     page_number = models.IntegerField(null=True, default=0)
     group = models.ForeignKey(group_model.Group, null=True, on_delete=models.CASCADE, blank=True)

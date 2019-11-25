@@ -9,7 +9,7 @@ from google.cloud import vision, translate
 from google.cloud.vision import types
 import google.auth
 from image_lucida_app.models import basefile_model, textfile_model, file_model, imagefile_model
-from tesserocr import PyTessBaseAPI, RIL
+# from tesserocr import PyTessBaseAPI, RIL
 
 
 def process_text(request):
@@ -40,32 +40,33 @@ def analyze_text(file_item, uri, process_type, file_name, text_file, segment_typ
     """Method to determine type of ocr"""
     filename, _ = urllib.request.urlretrieve(uri, file_name)
     if process_type == 'tesseract':
-        response = tesseract_ocr(filename, text_file, file_item)
+        pass
+        # response = tesseract_ocr(filename, text_file, file_item)
     if process_type == 'googlevision':
         response = googlevision_ocr(segment_type, uri, filename, text_file, file_item)
     return response
 
-def tesseract_ocr(file_name, text_file, file_item):
-    """Method to processs text with tesseract"""
-    with PyTessBaseAPI() as api:
-        api.SetImageFile(file_name)
-        boxes = api.GetComponentImages(RIL.TEXTLINE, True)
-        text_file_text = api.GetUTF8Text()
-        text_file.tesseract_text = text_file_text
-        tesseract_response = {}
-        for i, (_, box, _, _) in enumerate(boxes):
-            ocr_result = api.GetUTF8Text()
-            conf = api.MeanTextConf()
-            tesseract_response[i] = {}
-            tesseract_response[i]['ocrResult'] = ocr_result
-            tesseract_response[i]['confidence'] = conf
-            tesseract_response[i]['box'] = box
-        text_file.tesseract_response = tesseract_response
-        text_file.save()
-        if file_item.tesseract_processed is False:
-            file_item.tesseract_processed = True
-            file_item.save()
-        return serializers.serialize("json", [text_file, ])
+# def tesseract_ocr(file_name, text_file, file_item):
+#     """Method to processs text with tesseract"""
+#     with PyTessBaseAPI() as api:
+#         api.SetImageFile(file_name)
+#         boxes = api.GetComponentImages(RIL.TEXTLINE, True)
+#         text_file_text = api.GetUTF8Text()
+#         text_file.tesseract_text = text_file_text
+#         tesseract_response = {}
+#         for i, (_, box, _, _) in enumerate(boxes):
+#             ocr_result = api.GetUTF8Text()
+#             conf = api.MeanTextConf()
+#             tesseract_response[i] = {}
+#             tesseract_response[i]['ocrResult'] = ocr_result
+#             tesseract_response[i]['confidence'] = conf
+#             tesseract_response[i]['box'] = box
+#         text_file.tesseract_response = tesseract_response
+#         text_file.save()
+#         if file_item.tesseract_processed is False:
+#             file_item.tesseract_processed = True
+#             file_item.save()
+#         return serializers.serialize("json", [text_file, ])
 
 def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
     """Method to process with google vision"""

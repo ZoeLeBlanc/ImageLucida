@@ -32,7 +32,17 @@ textarea {
   	right: 0;
   	bottom: 0;
 }
-
+/* .collapsible-body.sticky {
+    max-width: 48%;
+} */
   /* .loader {
 
 } */
+.card-wrapper {
+    
+    position: relative;
+    margin: .5rem 0 1rem 0;
+    background-color: #fff;
+    transition: box-shadow .25s;
+    border-radius: 2px;
+}
