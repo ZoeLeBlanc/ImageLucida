@@ -72,7 +72,7 @@ notebook==6.0.2
 numpy==1.13.3
 oauth2client==3.0.0
 olefile==0.44
-opencv-python==3.3.0.10
+opencv-python==3.4.0.12
 pandocfilters==1.4.2
 parso==0.1.0
 pexpect==4.2.1
