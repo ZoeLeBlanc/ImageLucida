@@ -37,7 +37,7 @@
     "grunt-sass": "^2.0.0",
     "hoek": "^5.0.4",
     "jquery": "^3.4.1",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.0",
     "jquery-ui-dist": "^1.12.1",
     "materialize-css": "^1.0.0",
     "ng-async": "^1.1.0",
