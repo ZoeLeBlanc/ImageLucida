@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/ZoeLeBlanc/imagelucida#readme",
   "devDependencies": {
-    "grunt": "^1.0.4",
+    "grunt": "^1.5.3",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-nodeunit": "^1.0.0",
     "grunt-contrib-sass": "^1.0.0",
