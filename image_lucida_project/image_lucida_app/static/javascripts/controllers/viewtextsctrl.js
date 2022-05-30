@@ -34,11 +34,16 @@ myApp.controller("ViewTextsCtrl", function($scope, $rootScope, $location, $route
         console.log($scope.file);
         var $window = $(window),
             $imageInfo = $('#textInfo'),
+            $collapsingBody = $('.collapsible-body'),
             elTop = $imageInfo.offset().top;
+        
+        $window.scroll(function(e) {
+            e.preventDefault();
+            
 
-         $window.scroll(function() {
-              $imageInfo.toggleClass('sticky', $window.scrollTop() > elTop);
-         });
+            $imageInfo.toggleClass('sticky', $(this).scrollTop() > elTop);
+            $collapsingBody.toggleClass('sticky', $window.scrollTop() > elTop);
+        });
     });
 
     $scope.editText = ()=>{

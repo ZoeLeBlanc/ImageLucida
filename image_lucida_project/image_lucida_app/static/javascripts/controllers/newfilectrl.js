@@ -151,6 +151,7 @@ myApp.controller("NewFileCtrl", function($scope, $rootScope, $location, $routePa
         angular.forEach(points, (array, index)=>{
             let outsideArray = [];
             outsideArray.push(array);
+            console.log(project_id, folder_id, bucket_id, source_id, group_id, $scope.file.id, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index]), $scope.should_googlevision.value, $scope.should_translate.value, $scope.contains_image.value);
             var promise = FileFactory.createFile(project_id, folder_id, bucket_id, source_id, group_id, $scope.file.id, outsideArray, $scope.image[0].height, $scope.image[0].width, date_published, parseInt(pages[index]), $scope.should_googlevision.value, $scope.should_translate.value, $scope.contains_image.value).then( (response)=>{
                 console.log('saved');
             });
