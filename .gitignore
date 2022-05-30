@@ -11,3 +11,5 @@ ImageLucida/
 .DS_Store
 .vscode
 *.gz
+image_lucida_project/logfile
+image_lucida_project/.pylintrc

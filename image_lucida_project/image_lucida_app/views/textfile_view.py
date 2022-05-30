@@ -5,8 +5,9 @@ import os
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core import serializers
-from google.cloud import vision, translate
-from google.cloud.vision import types
+from google.cloud import vision_v1, translate
+from google.cloud import documentai_v1beta2 as documentai
+from google.cloud.vision_v1 import types
 import google.auth
 from image_lucida_app.models import basefile_model, textfile_model, file_model, imagefile_model
 # from tesserocr import PyTessBaseAPI, RIL
@@ -71,7 +72,9 @@ def analyze_text(file_item, uri, process_type, file_name, text_file, segment_typ
 def googlevision_ocr(segment_type, uri, file_name, text_file, file_item):
     """Method to process with google vision"""
     _, _ = google.auth.default()
-    vision_client = vision.ImageAnnotatorClient()
+    vision_client = vision_v1.ImageAnnotatorClient()
+    doc_client = documentai.DocumentUnderstandingServiceClient()
+    gcs_source = documentai.types.GcsSource(uri=uri)
     image = types.Image()
     image.source.image_uri = uri
     if segment_type == 'full_page':

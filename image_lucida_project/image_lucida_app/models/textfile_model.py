@@ -17,10 +17,11 @@ class TextFile(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     tesseract_text = models.TextField(blank=True, null=True)
     google_vision_text = models.TextField(blank=True, null=True)
+    google_documentai_text = models.TextField(blank=True, null=True)
     date_updated = models.DateTimeField(auto_now=True, null=True)
     tesseract_response = JSONField(null=True)
     google_vision_response = JSONField(null=True)
-    google_vision_document_response = JSONField(null=True)
+    google_documentai_response = JSONField(null=True)
     google_translate_text = models.TextField(blank=True, null=True)
     google_translate_text_response = JSONField(null=True)
 
