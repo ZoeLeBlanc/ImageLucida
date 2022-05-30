@@ -35,7 +35,7 @@ myApp.controller("UploadFileCtrl", function($scope, $rootScope, $location, $rout
                 var temp = $compile(html)($scope);
                 $("#file-preview").append(temp);
                 $(`#${index}`).append(img);
-                $scope.images[index]= {'index': index, 'contains_image': false, 'translate_text': true, 'ocr_text': true};
+                $scope.images[index]= {'index': index, 'contains_image': true, 'translate_text': false, 'ocr_text': true};
             };
             reader.readAsDataURL(file);
             console.log($scope.images);

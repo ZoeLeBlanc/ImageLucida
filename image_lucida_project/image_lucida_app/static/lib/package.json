@@ -34,14 +34,13 @@
     "angular-cookies": "^1.7.9",
     "angular-slick-carousel": "^3.1.7",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-sass": "^2.0.0",
+    "grunt-sass": "^2.1.0",
     "hoek": "^5.0.4",
     "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
     "jquery-ui-dist": "^1.12.1",
     "materialize-css": "^1.0.0",
     "ng-async": "^1.1.0",
-    "node-sass": "^4.13.0",
     "slick-carousel": "^1.8.1"
   }
 }
